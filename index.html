@@ -2,1153 +2,1139 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Hellcastle Baseball Tournament</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quidditch Darts — Golden Snitch Edition</title>
+  <meta name="description" content="A magical dart game concept inspired by Harry Potter's Quidditch — cinematic, fast, and enchanted." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-   :root {
-  --bg: #02111f;
-  --panel: #062436;
-  --accent: #00eaff;
-  --accent-soft: #7ff6ff;
-  --text: #e8faff;
-  --muted: #7aa8c4;
-  --hole-open: #0b3a4d;
-  --hole-closed: #0d2b38;
-  --winner: #9ae6ff;
-}}
-    * {
-      box-sizing: border-box;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    :root{
+      --bg:#0d0b12;
+      --bg-2:#17111f;
+      --panel:rgba(28,20,39,.72);
+      --panel-2:rgba(255,255,255,.06);
+      --text:#f6efe3;
+      --muted:#d2c3aa;
+      --gold:#d9ab39;
+      --gold-2:#f5d577;
+      --ember:#8f3b17;
+      --wine:#4f1224;
+      --green:#12352c;
+      --line:rgba(255,236,197,.16);
+      --shadow:0 20px 80px rgba(0,0,0,.45);
+      --radius:22px;
+      --max:1240px;
+      --snitchX: 50%;
+      --snitchY: 50%;
     }
-    body {
-      margin: 0;
-      min-height: 100vh;
-      background: radial-gradient(circle at top, #2b0b19 0, #050308 55%, #000 100%);
-      color: var(--text);
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      padding: 20px;
-    }
-    .app {
-      width: 100%;
-      max-width: 1150px;
-      background: linear-gradient(145deg, #120b16, #050308);
-      border-radius: 16px;
-      border: 1px solid rgba(255, 75, 31, 0.4);
-      box-shadow: 0 0 40px rgba(0, 0, 0, 0.9), 0 0 30px rgba(255, 75, 31, 0.25);
-      padding: 20px 24px 28px;
-      position: relative;
-      overflow: hidden;
-    }
-    .app::before {
-      content: "";
-      position: absolute;
-      inset: -40%;
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:"Inter", sans-serif;
       background:
-        radial-gradient(circle at 10% 0, rgba(255, 75, 31, 0.12), transparent 55%),
-        radial-gradient(circle at 90% 100%, rgba(247, 183, 51, 0.12), transparent 55%);
-      opacity: 0.9;
-      pointer-events: none;
-      z-index: -1;
+        radial-gradient(circle at 20% 15%, rgba(217,171,57,.12), transparent 18%),
+        radial-gradient(circle at 80% 12%, rgba(143,59,23,.18), transparent 20%),
+        radial-gradient(circle at 50% 110%, rgba(79,18,36,.24), transparent 28%),
+        linear-gradient(180deg, #0a0910 0%, #110d18 38%, #0c0a11 100%);
+      color:var(--text);
+      overflow-x:hidden;
     }
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 16px;
+
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      opacity:.18;
+      background-image:
+        linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+      background-size:28px 28px;
+      mask-image:radial-gradient(circle at center, black 45%, transparent 100%);
     }
-    .title-block {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
+
+    a{color:inherit;text-decoration:none}
+    img{max-width:100%}
+    .wrap{width:min(var(--max), calc(100% - 2rem)); margin-inline:auto}
+
+    .reveal{
+      opacity:0;
+      transform:translateY(22px);
+      transition:opacity .8s ease, transform .8s ease;
     }
-    h1 {
-      margin: 0;
-      font-size: 1.9rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--accent2);
-      text-shadow: 0 0 12px rgba(247, 183, 51, 0.7);
+    .reveal.visible{
+      opacity:1;
+      transform:translateY(0);
     }
-    .subtitle {
-      font-size: 0.9rem;
-      text-transform: uppercase;
-      letter-spacing: 0.18em;
-      color: var(--muted);
+
+    .site-header{
+      position:sticky;
+      top:0;
+      z-index:100;
+      backdrop-filter:blur(14px) saturate(140%);
+      background:linear-gradient(180deg, rgba(12,10,17,.88), rgba(12,10,17,.48));
+      border-bottom:1px solid var(--line);
     }
-    .badge {
-      padding: 6px 12px;
-      border-radius: 999px;
-      border: 1px solid rgba(255, 75, 31, 0.6);
-      background: radial-gradient(circle at top, rgba(255, 75, 31, 0.35), rgba(0, 0, 0, 0.9));
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.16em;
-      color: var(--accent2);
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
+
+    .nav{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:1rem;
+      min-height:78px;
     }
-    .badge-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--accent);
-      box-shadow: 0 0 10px rgba(255, 75, 31, 0.9);
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:.9rem;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      font-weight:800;
     }
-    .layout {
-      display: grid;
-      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.5fr);
-      gap: 16px;
+
+    .crest{
+      width:44px;
+      aspect-ratio:1;
+      border-radius:50%;
+      position:relative;
+      background:
+        radial-gradient(circle at 35% 35%, #f8e7ab, #c78d19 58%, #6f4510 100%);
+      box-shadow:
+        0 0 0 2px rgba(255,230,163,.3),
+        0 8px 30px rgba(217,171,57,.28);
     }
-    @media (max-width: 900px) {
-      .layout {
-        grid-template-columns: 1fr;
+    .crest::before,.crest::after{
+      content:"";
+      position:absolute;
+      top:50%;
+      width:18px;height:5px;
+      background:linear-gradient(90deg, transparent, #e7cf83 25%, #a57511 100%);
+      border-radius:999px;
+      transform:translateY(-50%);
+      opacity:.95;
+    }
+    .crest::before{left:-12px; transform:translateY(-50%) rotate(-18deg)}
+    .crest::after{right:-12px; transform:translateY(-50%) rotate(18deg)}
+
+    .brand span{
+      font-family:"Cinzel", serif;
+      font-size:1rem;
+      color:var(--gold-2);
+    }
+
+    .nav-links{
+      display:flex;
+      align-items:center;
+      gap:1.2rem;
+      color:var(--muted);
+      font-size:.95rem;
+    }
+
+    .nav-links a{
+      position:relative;
+      padding:.4rem 0;
+    }
+    .nav-links a::after{
+      content:"";
+      position:absolute;
+      left:0;bottom:-2px;
+      width:0;height:1px;
+      background:var(--gold);
+      transition:width .25s ease;
+    }
+    .nav-links a:hover::after{width:100%}
+
+    .nav-cta{
+      display:flex;
+      align-items:center;
+      gap:.8rem;
+    }
+
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:.65rem;
+      min-height:48px;
+      padding:.9rem 1.2rem;
+      border-radius:999px;
+      border:1px solid transparent;
+      font-weight:700;
+      letter-spacing:.02em;
+      transition:transform .2s ease, box-shadow .25s ease, border-color .25s ease, background .25s ease;
+      cursor:pointer;
+    }
+    .btn:hover{transform:translateY(-2px) scale(1.01)}
+    .btn:active{transform:translateY(0) scale(.985)}
+
+    .btn-primary{
+      color:#241503;
+      background:linear-gradient(135deg, var(--gold-2), var(--gold));
+      box-shadow:0 12px 40px rgba(217,171,57,.28);
+    }
+    .btn-primary:hover{box-shadow:0 18px 50px rgba(217,171,57,.38)}
+
+    .btn-ghost{
+      color:var(--text);
+      border-color:var(--line);
+      background:rgba(255,255,255,.03);
+      backdrop-filter:blur(10px);
+    }
+    .btn-ghost:hover{
+      border-color:rgba(245,213,119,.4);
+      background:rgba(255,255,255,.06);
+    }
+
+    .hero{
+      position:relative;
+      padding:clamp(3rem, 5vw, 5rem) 0 3rem;
+      overflow:hidden;
+    }
+
+    .hero-grid{
+      display:grid;
+      grid-template-columns:1.08fr .92fr;
+      gap:clamp(1.4rem, 3vw, 3rem);
+      align-items:center;
+      min-height:calc(100vh - 90px);
+    }
+
+    .eyebrow{
+      display:inline-flex;
+      align-items:center;
+      gap:.55rem;
+      padding:.5rem .8rem;
+      border:1px solid rgba(245,213,119,.18);
+      border-radius:999px;
+      color:var(--gold-2);
+      background:rgba(255,255,255,.03);
+      backdrop-filter:blur(10px);
+      font-size:.82rem;
+      font-weight:700;
+      text-transform:uppercase;
+      letter-spacing:.16em;
+    }
+
+    .hero h1{
+      margin:.9rem 0 1rem;
+      font-family:"Cinzel", serif;
+      font-size:clamp(3.2rem, 8vw, 7rem);
+      line-height:.92;
+      letter-spacing:-.03em;
+      max-width:10ch;
+      text-wrap:balance;
+    }
+
+    .hero h1 .accent{
+      color:var(--gold-2);
+      text-shadow:0 0 18px rgba(245,213,119,.18);
+    }
+
+    .hero-copy{
+      max-width:62ch;
+      color:var(--muted);
+      font-size:clamp(1rem, 1.6vw, 1.14rem);
+      line-height:1.8;
+    }
+
+    .hero-actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:.9rem;
+      margin-top:1.6rem;
+    }
+
+    .hero-meta{
+      margin-top:2rem;
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0,1fr));
+      gap:1rem;
+      max-width:720px;
+    }
+
+    .meta-block{
+      padding:1rem 1rem 1.1rem;
+      border-top:1px solid rgba(245,213,119,.22);
+      background:linear-gradient(180deg, rgba(255,255,255,.04), transparent);
+    }
+    .meta-block strong{
+      display:block;
+      font-size:1.4rem;
+      color:var(--text);
+      margin-bottom:.2rem;
+    }
+    .meta-block span{
+      color:var(--muted);
+      font-size:.92rem;
+    }
+
+    .visual{
+      position:relative;
+      min-height:680px;
+      display:grid;
+      place-items:center;
+    }
+
+    .arena{
+      position:relative;
+      width:min(100%, 620px);
+      aspect-ratio:1/1.1;
+      border-radius:36px;
+      background:
+        radial-gradient(circle at 50% 35%, rgba(255,255,255,.08), transparent 30%),
+        linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02)),
+        rgba(18,12,26,.72);
+      border:1px solid rgba(245,213,119,.14);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      backdrop-filter:blur(12px);
+      isolation:isolate;
+    }
+
+    .arena::before{
+      content:"";
+      position:absolute;
+      inset:7%;
+      border-radius:28px;
+      border:1px solid rgba(255,255,255,.08);
+      pointer-events:none;
+    }
+
+    .mist{
+      position:absolute;
+      inset:auto -10% -10% -10%;
+      height:38%;
+      background:
+        radial-gradient(circle at 20% 40%, rgba(217,171,57,.12), transparent 26%),
+        radial-gradient(circle at 70% 50%, rgba(255,255,255,.08), transparent 24%),
+        linear-gradient(180deg, transparent, rgba(0,0,0,.34));
+      filter:blur(10px);
+      z-index:0;
+    }
+
+    .hoop{
+      position:absolute;
+      width:140px;height:140px;
+      border-radius:50%;
+      border:8px solid rgba(242,200,91,.82);
+      box-shadow:
+        0 0 0 2px rgba(255,230,163,.18),
+        0 0 28px rgba(217,171,57,.22),
+        inset 0 0 18px rgba(255,250,222,.08);
+      background:radial-gradient(circle, transparent 55%, rgba(255,255,255,.04));
+    }
+    .hoop::after{
+      content:"";
+      position:absolute;
+      left:50%;
+      bottom:-130px;
+      width:8px;height:132px;
+      transform:translateX(-50%);
+      background:linear-gradient(180deg, rgba(242,200,91,.8), rgba(242,200,91,.14));
+      border-radius:999px;
+    }
+    .hoop.h1{top:14%; left:18%; width:110px;height:110px}
+    .hoop.h2{top:8%; left:40%; width:150px;height:150px}
+    .hoop.h3{top:17%; right:14%; width:122px;height:122px}
+
+    .dartboard{
+      position:absolute;
+      left:50%;
+      bottom:7%;
+      transform:translateX(-50%);
+      width:min(78%, 430px);
+      aspect-ratio:1;
+      border-radius:50%;
+      background:
+        radial-gradient(circle, #221824 0 10%, #caa24d 10% 13%, #3a1320 13% 22%, #e8d5a0 22% 24.5%, #1d432d 24.5% 38%, #9f7e31 38% 40%, #3f1522 40% 56%, #e8d5a0 56% 58%, #173928 58% 74%, #9f7e31 74% 76%, #39131f 76% 100%);
+      box-shadow:
+        0 0 0 14px rgba(255,255,255,.04),
+        0 0 0 15px rgba(245,213,119,.15),
+        0 25px 60px rgba(0,0,0,.45),
+        inset 0 10px 26px rgba(255,255,255,.06);
+      overflow:hidden;
+    }
+
+    .dartboard::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        conic-gradient(from 0deg,
+          rgba(255,255,255,.08) 0 5deg, transparent 5deg 15deg,
+          rgba(255,255,255,.04) 15deg 20deg, transparent 20deg 30deg,
+          rgba(255,255,255,.08) 30deg 35deg, transparent 35deg 45deg,
+          rgba(255,255,255,.04) 45deg 50deg, transparent 50deg 60deg,
+          rgba(255,255,255,.08) 60deg 65deg, transparent 65deg 75deg,
+          rgba(255,255,255,.04) 75deg 80deg, transparent 80deg 90deg,
+          rgba(255,255,255,.08) 90deg 95deg, transparent 95deg 105deg,
+          rgba(255,255,255,.04) 105deg 110deg, transparent 110deg 120deg,
+          rgba(255,255,255,.08) 120deg 125deg, transparent 125deg 135deg,
+          rgba(255,255,255,.04) 135deg 140deg, transparent 140deg 150deg,
+          rgba(255,255,255,.08) 150deg 155deg, transparent 155deg 165deg,
+          rgba(255,255,255,.04) 165deg 170deg, transparent 170deg 180deg,
+          rgba(255,255,255,.08) 180deg 185deg, transparent 185deg 195deg,
+          rgba(255,255,255,.04) 195deg 200deg, transparent 200deg 210deg,
+          rgba(255,255,255,.08) 210deg 215deg, transparent 215deg 225deg,
+          rgba(255,255,255,.04) 225deg 230deg, transparent 230deg 240deg,
+          rgba(255,255,255,.08) 240deg 245deg, transparent 245deg 255deg,
+          rgba(255,255,255,.04) 255deg 260deg, transparent 260deg 270deg,
+          rgba(255,255,255,.08) 270deg 275deg, transparent 275deg 285deg,
+          rgba(255,255,255,.04) 285deg 290deg, transparent 290deg 300deg,
+          rgba(255,255,255,.08) 300deg 305deg, transparent 305deg 315deg,
+          rgba(255,255,255,.04) 315deg 320deg, transparent 320deg 330deg,
+          rgba(255,255,255,.08) 330deg 335deg, transparent 335deg 345deg,
+          rgba(255,255,255,.04) 345deg 350deg, transparent 350deg 360deg);
+      mix-blend-mode:screen;
+      opacity:.72;
+    }
+
+    .bull{
+      position:absolute;
+      inset:50% auto auto 50%;
+      width:74px;height:74px;
+      transform:translate(-50%, -50%);
+      border-radius:50%;
+      background:radial-gradient(circle, #ffd66b 0 22%, #8f2417 22% 57%, #ffd66b 57% 100%);
+      box-shadow:0 0 26px rgba(245,213,119,.22);
+    }
+
+    .snitch{
+      position:absolute;
+      left:var(--snitchX);
+      top:var(--snitchY);
+      width:28px;height:28px;
+      border-radius:50%;
+      transform:translate(-50%, -50%);
+      background:radial-gradient(circle at 35% 35%, #fff2b8, #e3bc52 55%, #9f6d12 100%);
+      box-shadow:
+        0 0 0 2px rgba(255,235,170,.18),
+        0 0 18px rgba(245,213,119,.45),
+        0 0 42px rgba(245,213,119,.2);
+      z-index:5;
+      animation:snitchFloat 5s ease-in-out infinite;
+    }
+    .snitch::before,.snitch::after{
+      content:"";
+      position:absolute;
+      top:50%;
+      width:28px;height:12px;
+      transform:translateY(-50%);
+      border-radius:50% 50% 50% 50%;
+      background:
+        linear-gradient(90deg, rgba(255,255,255,.05), rgba(255,255,255,.7), rgba(255,255,255,.06));
+      opacity:.85;
+      filter:blur(.2px);
+    }
+    .snitch::before{
+      left:-22px;
+      clip-path:polygon(100% 50%, 10% 0, 0 50%, 10% 100%);
+      transform:translateY(-50%) rotate(-12deg);
+    }
+    .snitch::after{
+      right:-22px;
+      clip-path:polygon(0 50%, 90% 0, 100% 50%, 90% 100%);
+      transform:translateY(-50%) rotate(12deg);
+    }
+
+    @keyframes snitchFloat{
+      0%,100%{translate:0 0}
+      50%{translate:0 -10px}
+    }
+
+    .spell-trail{
+      position:absolute;
+      inset:auto auto 18% 8%;
+      width:56%;
+      height:32%;
+      border-radius:999px;
+      background:
+        radial-gradient(circle at 80% 50%, rgba(245,213,119,.22), transparent 16%),
+        linear-gradient(90deg, transparent, rgba(245,213,119,.18), transparent);
+      filter:blur(12px);
+      transform:rotate(-10deg);
+      z-index:1;
+      opacity:.8;
+    }
+
+    .panel-float{
+      position:absolute;
+      right:4%;
+      bottom:5%;
+      width:min(290px, 42%);
+      border:1px solid rgba(245,213,119,.14);
+      background:linear-gradient(180deg, rgba(22,17,31,.88), rgba(22,17,31,.6));
+      border-radius:22px;
+      padding:1rem;
+      backdrop-filter:blur(14px);
+      box-shadow:var(--shadow);
+      z-index:6;
+    }
+    .panel-float h3{
+      margin:0 0 .4rem;
+      font-family:"Cinzel", serif;
+      font-size:1.05rem;
+      color:var(--gold-2);
+    }
+    .panel-float p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.6;
+      font-size:.92rem;
+    }
+
+    section{
+      padding:clamp(4rem, 8vw, 7rem) 0;
+      position:relative;
+    }
+
+    .section-head{
+      display:grid;
+      grid-template-columns:.8fr 1.2fr;
+      gap:2rem;
+      align-items:end;
+      margin-bottom:2.2rem;
+    }
+    .section-head h2{
+      margin:0;
+      font-family:"Cinzel", serif;
+      font-size:clamp(2rem, 4vw, 4rem);
+      line-height:1;
+      letter-spacing:-.02em;
+    }
+    .section-head p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.8;
+      max-width:66ch;
+    }
+
+    .rules-layout{
+      display:grid;
+      grid-template-columns:1.1fr .9fr;
+      gap:1.4rem;
+      align-items:stretch;
+    }
+
+    .slab{
+      border-radius:30px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02)),
+        rgba(20,14,29,.72);
+      border:1px solid var(--line);
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(12px);
+      overflow:hidden;
+    }
+
+    .slab-inner{padding:clamp(1.2rem, 2vw, 2rem)}
+
+    .rules-copy h3, .modes h3, .scorebox h3{
+      margin:0 0 1rem;
+      font-family:"Cinzel", serif;
+      font-size:1.4rem;
+      color:var(--gold-2);
+    }
+
+    .split-lines{
+      display:grid;
+      gap:1rem;
+    }
+
+    .rule{
+      display:grid;
+      grid-template-columns:auto 1fr;
+      gap:1rem;
+      align-items:start;
+      padding:1rem 0;
+      border-top:1px solid rgba(255,255,255,.08);
+    }
+    .rule:first-child{border-top:0;padding-top:0}
+    .rule-index{
+      font-family:"Cinzel", serif;
+      font-size:2rem;
+      color:rgba(245,213,119,.9);
+      line-height:1;
+      width:2.2rem;
+    }
+    .rule p{
+      margin:.25rem 0 0;
+      color:var(--muted);
+      line-height:1.7;
+    }
+    .rule strong{
+      font-size:1.02rem;
+      letter-spacing:.01em;
+    }
+
+    .diagram{
+      min-height:100%;
+      padding:1.2rem;
+      display:grid;
+      grid-template-rows:auto 1fr auto;
+      gap:1rem;
+    }
+
+    .rings{
+      position:relative;
+      min-height:420px;
+      border-radius:26px;
+      border:1px solid rgba(255,255,255,.08);
+      background:
+        radial-gradient(circle at center, rgba(217,171,57,.12), transparent 24%),
+        linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.01));
+      overflow:hidden;
+    }
+
+    .rings .ring{
+      position:absolute;
+      left:50%; top:50%;
+      transform:translate(-50%, -50%);
+      border-radius:50%;
+      border:1px solid rgba(245,213,119,.18);
+    }
+    .rings .r1{width:84%; aspect-ratio:1}
+    .rings .r2{width:62%; aspect-ratio:1}
+    .rings .r3{width:38%; aspect-ratio:1}
+
+    .sector{
+      position:absolute;
+      inset:0;
+      background:
+        conic-gradient(from -9deg,
+          rgba(217,171,57,.08) 0 18deg,
+          transparent 18deg 36deg,
+          rgba(79,18,36,.18) 36deg 54deg,
+          transparent 54deg 72deg,
+          rgba(18,53,44,.18) 72deg 90deg,
+          transparent 90deg 108deg,
+          rgba(217,171,57,.08) 108deg 126deg,
+          transparent 126deg 144deg,
+          rgba(79,18,36,.18) 144deg 162deg,
+          transparent 162deg 180deg,
+          rgba(18,53,44,.18) 180deg 198deg,
+          transparent 198deg 216deg,
+          rgba(217,171,57,.08) 216deg 234deg,
+          transparent 234deg 252deg,
+          rgba(79,18,36,.18) 252deg 270deg,
+          transparent 270deg 288deg,
+          rgba(18,53,44,.18) 288deg 306deg,
+          transparent 306deg 324deg,
+          rgba(217,171,57,.08) 324deg 342deg,
+          transparent 342deg 360deg);
+      opacity:.9;
+    }
+
+    .label{
+      position:absolute;
+      padding:.4rem .55rem;
+      font-size:.78rem;
+      border:1px solid rgba(245,213,119,.16);
+      border-radius:999px;
+      background:rgba(17,12,25,.78);
+      color:var(--text);
+      backdrop-filter:blur(10px);
+      white-space:nowrap;
+    }
+    .l1{top:8%; left:52%}
+    .l2{top:32%; right:10%}
+    .l3{bottom:22%; left:14%}
+    .l4{top:47%; left:50%; transform:translate(-50%, -50%)}
+
+    .modes-grid{
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0,1fr));
+      gap:1rem;
+    }
+
+    .mode{
+      padding:1rem 1rem 1.1rem;
+      border-radius:18px;
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.07);
+      transition:transform .2s ease, border-color .25s ease, background .25s ease;
+    }
+    .mode:hover{
+      transform:translateY(-4px);
+      border-color:rgba(245,213,119,.22);
+      background:rgba(255,255,255,.05);
+    }
+    .mode strong{
+      display:block;
+      margin-bottom:.35rem;
+      color:var(--gold-2);
+    }
+    .mode p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.6;
+      font-size:.92rem;
+    }
+
+    .feature-band{
+      display:grid;
+      grid-template-columns:repeat(4, minmax(0,1fr));
+      gap:1rem;
+      margin-top:1.4rem;
+    }
+
+    .feature-band .stripe{
+      padding:1.1rem .95rem;
+      border-top:1px solid rgba(245,213,119,.22);
+      background:linear-gradient(180deg, rgba(255,255,255,.04), transparent);
+    }
+    .stripe strong{
+      display:block;
+      margin-bottom:.35rem;
+      font-size:1rem;
+    }
+    .stripe span{
+      color:var(--muted);
+      line-height:1.6;
+      font-size:.92rem;
+    }
+
+    .cta-stage{
+      position:relative;
+      border-radius:34px;
+      padding:clamp(1.3rem, 2vw, 2rem);
+      overflow:hidden;
+      background:
+        radial-gradient(circle at 15% 20%, rgba(217,171,57,.16), transparent 20%),
+        radial-gradient(circle at 85% 80%, rgba(79,18,36,.22), transparent 24%),
+        linear-gradient(135deg, rgba(22,17,31,.92), rgba(18,12,26,.72));
+      border:1px solid rgba(245,213,119,.16);
+      box-shadow:var(--shadow);
+    }
+
+    .cta-stage::before{
+      content:"";
+      position:absolute;
+      inset:auto -4% -40% auto;
+      width:360px;height:360px;
+      border-radius:50%;
+      border:1px solid rgba(245,213,119,.12);
+      box-shadow:0 0 0 40px rgba(245,213,119,.04), 0 0 0 90px rgba(245,213,119,.03);
+      pointer-events:none;
+    }
+
+    .cta-grid{
+      display:grid;
+      grid-template-columns:1.15fr .85fr;
+      gap:2rem;
+      align-items:center;
+    }
+
+    .cta-grid h2{
+      margin:0 0 .8rem;
+      font-family:"Cinzel", serif;
+      font-size:clamp(2rem, 4vw, 3.8rem);
+      line-height:.98;
+      max-width:11ch;
+    }
+
+    .cta-grid p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.8;
+      max-width:58ch;
+    }
+
+    .scorebox{
+      padding:1.2rem;
+      border-radius:24px;
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.08);
+      backdrop-filter:blur(10px);
+    }
+
+    .score-list{
+      display:grid;
+      gap:.8rem;
+    }
+    .score-row{
+      display:flex;
+      justify-content:space-between;
+      gap:1rem;
+      align-items:baseline;
+      padding-bottom:.75rem;
+      border-bottom:1px solid rgba(255,255,255,.08);
+    }
+    .score-row:last-child{border-bottom:0;padding-bottom:0}
+    .score-row span{color:var(--muted)}
+    .score-row strong{color:var(--text)}
+
+    footer{
+      padding:2rem 0 3rem;
+      color:var(--muted);
+    }
+
+    .footer-row{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:1rem;
+      padding-top:1.5rem;
+      border-top:1px solid rgba(255,255,255,.08);
+    }
+
+    .footer-row .brandline{
+      display:flex;
+      align-items:center;
+      gap:.8rem;
+      font-size:.95rem;
+    }
+
+    .stagger-1{animation:rise .8s ease .05s both}
+    .stagger-2{animation:rise .8s ease .15s both}
+    .stagger-3{animation:rise .8s ease .25s both}
+    .stagger-4{animation:rise .8s ease .35s both}
+    .stagger-5{animation:rise .8s ease .45s both}
+
+    @keyframes rise{
+      from{opacity:0; transform:translateY(24px)}
+      to{opacity:1; transform:translateY(0)}
+    }
+
+    @media (max-width: 1080px){
+      .hero-grid,
+      .section-head,
+      .rules-layout,
+      .cta-grid{
+        grid-template-columns:1fr;
       }
+      .visual{min-height:560px}
+      .hero h1{max-width:12ch}
     }
-    .panel {
-      background: radial-gradient(circle at top left, rgba(255, 75, 31, 0.12), rgba(0, 0, 0, 0.9));
-      border-radius: 14px;
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      padding: 14px 14px 16px;
-      position: relative;
-      overflow: hidden;
-    }
-    .panel::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), transparent 40%, transparent 60%, rgba(255, 255, 255, 0.03));
-      mix-blend-mode: soft-light;
-      opacity: 0.4;
-      pointer-events: none;
-    }
-    .panel-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 10px;
-      position: relative;
-      z-index: 1;
-    }
-    .panel-title {
-      font-size: 0.9rem;
-      text-transform: uppercase;
-      letter-spacing: 0.16em;
-      color: var(--muted);
-    }
-    .panel-title span {
-      color: var(--accent2);
-    }
-    .panel-body {
-      position: relative;
-      z-index: 1;
-    }
-    .status-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 12px;
-      align-items: center;
-    }
-    .status-pill {
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: rgba(0, 0, 0, 0.6);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      font-size: 0.8rem;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .status-label {
-      text-transform: uppercase;
-      letter-spacing: 0.14em;
-      color: var(--muted);
-      font-size: 0.7rem;
-    }
-    .status-value {
-      color: var(--accent2);
-      font-weight: 600;
-    }
-    .status-value-strong {
-      color: var(--accent);
-      font-weight: 700;
-    }
-    .bases-display {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 0.8rem;
-      color: var(--muted);
-      margin-bottom: 6px;
-    }
-    .base-dots {
-      display: flex;
-      gap: 4px;
-      align-items: center;
-    }
-    .base-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 2px;
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      background: rgba(0, 0, 0, 0.7);
-    }
-    .base-dot.active {
-      background: var(--accent2);
-      box-shadow: 0 0 8px rgba(247, 183, 51, 0.9);
-    }
-    .players-list {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      max-height: 220px;
-      overflow-y: auto;
-      padding-right: 4px;
-    }
-    .player-row {
-      display: grid;
-      grid-template-columns: minmax(0, 1.4fr) 0.9fr 0.9fr;
-      gap: 6px;
-      align-items: center;
-      padding: 6px 8px;
-      border-radius: 8px;
-      background: rgba(0, 0, 0, 0.55);
-      border: 1px solid transparent;
-      transition: border 0.15s, background 0.15s, transform 0.1s;
-      font-size: 0.85rem;
-    }
-    .player-row.active {
-      border-color: rgba(255, 75, 31, 0.9);
-      background: radial-gradient(circle at left, rgba(255, 75, 31, 0.35), rgba(0, 0, 0, 0.9));
-      transform: translateX(1px);
-      box-shadow: 0 0 12px rgba(255, 75, 31, 0.4);
-    }
-    .player-name {
-      font-weight: 600;
-    }
-    .player-name span {
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: var(--muted);
-      margin-left: 4px;
-    }
-    .player-total {
-      text-align: right;
-      color: var(--accent2);
-      font-weight: 600;
-    }
-    .player-hr {
-      text-align: right;
-      color: var(--muted);
-      font-size: 0.75rem;
-    }
-    .add-player-row {
-      display: flex;
-      gap: 6px;
-      margin-top: 10px;
-    }
-    input[type="text"] {
-      flex: 1;
-      padding: 7px 9px;
-      border-radius: 999px;
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      background: rgba(0, 0, 0, 0.7);
-      color: var(--text);
-      font-size: 0.85rem;
-      outline: none;
-    }
-    input[type="text"]::placeholder {
-      color: var(--muted);
-    }
-    button {
-      border-radius: 999px;
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      background: radial-gradient(circle at top, rgba(255, 75, 31, 0.9), rgba(255, 75, 31, 0.6));
-      color: #fff;
-      padding: 7px 12px;
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      letter-spacing: 0.14em;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      transition: transform 0.08s ease, box-shadow 0.08s ease, background 0.08s ease;
-      white-space: nowrap;
-    }
-    button.secondary {
-      background: rgba(0, 0, 0, 0.7);
-      border-color: rgba(255, 255, 255, 0.18);
-      color: var(--muted);
-    }
-    button:disabled {
-      opacity: 0.4;
-      cursor: default;
-      box-shadow: none;
-      transform: none;
-    }
-    button:not(:disabled):hover {
-      box-shadow: 0 0 12px rgba(255, 75, 31, 0.7);
-      transform: translateY(-1px);
-    }
-    button:not(:disabled):active {
-      transform: translateY(0);
-      box-shadow: 0 0 4px rgba(255, 75, 31, 0.6);
-    }
-    .score-buttons-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 8px;
-      margin-bottom: 10px;
-    }
-    .score-buttons-grid button {
-      width: 100%;
-      justify-content: space-between;
-    }
-    .score-label {
-      font-size: 0.8rem;
-    }
-    .score-points {
-      font-size: 0.8rem;
-      color: var(--accent2);
-      font-weight: 600;
-    }
-    .score-meta-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 8px;
-      font-size: 0.8rem;
-      color: var(--muted);
-    }
-    .score-meta-row strong {
-      color: var(--accent2);
-    }
-    .bag-counter {
-      font-size: 0.85rem;
-      color: var(--accent2);
-      font-weight: 600;
-    }
-    .controls-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 4px;
-    }
-    .controls-row button {
-      flex: 1;
-      min-width: 120px;
-    }
-    .scorecard-table-wrapper {
-      max-height: 260px;
-      overflow: auto;
-      border-radius: 10px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      background: rgba(0, 0, 0, 0.7);
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.8rem;
-    }
-    thead {
-      position: sticky;
-      top: 0;
-      background: rgba(10, 8, 12, 0.96);
-      backdrop-filter: blur(6px);
-      z-index: 1;
-    }
-    th,
-    td {
-      padding: 6px 8px;
-      text-align: center;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-      white-space: nowrap;
-    }
-    th {
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      font-size: 0.7rem;
-      color: var(--muted);
-    }
-    tbody tr:nth-child(even) {
-      background: rgba(255, 255, 255, 0.02);
-    }
-    tbody tr.highlight {
-      background: rgba(255, 75, 31, 0.18);
-    }
-    td.player-cell {
-      text-align: left;
-      font-weight: 600;
-    }
-    td.total-cell {
-      color: var(--accent2);
-      font-weight: 600;
-    }
-    td.hr-cell {
-      color: var(--muted);
-      font-size: 0.75rem;
-    }
-    .footer-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 10px;
-      font-size: 0.75rem;
-      color: var(--muted);
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-    .winner-banner {
-      margin-top: 8px;
-      padding: 8px 10px;
-      border-radius: 999px;
-      background: radial-gradient(circle at left, rgba(247, 183, 51, 0.4), rgba(0, 0, 0, 0.9));
-      border: 1px solid rgba(247, 183, 51, 0.8);
-      font-size: 0.8rem;
-      display: none;
-      align-items: center;
-      gap: 8px;
-      color: #1b1205;
-    }
-    .winner-banner span {
-      font-weight: 700;
-    }
-    .winner-banner.show {
-      display: inline-flex;
-    }
-    .winner-crown {
-      font-size: 1rem;
-    }
-    .next-overlay {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity 0.35s ease-out;
-      z-index: 20;
-    }
-    .next-overlay.show {
-      opacity: 1;
-    }
-    .next-banner {
-      padding: 18px 26px;
-      border-radius: 999px;
-      background: radial-gradient(circle at top, rgba(255, 75, 31, 0.95), rgba(0, 0, 0, 0.95));
-      border: 2px solid rgba(247, 183, 51, 0.9);
-      color: #fff;
-      text-transform: uppercase;
-      letter-spacing: 0.22em;
-      font-size: 0.9rem;
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      box-shadow: 0 0 30px rgba(255, 75, 31, 0.9);
-      animation: pulseGlow 0.7s ease-out forwards, floatUp 0.7s ease-out forwards;
-    }
-    .next-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: #fff;
-      box-shadow: 0 0 16px rgba(255, 255, 255, 0.9);
-    }
-    @keyframes pulseGlow {
-      0% { transform: scale(0.7); opacity: 0; }
-      50% { transform: scale(1.05); opacity: 1; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-    @keyframes floatUp {
-      0% { transform: translateY(12px); }
-      100% { transform: translateY(0); }
-    }
-    .hellcastle-footer {
-      margin-top: 10px;
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 0.18em;
-      color: var(--muted);
-      text-align: right;
-    }
-    .hellcastle-footer span {
-      color: var(--accent);
-    }
-    /* MOBILE OPTIMIZATION */
-@media (max-width: 600px) {
 
-  body {
-    padding: 10px;
-    align-items: stretch;
-  }
+    @media (max-width: 860px){
+      .nav-links{display:none}
+      .hero-meta,
+      .feature-band,
+      .modes-grid{
+        grid-template-columns:1fr;
+      }
+      .panel-float{
+        position:relative;
+        right:auto; bottom:auto;
+        width:100%;
+        margin:1rem auto 0;
+      }
+      .arena{aspect-ratio:1/1.15}
+    }
 
-  .app {
-    padding: 14px;
-    border-radius: 12px;
-  }
-
-  header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 6px;
-  }
-
-  h1 {
-    font-size: 1.4rem;
-    letter-spacing: 0.08em;
-  }
-
-  .subtitle {
-    font-size: 0.75rem;
-    letter-spacing: 0.12em;
-  }
-
-  .badge {
-    font-size: 0.65rem;
-    padding: 4px 10px;
-  }
-
-  /* Stack panels vertically with better spacing */
-  .layout {
-    grid-template-columns: 1fr !important;
-    gap: 12px;
-  }
-
-  .panel {
-    padding: 12px;
-  }
-
-  /* Players list spacing */
-  .player-row {
-    grid-template-columns: 1.2fr 0.7fr 0.7fr;
-    font-size: 0.75rem;
-    padding: 5px 6px;
-  }
-
-  /* Score buttons: bigger tap targets */
-  .score-buttons-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .score-buttons-grid button {
-    font-size: 0.75rem;
-    padding: 10px;
-  }
-
-  /* Next button full width */
-  .controls-row button {
-    min-width: unset;
-    width: 100%;
-  }
-
-  /* Scorecard table: allow horizontal scroll */
-  .scorecard-table-wrapper {
-    overflow-x: auto;
-  }
-
-  table {
-    font-size: 0.7rem;
-    min-width: 420px;
-  }
-
-  /* Winner banner */
-  .winner-banner {
-    font-size: 0.75rem;
-    padding: 6px 8px;
-  }
-
-  /* Overlay text size */
-  .next-banner {
-    font-size: 0.75rem;
-    padding: 14px 20px;
-  }
-}
+    @media (max-width: 560px){
+      .wrap{width:min(var(--max), calc(100% - 1.1rem))}
+      .nav{min-height:70px}
+      .brand span{font-size:.9rem}
+      .hero{padding-top:2rem}
+      .hero-actions .btn{width:100%}
+      .meta-block strong{font-size:1.15rem}
+      .visual{min-height:500px}
+      .hoop.h1{left:9%}
+      .hoop.h3{right:8%}
+      .dartboard{width:86%}
+      .footer-row{flex-direction:column; align-items:flex-start}
+    }
   </style>
 </head>
 <body>
-  <div class="app" id="app">
-    <div class="next-overlay" id="nextOverlay">
-      <div class="next-banner">
-        <div class="next-dot"></div>
-        <span id="nextOverlayText">Next Batter</span>
-        <div class="next-dot"></div>
+  <header class="site-header">
+    <div class="wrap nav">
+      <a class="brand" href="#top" aria-label="Quidditch Darts home">
+        <span class="crest" aria-hidden="true"></span>
+        <span>Quidditch Darts</span>
+      </a>
+
+      <nav class="nav-links" aria-label="Primary">
+        <a href="#concept">Concept</a>
+        <a href="#rules">Rules</a>
+        <a href="#modes">Modes</a>
+        <a href="#score">Scoring</a>
+      </nav>
+
+      <div class="nav-cta">
+        <a class="btn btn-ghost" href="#rules">See rules</a>
+        <a class="btn btn-primary" href="#score">Play concept</a>
       </div>
     </div>
+  </header>
 
-    <header>
-      <div class="title-block">
-        <h1>Hellcastle Baseball</h1>
-        <div class="subtitle">Bag-by-bag diamond scoring in the castle</div>
+  <main id="top">
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div>
+          <div class="eyebrow stagger-1">Wizard Sport × Precision Arcade</div>
+          <h1 class="stagger-2">A dart game for <span class="accent">Quidditch</span> nights.</h1>
+          <p class="hero-copy stagger-3">
+            Reimagine the chaos of the wizarding pitch as a fast, competitive dartboard experience. Score through the hoops, avoid foul sectors, and chase the Golden Snitch bonus before your rival closes the match.
+          </p>
+
+          <div class="hero-actions stagger-4">
+            <a class="btn btn-primary" href="#concept">Explore the concept</a>
+            <button class="btn btn-ghost" id="moveSnitchBtn" type="button" aria-label="Move the Golden Snitch">Catch the Snitch</button>
+          </div>
+
+          <div class="hero-meta stagger-5" aria-label="Key details">
+            <div class="meta-block">
+              <strong>2–4</strong>
+              <span>Players or house teams</span>
+            </div>
+            <div class="meta-block">
+              <strong>15 min</strong>
+              <span>Average enchanted round</span>
+            </div>
+            <div class="meta-block">
+              <strong>150 pts</strong>
+              <span>Snitch capture swing</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="visual reveal">
+          <div class="arena" aria-hidden="true">
+            <div class="mist"></div>
+            <div class="hoop h1"></div>
+            <div class="hoop h2"></div>
+            <div class="hoop h3"></div>
+
+            <div class="spell-trail"></div>
+
+            <div class="dartboard">
+              <div class="bull"></div>
+            </div>
+
+            <div class="snitch" id="snitch"></div>
+
+            <div class="panel-float">
+              <h3>Pitch-to-board translation</h3>
+              <p>
+                Three top hoops become high-value targets, the center bull becomes the Quaffle core, and a moving Snitch bonus adds a dramatic finishing mechanic.
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="badge">
-        <div class="badge-dot"></div>
-        <span>Multiplayer Tournament</span>
+    </section>
+
+    <section id="concept">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <h2>Designed like a wizard pub showdown.</h2>
+          <p>
+            This concept blends pub darts with the theatrical rhythm of Quidditch. Instead of copying the sport literally, it distills the fantasy into visible layers: hoops for goal scoring, rotating danger sectors for Bludgers, and one elusive Snitch event that can flip the result in an instant.
+          </p>
+        </div>
+
+        <div class="feature-band">
+          <div class="stripe reveal">
+            <strong>Hoop scoring</strong>
+            <span>Players aim for ring zones mapped to the three Quidditch hoops, each with escalating point values by distance and risk.</span>
+          </div>
+          <div class="stripe reveal">
+            <strong>Bludger penalties</strong>
+            <span>Selected dark sectors act as hazards. Hit them and your current turn loses momentum or triggers a foul effect.</span>
+          </div>
+          <div class="stripe reveal">
+            <strong>Beater defense</strong>
+            <span>Optional team mode allows one player to remove or redirect a penalty using a single defensive throw token.</span>
+          </div>
+          <div class="stripe reveal">
+            <strong>Snitch finish</strong>
+            <span>A randomized moving target appears late-game. Striking it grants a major score burst and may immediately end the match.</span>
+          </div>
+        </div>
       </div>
-    </header>
+    </section>
 
-    <div class="layout">
-      <!-- LEFT: Players & State -->
-      <section class="panel">
-        <div class="panel-header">
-          <div class="panel-title"><span>Players</span> & Game State</div>
+    <section id="rules">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <h2>How the magical darts system works.</h2>
+          <p>
+            Keep the structure familiar for pub play, but let the fiction create tension. Every round represents a possession on the pitch. Your darts become Quaffle attacks, tactical blocks, and one desperate Snitch chase.
+          </p>
         </div>
-        <div class="panel-body">
-          <div class="status-row">
-            <div class="status-pill">
-              <div class="status-label">Inning</div>
-              <div class="status-value" id="statusInning">1 / 3</div>
-            </div>
-            <div class="status-pill">
-              <div class="status-label">Current Player</div>
-              <div class="status-value-strong" id="statusPlayer">—</div>
-            </div>
-            <div class="status-pill">
-              <div class="status-label">Outs</div>
-              <div class="status-value" id="statusOuts">0 / 3</div>
-            </div>
-            <div class="status-pill">
-              <div class="status-label">Bags</div>
-              <div class="status-value" id="statusBags">0 / 8</div>
-            </div>
-          </div>
 
-          <div class="bases-display">
-            <span>Bases:</span>
-            <div class="base-dots">
-              <div class="base-dot" id="baseFirst"></div>
-              <div class="base-dot" id="baseSecond"></div>
-              <div class="base-dot" id="baseThird"></div>
+        <div class="rules-layout">
+          <article class="slab rules-copy reveal">
+            <div class="slab-inner">
+              <h3>Core rules</h3>
+              <div class="split-lines">
+                <div class="rule">
+                  <div class="rule-index">01</div>
+                  <div>
+                    <strong>Open with the Quaffle</strong>
+                    <p>Each player throws three darts per turn. Standard outer board hits score base possession points, while designated hoop rings multiply them.</p>
+                  </div>
+                </div>
+                <div class="rule">
+                  <div class="rule-index">02</div>
+                  <div>
+                    <strong>Hit the hoops</strong>
+                    <p>Small hoop, middle hoop, and wide hoop are worth different values. Consecutive hoop hits in one turn trigger a “passing play” combo bonus.</p>
+                  </div>
+                </div>
+                <div class="rule">
+                  <div class="rule-index">03</div>
+                  <div>
+                    <strong>Avoid the Bludgers</strong>
+                    <p>Predetermined hazard wedges count as Bludger strikes. They can cancel your highest dart, subtract points, or force the next player into a risky throw.</p>
+                  </div>
+                </div>
+                <div class="rule">
+                  <div class="rule-index">04</div>
+                  <div>
+                    <strong>Release the Snitch</strong>
+                    <p>Once a player crosses the score threshold, the Golden Snitch enters play. A successful hit awards 150 points and may end the match depending on mode.</p>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
+          </article>
 
-          <div class="players-list" id="playersList"></div>
+          <aside class="slab diagram reveal" aria-label="Game mapping diagram">
+            <h3>Board map</h3>
+            <div class="rings">
+              <div class="sector"></div>
+              <div class="ring r1"></div>
+              <div class="ring r2"></div>
+              <div class="ring r3"></div>
+              <div class="label l1">Top hoops = goal multipliers</div>
+              <div class="label l2">Dark wedges = Bludger hazards</div>
+              <div class="label l3">Outer ring = possession points</div>
+              <div class="label l4">Bull = Quaffle core</div>
+            </div>
 
-          <div class="add-player-row">
-            <input type="text" id="playerNameInput" placeholder="Add player name…" />
-            <button id="addPlayerBtn">Add</button>
-          </div>
-
-          <div class="footer-row">
-            <div>Each inning: <strong>8 bags</strong>, <strong>3 outs ends inning</strong>. Highest runs win.</div>
-            <button class="secondary" id="resetBtn">Reset Tournament</button>
-          </div>
-
-          <div class="winner-banner" id="winnerBanner">
-            <span class="winner-crown">⚾</span>
-            <span id="winnerText"></span>
-          </div>
+            <div class="modes" id="modes">
+              <h3>Game modes</h3>
+              <div class="modes-grid">
+                <div class="mode">
+                  <strong>House Duel</strong>
+                  <p>Classic 1v1. First to target score, unless the Snitch creates a comeback finish.</p>
+                </div>
+                <div class="mode">
+                  <strong>Three Chasers</strong>
+                  <p>Team mode where throws rotate and combo chains stack across players in the same house.</p>
+                </div>
+                <div class="mode">
+                  <strong>Pub Cup</strong>
+                  <p>Knockout bracket mode with shorter rounds, sudden-death Snitch triggers, and heavy crowd energy.</p>
+                </div>
+              </div>
+            </div>
+          </aside>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <!-- RIGHT: Scoring & Scorecard -->
-      <section class="panel">
-        <div class="panel-header">
-          <div class="panel-title"><span>Hellcastle</span> Baseball Scoring & Scorecard</div>
-        </div>
-        <div class="panel-body">
-          <div class="score-meta-row">
+    <section id="score">
+      <div class="wrap">
+        <div class="cta-stage reveal">
+          <div class="cta-grid">
             <div>
-              Inning <strong id="inningLabel">1</strong> of <strong id="inningTotalLabel">3</strong>
+              <h2>Scoring with drama, not just arithmetic.</h2>
+              <p>
+                The goal is to feel cinematic. Hoop lanes reward accuracy, central hits reward control, and the Snitch is a strategic pressure mechanic rather than a random gimmick. You can tune it for casual bars, fan conventions, or premium collector sets with illuminated boards.
+              </p>
+
+              <div class="hero-actions" style="margin-top:1.35rem">
+                <button class="btn btn-primary" id="simulateBtn" type="button">Simulate magic round</button>
+                <a class="btn btn-ghost" href="#top">Back to top</a>
+              </div>
             </div>
-            <div class="bag-counter">
-              Bags: <span id="bagCounter">0</span> / 8 · Outs: <span id="outsCounter">0</span> / 3
+
+            <div class="scorebox">
+              <h3>Suggested score table</h3>
+              <div class="score-list" id="scoreList">
+                <div class="score-row"><span>Outer possession hit</span><strong>10 pts</strong></div>
+                <div class="score-row"><span>Lower hoop lane</span><strong>30 pts</strong></div>
+                <div class="score-row"><span>Center hoop lane</span><strong>50 pts</strong></div>
+                <div class="score-row"><span>High hoop lane</span><strong>70 pts</strong></div>
+                <div class="score-row"><span>Bull / Quaffle control</span><strong>25 pts</strong></div>
+                <div class="score-row"><span>Bludger penalty</span><strong>-20 pts</strong></div>
+                <div class="score-row"><span>Golden Snitch hit</span><strong>150 pts</strong></div>
+              </div>
             </div>
-          </div>
-
-          <div class="score-buttons-grid">
-            <button data-type="triple" class="score-btn">
-              <span class="score-label">Top Hole</span>
-              <span class="score-points">Triple</span>
-            </button>
-            <button data-type="double" class="score-btn">
-              <span class="score-label">Middle Hole</span>
-              <span class="score-points">Double</span>
-            </button>
-            <button data-type="homerun" class="score-btn">
-              <span class="score-label">Bottom Hole</span>
-              <span class="score-points">Home Run</span>
-            </button>
-            <button data-type="single" class="score-btn">
-              <span class="score-label">On Board</span>
-              <span class="score-points">Single</span>
-            </button>
-            <button data-type="out" class="score-btn" style="grid-column: span 2; background: radial-gradient(circle at top, #5b0b0b, #2b0505);">
-              <span class="score-label">Off Board</span>
-              <span class="score-points">Out</span>
-            </button>
-          </div>
-
-          <div class="controls-row">
-            <button id="nextPlayerBtn">Next Batter / Next Inning</button>
-          </div>
-
-          <div style="margin: 10px 0 6px; font-size: 0.8rem; color: var(--muted);">
-            All players complete the <strong>same inning</strong> before advancing to the next inning.
-          </div>
-
-          <div class="scorecard-table-wrapper">
-            <table>
-              <thead id="scorecardHead"></thead>
-              <tbody id="scorecardBody"></tbody>
-            </table>
-          </div>
-
-          <div class="hellcastle-footer">
-            Hellcastle <span>Baseball</span> · Local tournament state is saved automatically
           </div>
         </div>
-      </section>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap footer-row">
+      <div class="brandline">
+        <span class="crest" aria-hidden="true"></span>
+        <span>Quidditch Darts — Concept landing page for a fantasy pub game.</span>
+      </div>
+      <span>Inspired by the world of wizard sport. Fan concept only.</span>
     </div>
-  </div>
+  </footer>
 
   <script>
-    // CONFIG
-    const TOTAL_INNINGS = 3;
-    const BAGS_PER_INNING = 8;
-    const MAX_OUTS = 3;
-    const STORAGE_KEY = "hellcastle_baseball_tournament_v1";
-
-    // STATE
-    let players = []; // { id, name, inningScores: number[3], total, homeRuns }
-    let currentInning = 0; // 0-based
-    let currentPlayerIndex = 0;
-    let currentBags = 0;
-    let currentOuts = 0;
-    let bases = { first: false, second: false, third: false };
-    let tournamentFinished = false;
-
-    // DOM
-    const playersListEl = document.getElementById("playersList");
-    const playerNameInput = document.getElementById("playerNameInput");
-    const addPlayerBtn = document.getElementById("addPlayerBtn");
-    const resetBtn = document.getElementById("resetBtn");
-
-    const statusInningEl = document.getElementById("statusInning");
-    const statusPlayerEl = document.getElementById("statusPlayer");
-    const statusOutsEl = document.getElementById("statusOuts");
-    const statusBagsEl = document.getElementById("statusBags");
-
-    const baseFirstEl = document.getElementById("baseFirst");
-    const baseSecondEl = document.getElementById("baseSecond");
-    const baseThirdEl = document.getElementById("baseThird");
-
-    const inningLabelEl = document.getElementById("inningLabel");
-    const inningTotalLabelEl = document.getElementById("inningTotalLabel");
-    const bagCounterEl = document.getElementById("bagCounter");
-    const outsCounterEl = document.getElementById("outsCounter");
-
-    const scoreButtons = Array.from(document.querySelectorAll(".score-btn"));
-    const nextPlayerBtn = document.getElementById("nextPlayerBtn");
-
-    const scorecardHeadEl = document.getElementById("scorecardHead");
-    const scorecardBodyEl = document.getElementById("scorecardBody");
-
-    const winnerBannerEl = document.getElementById("winnerBanner");
-    const winnerTextEl = document.getElementById("winnerText");
-
-    const nextOverlayEl = document.getElementById("nextOverlay");
-    const nextOverlayTextEl = document.getElementById("nextOverlayText");
-
-    // SOUND
-    function playNextBatterSound() {
-      try {
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = "square";
-        osc.frequency.setValueAtTime(440, ctx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(660, ctx.currentTime + 0.18);
-        gain.gain.setValueAtTime(0.0001, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.4, ctx.currentTime + 0.02);
-        gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.3);
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.start();
-        osc.stop(ctx.currentTime + 0.32);
-      } catch (e) {}
-    }
-
-    function showNextOverlay(text) {
-      nextOverlayTextEl.textContent = text;
-      nextOverlayEl.classList.add("show");
-      playNextBatterSound();
-      setTimeout(() => {
-        nextOverlayEl.classList.remove("show");
-      }, 700);
-    }
-
-    // STORAGE
-    function saveState() {
-      const data = {
-        players,
-        currentInning,
-        currentPlayerIndex,
-        currentBags,
-        currentOuts,
-        bases,
-        tournamentFinished
-      };
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-      } catch (e) {}
-    }
-
-    function loadState() {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return;
-        const data = JSON.parse(raw);
-        if (!data || !Array.isArray(data.players)) return;
-        players = data.players;
-        currentInning = data.currentInning || 0;
-        currentPlayerIndex = data.currentPlayerIndex || 0;
-        currentBags = data.currentBags || 0;
-        currentOuts = data.currentOuts || 0;
-        bases = data.bases || { first: false, second: false, third: false };
-        tournamentFinished = !!data.tournamentFinished;
-      } catch (e) {}
-    }
-
-    // HELPERS
-    function createPlayer(name) {
-      return {
-        id: Date.now() + Math.random().toString(16).slice(2),
-        name: name.trim(),
-        inningScores: Array(TOTAL_INNINGS).fill(0),
-        total: 0,
-        homeRuns: 0
-      };
-    }
-
-    function recalcTotals() {
-      players.forEach(p => {
-        p.total = p.inningScores.reduce((a, b) => a + b, 0);
-      });
-    }
-
-    function getSortedPlayers() {
-      return [...players].sort((a, b) => b.total - a.total); // highest runs wins
-    }
-
-    function getPlayerPositionMap() {
-      const sorted = getSortedPlayers();
-      const map = new Map();
-      sorted.forEach((p, idx) => {
-        map.set(p.id, idx + 1);
-      });
-      return map;
-    }
-
-    function formatPosition(pos) {
-      if (pos === 1) return "1st";
-      if (pos === 2) return "2nd";
-      if (pos === 3) return "3rd";
-      return pos + "th";
-    }
-
-    function inningOver() {
-      return currentOuts >= MAX_OUTS || currentBags >= BAGS_PER_INNING;
-    }
-
-    function updateBasesDisplay() {
-      baseFirstEl.classList.toggle("active", bases.first);
-      baseSecondEl.classList.toggle("active", bases.second);
-      baseThirdEl.classList.toggle("active", bases.third);
-    }
-
-    function updateStatus() {
-      statusInningEl.textContent = `${currentInning + 1} / ${TOTAL_INNINGS}`;
-      inningLabelEl.textContent = currentInning + 1;
-      inningTotalLabelEl.textContent = TOTAL_INNINGS;
-
-      statusOutsEl.textContent = `${currentOuts} / ${MAX_OUTS}`;
-      outsCounterEl.textContent = currentOuts;
-      statusBagsEl.textContent = `${currentBags} / ${BAGS_PER_INNING}`;
-      bagCounterEl.textContent = currentBags;
-
-      const currentPlayer = players[currentPlayerIndex];
-      statusPlayerEl.textContent = currentPlayer ? currentPlayer.name : "—";
-
-      const canScore = players.length > 0 && !tournamentFinished && !inningOver();
-      scoreButtons.forEach(btn => {
-        btn.disabled = !canScore;
-      });
-
-      nextPlayerBtn.disabled = players.length === 0 || tournamentFinished || !inningOver();
-
-      if (tournamentFinished) {
-        nextPlayerBtn.textContent = "Tournament Complete";
-      } else if (
-        currentInning === TOTAL_INNINGS - 1 &&
-        currentPlayerIndex === players.length - 1 &&
-        inningOver()
-      ) {
-        nextPlayerBtn.textContent = "Finish Game";
-      } else if (currentPlayerIndex === players.length - 1 && inningOver()) {
-        nextPlayerBtn.textContent = "Next Inning";
-      } else {
-        nextPlayerBtn.textContent = "Next Batter / Next Inning";
-      }
-
-      updateBasesDisplay();
-    }
-
-    function renderPlayersList() {
-      playersListEl.innerHTML = "";
-      const posMap = getPlayerPositionMap();
-      players.forEach((p, idx) => {
-        const row = document.createElement("div");
-        row.className = "player-row" + (idx === currentPlayerIndex && !tournamentFinished ? " active" : "");
-        const nameDiv = document.createElement("div");
-        nameDiv.className = "player-name";
-        nameDiv.textContent = p.name;
-        const tag = document.createElement("span");
-        tag.textContent = idx === currentPlayerIndex ? "Current" : "Player";
-        nameDiv.appendChild(tag);
-
-        const totalDiv = document.createElement("div");
-        totalDiv.className = "player-total";
-        totalDiv.textContent = p.total;
-
-        const hrDiv = document.createElement("div");
-        hrDiv.className = "player-hr";
-        const pos = posMap.get(p.id);
-        hrDiv.textContent = `HR: ${p.homeRuns} · ${pos ? formatPosition(pos) : ""}`;
-
-        row.appendChild(nameDiv);
-        row.appendChild(totalDiv);
-        row.appendChild(hrDiv);
-        playersListEl.appendChild(row);
-      });
-    }
-
-    function renderScorecard() {
-      const headRow = document.createElement("tr");
-      const thPlayer = document.createElement("th");
-      thPlayer.textContent = "Player";
-      headRow.appendChild(thPlayer);
-      for (let i = 0; i < TOTAL_INNINGS; i++) {
-        const th = document.createElement("th");
-        th.textContent = `I${i + 1}`;
-        headRow.appendChild(th);
-      }
-      const thTotal = document.createElement("th");
-      thTotal.textContent = "Runs";
-      headRow.appendChild(thTotal);
-      const thHR = document.createElement("th");
-      thHR.textContent = "HR";
-      headRow.appendChild(thHR);
-
-      scorecardHeadEl.innerHTML = "";
-      scorecardHeadEl.appendChild(headRow);
-
-      scorecardBodyEl.innerHTML = "";
-      if (players.length === 0) return;
-
-      const sorted = getSortedPlayers();
-      const bestTotal = sorted[0].total;
-
-      players.forEach(p => {
-        const tr = document.createElement("tr");
-        if (tournamentFinished && p.total === bestTotal) {
-          tr.classList.add("highlight");
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if(entry.isIntersecting){
+          entry.target.classList.add('visible');
         }
-
-        const tdName = document.createElement("td");
-        tdName.className = "player-cell";
-        tdName.textContent = p.name;
-        tr.appendChild(tdName);
-
-        for (let i = 0; i < TOTAL_INNINGS; i++) {
-          const td = document.createElement("td");
-          td.textContent = p.inningScores[i] || 0;
-          tr.appendChild(td);
-        }
-
-        const tdTotal = document.createElement("td");
-        tdTotal.className = "total-cell";
-        tdTotal.textContent = p.total;
-        tr.appendChild(tdTotal);
-
-        const tdHR = document.createElement("td");
-        tdHR.className = "hr-cell";
-        tdHR.textContent = p.homeRuns;
-        tr.appendChild(tdHR);
-
-        scorecardBodyEl.appendChild(tr);
       });
+    }, { threshold: 0.16 });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    const arena = document.querySelector('.arena');
+    const snitch = document.getElementById('snitch');
+    const moveSnitchBtn = document.getElementById('moveSnitchBtn');
+    const simulateBtn = document.getElementById('simulateBtn');
+    const scoreList = document.getElementById('scoreList');
+
+    function moveSnitch() {
+      const x = Math.random() * 68 + 16;
+      const y = Math.random() * 52 + 12;
+      arena.style.setProperty('--snitchX', x + '%');
+      arena.style.setProperty('--snitchY', y + '%');
+      snitch.animate([
+        { transform: 'translate(-50%, -50%) scale(.8)', opacity: .7 },
+        { transform: 'translate(-50%, -50%) scale(1.18)', opacity: 1, offset: .55 },
+        { transform: 'translate(-50%, -50%) scale(1)', opacity: 1 }
+      ], { duration: 480, easing: 'cubic-bezier(.2,.8,.2,1)' });
     }
 
-    function updateWinnerBanner() {
-      if (!tournamentFinished || players.length === 0) {
-        winnerBannerEl.classList.remove("show");
-        winnerTextEl.textContent = "";
-        return;
-      }
-      const sorted = getSortedPlayers();
-      const bestTotal = sorted[0].total;
-      const winners = sorted.filter(p => p.total === bestTotal).map(p => p.name);
-      const names = winners.join(", ");
-      winnerTextEl.textContent = `Hellcastle Baseball Champion: ${names} (${bestTotal} runs)`;
-      winnerBannerEl.classList.add("show");
-    }
+    moveSnitchBtn.addEventListener('click', moveSnitch);
+    snitch.addEventListener('click', moveSnitch);
 
-    function renderAll() {
-      recalcTotals();
-      updateStatus();
-      renderPlayersList();
-      renderScorecard();
-      updateWinnerBanner();
-      saveState();
-    }
+    const events = [
+      ['Outer possession hit', '10 pts'],
+      ['Lower hoop lane', '30 pts'],
+      ['Center hoop lane', '50 pts'],
+      ['High hoop lane', '70 pts'],
+      ['Bull / Quaffle control', '25 pts'],
+      ['Bludger penalty', '-20 pts'],
+      ['Golden Snitch hit', '150 pts']
+    ];
 
-    // BASEBALL LOGIC
-    function addRuns(player, runs) {
-      player.inningScores[currentInning] += runs;
-    }
-
-    function handleSingle(player) {
-      let runs = 0;
-      if (bases.third) { runs++; bases.third = false; }
-      if (bases.second) { bases.third = true; bases.second = false; }
-      if (bases.first) { bases.second = true; }
-      bases.first = true;
-      addRuns(player, runs);
-    }
-
-    function handleDouble(player) {
-      let runs = 0;
-      if (bases.third) { runs++; bases.third = false; }
-      if (bases.second) { runs++; bases.second = false; }
-      if (bases.first) { bases.third = true; bases.first = false; }
-      bases.second = true;
-      addRuns(player, runs);
-    }
-
-    function handleTriple(player) {
-      let runs = 0;
-      if (bases.first) { runs++; bases.first = false; }
-      if (bases.second) { runs++; bases.second = false; }
-      if (bases.third) { runs++; bases.third = false; }
-      bases.third = true;
-      addRuns(player, runs);
-    }
-
-    function handleHomeRun(player) {
-      let runs = 1; // batter
-      if (bases.first) runs++;
-      if (bases.second) runs++;
-      if (bases.third) runs++;
-      bases.first = bases.second = bases.third = false;
-      addRuns(player, runs);
-      player.homeRuns += 1;
-    }
-
-    function addPlay(type) {
-      if (tournamentFinished || players.length === 0 || inningOver()) return;
-
-      const player = players[currentPlayerIndex];
-
-      currentBags++;
-
-      if (type === "out") {
-        currentOuts++;
-      } else if (type === "single") {
-        handleSingle(player);
-      } else if (type === "double") {
-        handleDouble(player);
-      } else if (type === "triple") {
-        handleTriple(player);
-      } else if (type === "homerun") {
-        handleHomeRun(player);
+    simulateBtn.addEventListener('click', () => {
+      const picks = [];
+      for(let i = 0; i < 3; i++){
+        picks.push(events[Math.floor(Math.random() * events.length)]);
       }
 
-      if (inningOver()) {
-        // lock inning for this player
-      }
+      scoreList.innerHTML = picks.map((item, index) => `
+        <div class="score-row" style="animation: rise .55s ease ${index * 0.08}s both">
+          <span>${item[0]}</span>
+          <strong>${item[1]}</strong>
+        </div>
+      `).join('');
 
-      renderAll();
-    }
-
-    function resetInningState() {
-      currentBags = 0;
-      currentOuts = 0;
-      bases = { first: false, second: false, third: false };
-    }
-
-    function advancePlayerOrInning() {
-      if (tournamentFinished || players.length === 0 || !inningOver()) return;
-
-      if (currentPlayerIndex < players.length - 1) {
-        currentPlayerIndex++;
-        resetInningState();
-        showNextOverlay("Next Batter");
-      } else {
-        // all players finished this inning
-        if (currentInning < TOTAL_INNINGS - 1) {
-          currentInning++;
-          currentPlayerIndex = 0;
-          resetInningState();
-          showNextOverlay("Next Inning");
-        } else {
-          // game finished
-          tournamentFinished = true;
-        }
-      }
-
-      renderAll();
-    }
-
-    function resetTournament() {
-      if (!confirm("Reset Hellcastle Baseball tournament and clear all scores?")) return;
-      players = [];
-      currentInning = 0;
-      currentPlayerIndex = 0;
-      currentBags = 0;
-      currentOuts = 0;
-      bases = { first: false, second: false, third: false };
-      tournamentFinished = false;
-      localStorage.removeItem(STORAGE_KEY);
-      renderAll();
-    }
-
-    function addPlayerFromInput() {
-      const name = playerNameInput.value.trim();
-      if (!name) return;
-      players.push(createPlayer(name));
-      playerNameInput.value = "";
-      if (players.length === 1) {
-        currentPlayerIndex = 0;
-      }
-      renderAll();
-    }
-
-    // EVENTS
-    addPlayerBtn.addEventListener("click", addPlayerFromInput);
-    playerNameInput.addEventListener("keydown", e => {
-      if (e.key === "Enter") addPlayerFromInput();
+      moveSnitch();
     });
 
-    scoreButtons.forEach(btn => {
-      btn.addEventListener("click", () => {
-        const type = btn.getAttribute("data-type");
-        addPlay(type);
-      });
-    });
-
-    nextPlayerBtn.addEventListener("click", advancePlayerOrInning);
-    resetBtn.addEventListener("click", resetTournament);
-
-    // INIT
-    loadState();
-    renderAll();
+    moveSnitch();
   </script>
 </body>
 </html>
