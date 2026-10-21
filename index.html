@@ -4,29 +4,31 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Quidditch Darts — House Cup Web App</title>
-  <meta name="description" content="A playable Quidditch-inspired darts web app with house abilities, scoring, turn tracking, snitch mode, and magical match flow." />
+  <meta name="description" content="A playable fantasy darts web app inspired by Quidditch, with six magical houses, special abilities, snitch mode, turn tracking, and interactive scoring." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800&family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
   <style>
     :root{
-      --bg:#0d0b10;
-      --bg-2:#16101c;
-      --panel:rgba(24,17,32,.82);
-      --panel-soft:rgba(255,255,255,.045);
+      --bg:#0b0910;
+      --bg2:#15101b;
+      --panel:rgba(23,17,30,.84);
+      --panel-soft:rgba(255,255,255,.04);
+      --line:rgba(255,233,193,.14);
       --text:#f7f1e7;
       --muted:#cabca3;
       --gold:#d7aa41;
-      --gold-2:#f2d88b;
-      --line:rgba(255,233,193,.14);
+      --gold2:#f2d88b;
+      --danger:#b74635;
+      --ok:#65b886;
       --shadow:0 24px 80px rgba(0,0,0,.45);
-      --gryff:#8b1d27;
-      --slyth:#0f3a2b;
-      --raven:#1b2a57;
-      --huff:#8f6b1e;
-      --danger:#b33b2e;
-      --ok:#64b587;
-      --max:1380px;
+      --gryff:#8f1f2a;
+      --slyth:#113c2d;
+      --raven:#1d2f62;
+      --huff:#8e6c1f;
+      --moon:#8b7cff;
+      --ember:#cf5c2f;
+      --max:1440px;
     }
 
     *{box-sizing:border-box}
@@ -34,12 +36,12 @@
     html{scroll-behavior:smooth}
     body{
       margin:0;
-      font-family:"Manrope", sans-serif;
       color:var(--text);
+      font-family:"Manrope", sans-serif;
       background:
-        radial-gradient(circle at 15% 10%, rgba(215,170,65,.10), transparent 20%),
-        radial-gradient(circle at 85% 18%, rgba(139,29,39,.12), transparent 20%),
-        radial-gradient(circle at 50% 100%, rgba(27,42,87,.18), transparent 28%),
+        radial-gradient(circle at 15% 10%, rgba(215,170,65,.08), transparent 18%),
+        radial-gradient(circle at 84% 16%, rgba(143,31,42,.12), transparent 18%),
+        radial-gradient(circle at 50% 100%, rgba(29,47,98,.18), transparent 28%),
         linear-gradient(180deg, #0b0910 0%, #120d18 44%, #0b0910 100%);
       overflow-x:hidden;
     }
@@ -49,7 +51,7 @@
       position:fixed;
       inset:0;
       pointer-events:none;
-      opacity:.2;
+      opacity:.18;
       background-image:
         linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
         linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
@@ -57,9 +59,8 @@
       mask-image:radial-gradient(circle at center, black 42%, transparent 100%);
     }
 
-    button, input, select{
-      font:inherit;
-    }
+    button,input,select{font:inherit}
+    a{text-decoration:none;color:inherit}
 
     .wrap{
       width:min(var(--max), calc(100% - 1.2rem));
@@ -69,7 +70,7 @@
     .reveal{
       opacity:0;
       transform:translateY(18px);
-      transition:opacity .7s ease, transform .7s ease;
+      transition:opacity .8s ease, transform .8s ease;
     }
     .reveal.visible{
       opacity:1;
@@ -80,7 +81,7 @@
       position:sticky;
       top:0;
       z-index:100;
-      background:linear-gradient(180deg, rgba(10,8,14,.95), rgba(10,8,14,.65));
+      background:linear-gradient(180deg, rgba(10,8,14,.94), rgba(10,8,14,.65));
       backdrop-filter:blur(14px) saturate(140%);
       border-bottom:1px solid var(--line);
     }
@@ -108,7 +109,7 @@
       border-radius:50%;
       position:relative;
       background:radial-gradient(circle at 35% 35%, #f9efba, #d7aa41 58%, #6f4a12 100%);
-      box-shadow:0 0 0 2px rgba(255,231,173,.25), 0 10px 30px rgba(215,170,65,.28);
+      box-shadow:0 0 0 2px rgba(255,231,173,.24), 0 10px 30px rgba(215,170,65,.28);
       flex:none;
     }
     .crest::before,.crest::after{
@@ -124,8 +125,8 @@
 
     .brand span{
       font-family:"Cinzel", serif;
-      color:var(--gold-2);
-      font-size:.98rem;
+      color:var(--gold2);
+      font-size:1rem;
     }
 
     .top-actions{
@@ -155,36 +156,32 @@
 
     .btn-primary{
       color:#2b1a05;
-      background:linear-gradient(135deg, var(--gold-2), var(--gold));
+      background:linear-gradient(135deg, var(--gold2), var(--gold));
       box-shadow:0 12px 36px rgba(215,170,65,.25);
     }
-
     .btn-ghost{
       color:var(--text);
       background:rgba(255,255,255,.04);
       border:1px solid var(--line);
       backdrop-filter:blur(10px);
     }
-
     .btn-danger{
-      color:#fff3ef;
-      background:linear-gradient(135deg, #c34d3e, #8f281f);
-      box-shadow:0 12px 36px rgba(179,59,46,.22);
+      color:#fff4ef;
+      background:linear-gradient(135deg, #cb5647, #8f281f);
+      box-shadow:0 12px 36px rgba(183,70,53,.22);
     }
 
-    main{
-      padding:1rem 0 2rem;
-    }
+    main{padding:1rem 0 2rem}
 
     .app-grid{
       display:grid;
-      grid-template-columns:320px minmax(0, 1fr) 340px;
+      grid-template-columns:340px minmax(0, 1fr) 360px;
       gap:1rem;
       align-items:start;
     }
 
     .panel{
-      border-radius:26px;
+      border-radius:28px;
       background:
         linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.02)),
         var(--panel);
@@ -195,19 +192,15 @@
     }
 
     .panel-head{
-      padding:1rem 1rem .2rem;
+      padding:1rem 1rem .25rem;
     }
-
-    .panel-head h2,
-    .panel-head h3{
+    .panel-head h2,.panel-head h3{
       margin:0;
       font-family:"Cinzel", serif;
       letter-spacing:-.02em;
     }
 
-    .panel-body{
-      padding:1rem;
-    }
+    .panel-body{padding:1rem}
 
     .setup-stack{
       display:grid;
@@ -218,7 +211,6 @@
       display:grid;
       gap:.45rem;
     }
-
     .field label{
       color:var(--muted);
       font-size:.92rem;
@@ -226,7 +218,7 @@
       letter-spacing:.02em;
     }
 
-    .input, .select{
+    .input,.select{
       width:100%;
       min-height:50px;
       border-radius:16px;
@@ -237,7 +229,7 @@
       outline:none;
       transition:border-color .2s ease, background .2s ease, box-shadow .2s ease;
     }
-    .input:focus, .select:focus{
+    .input:focus,.select:focus{
       border-color:rgba(242,216,139,.4);
       box-shadow:0 0 0 4px rgba(242,216,139,.08);
       background:rgba(255,255,255,.06);
@@ -245,7 +237,7 @@
 
     .house-grid{
       display:grid;
-      gap:.7rem;
+      gap:.65rem;
     }
 
     .house-option{
@@ -254,7 +246,7 @@
       grid-template-columns:auto 1fr auto;
       gap:.8rem;
       align-items:center;
-      padding:.9rem .95rem;
+      padding:.95rem;
       border-radius:18px;
       border:1px solid rgba(255,255,255,.08);
       background:rgba(255,255,255,.03);
@@ -266,25 +258,29 @@
       border-color:rgba(242,216,139,.2);
       background:rgba(255,255,255,.05);
     }
+    .house-option.active{
+      border-color:rgba(242,216,139,.34);
+      box-shadow:inset 0 0 0 1px rgba(242,216,139,.16);
+      background:rgba(255,255,255,.065);
+    }
     .house-option input{
       position:absolute;
       opacity:0;
       pointer-events:none;
     }
-    .house-option.active{
-      border-color:rgba(242,216,139,.34);
-      box-shadow:inset 0 0 0 1px rgba(242,216,139,.2);
-      background:rgba(255,255,255,.065);
-    }
 
     .house-sigil{
       width:18px;height:18px;border-radius:50%;
       box-shadow:0 0 0 1px rgba(255,255,255,.16);
+      flex:none;
     }
-    .house-g{background:var(--gryff)}
-    .house-s{background:var(--slyth)}
-    .house-r{background:var(--raven)}
-    .house-h{background:var(--huff)}
+
+    .g{background:var(--gryff)}
+    .s{background:var(--slyth)}
+    .r{background:var(--raven)}
+    .h{background:var(--huff)}
+    .m{background:var(--moon)}
+    .e{background:var(--ember)}
 
     .house-copy strong{
       display:block;
@@ -293,10 +289,11 @@
     .house-copy span{
       color:var(--muted);
       font-size:.84rem;
+      line-height:1.35;
     }
 
     .mini-note{
-      padding:.85rem .95rem;
+      padding:.9rem .95rem;
       border-radius:16px;
       background:rgba(255,255,255,.03);
       border:1px dashed rgba(255,255,255,.12);
@@ -328,10 +325,10 @@
       display:inline-flex;
       align-items:center;
       gap:.5rem;
-      padding:.5rem .75rem;
+      padding:.5rem .78rem;
       border-radius:999px;
-      border:1px solid rgba(242,216,139,.15);
-      color:var(--gold-2);
+      border:1px solid rgba(242,216,139,.16);
+      color:var(--gold2);
       background:rgba(255,255,255,.03);
       font-size:.78rem;
       font-weight:800;
@@ -342,7 +339,7 @@
     .hero-panel h1{
       margin:.8rem 0 .7rem;
       font-family:"Cinzel", serif;
-      font-size:clamp(2rem, 4vw, 4rem);
+      font-size:clamp(2.1rem, 4vw, 4rem);
       line-height:.95;
       max-width:10ch;
     }
@@ -458,18 +455,16 @@
 
     .game-surface{
       display:grid;
-      grid-template-columns:minmax(0, 1fr) 290px;
+      grid-template-columns:minmax(0, 1fr) 310px;
       gap:1rem;
       align-items:start;
     }
 
-    .board-shell{
-      padding:1rem;
-    }
+    .board-shell{padding:1rem}
 
     .board-stage{
       display:grid;
-      grid-template-columns:1fr 220px;
+      grid-template-columns:1fr 230px;
       gap:1rem;
       align-items:center;
     }
@@ -478,13 +473,13 @@
       position:relative;
       display:grid;
       place-items:center;
+      min-height:660px;
       padding:1rem;
-      min-height:640px;
     }
 
     .dartboard{
       position:relative;
-      width:min(100%, 620px);
+      width:min(100%, 630px);
       aspect-ratio:1;
       border-radius:50%;
       cursor:crosshair;
@@ -503,14 +498,9 @@
       content:"";
       position:absolute;
       inset:0;
-      background:
-        repeating-conic-gradient(
-          from -9deg,
-          rgba(255,255,255,.08) 0 4deg,
-          transparent 4deg 18deg
-        );
+      background:repeating-conic-gradient(from -9deg, rgba(255,255,255,.08) 0 4deg, transparent 4deg 18deg);
       mix-blend-mode:screen;
-      opacity:.5;
+      opacity:.48;
     }
 
     .hazard-overlay{
@@ -518,7 +508,7 @@
       inset:0;
       border-radius:50%;
       pointer-events:none;
-      opacity:.9;
+      opacity:.92;
     }
 
     .zone-layer{
@@ -530,9 +520,9 @@
 
     .zone-label{
       position:absolute;
-      padding:.36rem .5rem;
+      padding:.36rem .52rem;
       border-radius:999px;
-      background:rgba(14,10,18,.82);
+      background:rgba(14,10,18,.84);
       border:1px solid rgba(242,216,139,.16);
       color:var(--text);
       font-size:.76rem;
@@ -551,7 +541,6 @@
       box-shadow:0 0 0 2px rgba(255,255,255,.12), 0 0 18px rgba(255,255,255,.18);
       animation:pop .45s ease both;
     }
-
     .hit::after{
       content:"";
       position:absolute;
@@ -560,11 +549,12 @@
       border:1px solid rgba(255,255,255,.16);
       opacity:.65;
     }
-
-    .hit.team-a{background:linear-gradient(135deg, var(--gold-2), #fff0bf)}
+    .hit.team-a{background:linear-gradient(135deg, var(--gold2), #fff0bf)}
     .hit.team-b{background:linear-gradient(135deg, #9bd2ff, #5a76ff)}
     .hit.snitch{background:linear-gradient(135deg, #fff3af, #d7aa41); box-shadow:0 0 0 2px rgba(255,240,184,.22), 0 0 24px rgba(242,216,139,.4)}
     .hit.bludger{background:linear-gradient(135deg, #d05b4a, #6b1d1b)}
+    .hit.moon{background:linear-gradient(135deg, #c5bcff, #7b69ff)}
+    .hit.ember{background:linear-gradient(135deg, #ffb080, #cf5c2f)}
 
     @keyframes pop{
       from{opacity:0; transform:translate(-50%,-50%) scale(.4)}
@@ -606,6 +596,22 @@
       50%{transform:translate(-50%, -50%) scale(1.08)}
     }
 
+    .target-marker{
+      position:absolute;
+      width:64px;height:64px;
+      border-radius:50%;
+      transform:translate(-50%, -50%);
+      border:2px dashed rgba(197,188,255,.7);
+      box-shadow:0 0 0 10px rgba(197,188,255,.06);
+      z-index:4;
+      pointer-events:none;
+      animation:markerPulse 1.4s ease-in-out infinite;
+    }
+    @keyframes markerPulse{
+      0%,100%{transform:translate(-50%, -50%) scale(1)}
+      50%{transform:translate(-50%, -50%) scale(1.06)}
+    }
+
     .board-legend{
       display:grid;
       gap:.8rem;
@@ -620,7 +626,7 @@
     .legend-block strong{
       display:block;
       margin-bottom:.35rem;
-      color:var(--gold-2);
+      color:var(--gold2);
     }
     .legend-block p{
       margin:0;
@@ -672,7 +678,6 @@
       letter-spacing:.06em;
       text-transform:uppercase;
     }
-
     .house-chip .dot{
       width:10px;height:10px;border-radius:50%;
     }
@@ -681,12 +686,11 @@
       font-weight:800;
       font-size:1rem;
     }
-
     .team-score{
       font-family:"Cinzel", serif;
       font-size:2.1rem;
       line-height:1;
-      color:var(--gold-2);
+      color:var(--gold2);
     }
 
     .team-meta{
@@ -716,10 +720,7 @@
       display:grid;
       gap:.6rem;
     }
-
-    .power-btn{
-      width:100%;
-    }
+    .power-btn{width:100%}
 
     .turn-console{
       display:grid;
@@ -736,13 +737,8 @@
       border:1px solid rgba(242,216,139,.16);
       background:rgba(255,255,255,.04);
     }
-    .turn-pill strong{
-      font-size:1rem;
-    }
-    .turn-pill span{
-      color:var(--muted);
-      font-size:.88rem;
-    }
+    .turn-pill strong{font-size:1rem}
+    .turn-pill span{color:var(--muted); font-size:.88rem}
 
     .throws-track{
       display:grid;
@@ -765,6 +761,34 @@
       background:rgba(255,255,255,.06);
       border-color:rgba(242,216,139,.18);
     }
+
+    .helper-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:.7rem;
+    }
+
+    .pill{
+      padding:.5rem .72rem;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.03);
+      color:var(--muted);
+      font-size:.82rem;
+      font-weight:700;
+    }
+
+    .snitch-banner{
+      margin-top:.1rem;
+      padding:.95rem 1rem;
+      border-radius:18px;
+      border:1px solid rgba(242,216,139,.2);
+      background:linear-gradient(135deg, rgba(242,216,139,.08), rgba(255,255,255,.03));
+      color:var(--gold2);
+      font-weight:800;
+      display:none;
+    }
+    .snitch-banner.show{display:block}
 
     .log{
       max-height:340px;
@@ -789,10 +813,14 @@
       animation:rise .35s ease both;
     }
     .log-item strong{color:var(--text)}
-
     @keyframes rise{
       from{opacity:0; transform:translateY(14px)}
       to{opacity:1; transform:translateY(0)}
+    }
+
+    .rules-list{
+      display:grid;
+      gap:.8rem;
     }
 
     .modal-backdrop{
@@ -804,12 +832,12 @@
       align-items:center;
       justify-content:center;
       padding:1rem;
-      z-index:200;
+      z-index:220;
     }
     .modal-backdrop.open{display:flex}
 
     .modal{
-      width:min(680px, 100%);
+      width:min(700px, 100%);
       border-radius:28px;
       background:
         linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02)),
@@ -819,16 +847,12 @@
       overflow:hidden;
     }
 
-    .modal-head, .modal-body, .modal-foot{
-      padding:1rem 1.1rem;
-    }
-    .modal-head{
-      border-bottom:1px solid rgba(255,255,255,.08);
-    }
+    .modal-head,.modal-body,.modal-foot{padding:1rem 1.1rem}
+    .modal-head{border-bottom:1px solid rgba(255,255,255,.08)}
     .modal-head h3{
       margin:0;
       font-family:"Cinzel", serif;
-      color:var(--gold-2);
+      color:var(--gold2);
       font-size:1.5rem;
     }
     .modal-body p{
@@ -843,35 +867,7 @@
       border-top:1px solid rgba(255,255,255,.08);
     }
 
-    .snitch-banner{
-      margin-top:.8rem;
-      padding:.95rem 1rem;
-      border-radius:18px;
-      border:1px solid rgba(242,216,139,.2);
-      background:linear-gradient(135deg, rgba(242,216,139,.08), rgba(255,255,255,.03));
-      color:var(--gold-2);
-      font-weight:800;
-      display:none;
-    }
-    .snitch-banner.show{display:block}
-
-    .helper-row{
-      display:flex;
-      flex-wrap:wrap;
-      gap:.7rem;
-    }
-
-    .pill{
-      padding:.5rem .72rem;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.08);
-      background:rgba(255,255,255,.03);
-      color:var(--muted);
-      font-size:.82rem;
-      font-weight:700;
-    }
-
-    @media (max-width: 1180px){
+    @media (max-width: 1220px){
       .app-grid{
         grid-template-columns:1fr;
       }
@@ -882,7 +878,7 @@
       }
     }
 
-    @media (max-width: 760px){
+    @media (max-width: 780px){
       .status-ribbon{
         grid-template-columns:repeat(2, minmax(0,1fr));
       }
@@ -898,11 +894,9 @@
       }
       .dartboard-wrap{
         min-height:460px;
-        padding:.2rem;
+        padding:.25rem;
       }
-      .panel{
-        border-radius:22px;
-      }
+      .panel{border-radius:22px}
     }
 
     @media (max-width: 520px){
@@ -912,16 +906,10 @@
       .top-actions .btn{
         flex:1 1 100%;
       }
-      .status-ribbon,
-      .team-meta{
+      .status-ribbon,.team-meta{
         grid-template-columns:1fr;
       }
-      .throws-track{
-        grid-template-columns:repeat(3, 1fr);
-      }
-      .hero-panel h1{
-        max-width:none;
-      }
+      .hero-panel h1{max-width:none}
     }
   </style>
 </head>
@@ -950,26 +938,33 @@
           <div class="setup-stack">
             <div class="field">
               <label for="teamAName">Team A name</label>
-              <input id="teamAName" class="input" type="text" value="Scarlet Seekers" maxlength="20" />
+              <input id="teamAName" class="input" type="text" value="Scarlet Seekers" maxlength="22" />
             </div>
+
             <div class="field">
               <label for="teamBName">Team B name</label>
-              <input id="teamBName" class="input" type="text" value="Emerald Serpents" maxlength="20" />
+              <input id="teamBName" class="input" type="text" value="Moonfire Flyers" maxlength="22" />
             </div>
 
             <div class="field">
               <label>Team A house</label>
               <div class="house-grid" id="houseAGroup">
-                <label class="house-option active" data-value="gryffindor">
+                <label class="house-option active">
                   <input type="radio" name="houseA" value="gryffindor" checked />
-                  <span class="house-sigil house-g"></span>
-                  <span class="house-copy"><strong>Gryffindor</strong><span>Brave retry on risky shots</span></span>
+                  <span class="house-sigil g"></span>
+                  <span class="house-copy"><strong>Gryffindor</strong><span>Upgrade one weak throw into a brave strike.</span></span>
                   <span class="pill">A</span>
                 </label>
-                <label class="house-option" data-value="ravenclaw">
+                <label class="house-option">
                   <input type="radio" name="houseA" value="ravenclaw" />
-                  <span class="house-sigil house-r"></span>
-                  <span class="house-copy"><strong>Ravenclaw</strong><span>Precision strategy bonus</span></span>
+                  <span class="house-sigil r"></span>
+                  <span class="house-copy"><strong>Ravenclaw</strong><span>Precision planning boosts one smart shot.</span></span>
+                  <span class="pill">A</span>
+                </label>
+                <label class="house-option">
+                  <input type="radio" name="houseA" value="moonstone" />
+                  <span class="house-sigil m"></span>
+                  <span class="house-copy"><strong>Moonstone</strong><span>Call a zone and double it if you land true.</span></span>
                   <span class="pill">A</span>
                 </label>
               </div>
@@ -978,16 +973,22 @@
             <div class="field">
               <label>Team B house</label>
               <div class="house-grid" id="houseBGroup">
-                <label class="house-option active" data-value="slytherin">
+                <label class="house-option active">
                   <input type="radio" name="houseB" value="slytherin" checked />
-                  <span class="house-sigil house-s"></span>
-                  <span class="house-copy"><strong>Slytherin</strong><span>Disrupt the rival’s next best shot</span></span>
+                  <span class="house-sigil s"></span>
+                  <span class="house-copy"><strong>Slytherin</strong><span>Curse the rival’s next powerful scoring shot.</span></span>
                   <span class="pill">B</span>
                 </label>
-                <label class="house-option" data-value="hufflepuff">
+                <label class="house-option">
                   <input type="radio" name="houseB" value="hufflepuff" />
-                  <span class="house-sigil house-h"></span>
-                  <span class="house-copy"><strong>Hufflepuff</strong><span>Consistency combo rewards</span></span>
+                  <span class="house-sigil h"></span>
+                  <span class="house-copy"><strong>Hufflepuff</strong><span>Gain bonus value from steady multi-zone turns.</span></span>
+                  <span class="pill">B</span>
+                </label>
+                <label class="house-option">
+                  <input type="radio" name="houseB" value="emberwing" />
+                  <span class="house-sigil e"></span>
+                  <span class="house-copy"><strong>Emberwing</strong><span>Ignite momentum and ignore one Bludger.</span></span>
                   <span class="pill">B</span>
                 </label>
               </div>
@@ -1013,7 +1014,7 @@
             </div>
 
             <div class="mini-note">
-              Click the dartboard to throw. Three throws per turn. Once a team crosses the Snitch threshold, the Golden Snitch appears as a moving target worth 150 points.
+              Click anywhere on the dartboard to throw. Three throws per turn. At 75% of target score, the Golden Snitch appears and becomes a 150-point capture target.
             </div>
           </div>
         </div>
@@ -1023,13 +1024,12 @@
         <div class="panel hero-panel reveal">
           <div class="hero-grid">
             <div>
-              <div class="eyebrow">Playable fantasy darts web app</div>
-              <h1>House Cup on the board.</h1>
+              <div class="eyebrow">Six-house magical darts</div>
+              <h1>Board sport for the House Cup.</h1>
               <p>
-                Hit hoop lanes for big goals, dodge Bludger wedges, trigger house powers, and chase the Snitch before your rival steals the finish.
+                Score through the hoops, dodge Bludger wedges, trigger your house’s power, and chase the Snitch before your rival turns the tide.
               </p>
             </div>
-
             <div class="pitch-visual" aria-hidden="true">
               <div class="hoop"></div>
               <div class="hoop"></div>
@@ -1067,30 +1067,37 @@
             <div class="board-shell">
               <div class="board-stage">
                 <div class="dartboard-wrap">
-                  <div class="dartboard" id="dartboard" role="button" tabindex="0" aria-label="Interactive dartboard. Click to throw a dart.">
-                    <canvas class="hazard-overlay" id="hazardCanvas" width="620" height="620"></canvas>
+                  <div class="dartboard" id="dartboard" role="button" tabindex="0" aria-label="Interactive magical dartboard. Click to throw a dart.">
+                    <canvas class="hazard-overlay" id="hazardCanvas" width="630" height="630"></canvas>
+
                     <div class="zone-layer">
-                      <div class="zone-label" style="left:22%; top:18%;">30 · Lower Hoop</div>
-                      <div class="zone-label" style="left:50%; top:10%;">70 · High Hoop</div>
+                      <div class="zone-label" style="left:21%; top:18%;">30 · Lower Hoop</div>
+                      <div class="zone-label" style="left:50%; top:9.5%;">70 · High Hoop</div>
                       <div class="zone-label" style="left:80%; top:22%;">50 · Center Hoop</div>
                       <div class="zone-label" style="left:50%; top:50%;">25 · Bull</div>
                     </div>
+
                     <div class="snitch-target" id="snitchTarget" hidden aria-hidden="true"></div>
+                    <div class="target-marker" id="moonMarker" hidden aria-hidden="true"></div>
                   </div>
                 </div>
 
                 <div class="board-legend">
                   <div class="legend-block">
-                    <strong>Scoring zones</strong>
-                    <p>Outer ring scores 10. Bull scores 25. Top hoop windows score 30, 50, or 70 depending on target.</p>
+                    <strong>Core scoring</strong>
+                    <p>Outer ring is 10. Bull is 25. The three upper hoop windows score 30, 50, and 70.</p>
                   </div>
                   <div class="legend-block">
                     <strong>Bludgers</strong>
-                    <p>Dark magical wedges act as hazards. Hit one and you lose 20 points on that throw.</p>
+                    <p>Three cursed wedges deal a -20 penalty when struck, unless a house power prevents it.</p>
                   </div>
                   <div class="legend-block">
-                    <strong>Snitch mode</strong>
-                    <p>Unlocked at 75% of target score. Hit the moving Snitch for 150 points.</p>
+                    <strong>Snitch capture</strong>
+                    <p>Once active, the Golden Snitch can be hit directly for 150 points and an instant win.</p>
+                  </div>
+                  <div class="legend-block">
+                    <strong>House powers</strong>
+                    <p>Each house gets one once-per-match ability. Some also create small combo or follow-up effects.</p>
                   </div>
                 </div>
               </div>
@@ -1107,7 +1114,7 @@
                   <div class="turn-pill">
                     <div>
                       <strong id="turnTeamName">Awaiting start</strong>
-                      <span id="turnMeta">Select teams and begin</span>
+                      <span id="turnMeta">Select houses and begin</span>
                     </div>
                     <span id="throwCounter">0 / 3</span>
                   </div>
@@ -1123,9 +1130,7 @@
                     <span class="pill" id="effectPill">Effect: none</span>
                   </div>
 
-                  <div class="snitch-banner" id="snitchBanner">
-                    The Golden Snitch is in play.
-                  </div>
+                  <div class="snitch-banner" id="snitchBanner">The Golden Snitch is in play.</div>
 
                   <button class="btn btn-ghost" id="endTurnBtn" type="button">End turn early</button>
                 </div>
@@ -1149,25 +1154,33 @@
           <h2>House rules</h2>
         </div>
         <div class="panel-body">
-          <div class="setup-stack">
+          <div class="rules-list">
             <div class="legend-block">
               <strong>Gryffindor — Bold Retry</strong>
-              <p>Once per match, if a throw scores 10 or less, upgrade it to a 30-point hoop strike.</p>
+              <p>Once per match, upgrade one weak throw worth 10 or less into a 30-point strike.</p>
             </div>
             <div class="legend-block">
               <strong>Slytherin — Cunning Curse</strong>
-              <p>Once per match, mark the opponent’s next throw. If it would score above 30, reduce it by 20.</p>
+              <p>Once per match, reduce the rival’s next shot above 30 points by 20.</p>
             </div>
             <div class="legend-block">
               <strong>Ravenclaw — Strategy Ring</strong>
-              <p>Once per match, your next bull or center-lane precision shot gains +15 points.</p>
+              <p>Once per match, your next bull or center-hoop precision shot gains +15.</p>
             </div>
             <div class="legend-block">
               <strong>Hufflepuff — Steady Chain</strong>
-              <p>Once per match, if you hit three different scoring zones in one turn, gain +25 combo points.</p>
+              <p>Once per match, hitting three different scoring zones in one turn grants +25.</p>
+            </div>
+            <div class="legend-block">
+              <strong>Moonstone — Lunar Aim</strong>
+              <p>Once per match, call a target zone. If your next throw lands there, its score is doubled.</p>
+            </div>
+            <div class="legend-block">
+              <strong>Emberwing — Flame Surge</strong>
+              <p>Once per match, your next high-value hit empowers the following dart by +10. Emberwing also ignores one Bludger penalty each match.</p>
             </div>
             <div class="mini-note">
-              Tip: House powers are intentionally lightweight so the game stays readable and competitive.
+              Houses are balanced as tactical nudges rather than automatic wins. They amplify timing, pressure, and precision.
             </div>
           </div>
         </div>
@@ -1196,14 +1209,14 @@
         label: 'Gryffindor',
         color: getComputedStyle(document.documentElement).getPropertyValue('--gryff').trim(),
         ability: 'Bold Retry',
-        desc: 'Upgrade one weak throw to 30 points.',
+        desc: 'Upgrade one weak throw to 30.',
         chip: 'G'
       },
       slytherin: {
         label: 'Slytherin',
         color: getComputedStyle(document.documentElement).getPropertyValue('--slyth').trim(),
         ability: 'Cunning Curse',
-        desc: 'Reduce opponent’s next strong throw.',
+        desc: 'Reduce rival’s next strong shot.',
         chip: 'S'
       },
       ravenclaw: {
@@ -1217,8 +1230,22 @@
         label: 'Hufflepuff',
         color: getComputedStyle(document.documentElement).getPropertyValue('--huff').trim(),
         ability: 'Steady Chain',
-        desc: 'Three unique zones in one turn gain +25.',
+        desc: 'Three unique zones gain +25.',
         chip: 'H'
+      },
+      moonstone: {
+        label: 'Moonstone',
+        color: getComputedStyle(document.documentElement).getPropertyValue('--moon').trim(),
+        ability: 'Lunar Aim',
+        desc: 'Choose a zone and double it on hit.',
+        chip: 'M'
+      },
+      emberwing: {
+        label: 'Emberwing',
+        color: getComputedStyle(document.documentElement).getPropertyValue('--ember').trim(),
+        ability: 'Flame Surge',
+        desc: 'Prime a high hit, next dart gets +10.',
+        chip: 'E'
       }
     };
 
@@ -1231,12 +1258,33 @@
       throwsThisTurn: 0,
       logs: [],
       snitchActive: false,
-      snitchPos: { x: 310, y: 190 },
+      snitchPos: { x: 315, y: 190 },
+      moonAimPromptActive: false,
       teams: [
-        { name:'Scarlet Seekers', house:'gryffindor', score:0, throws:0, combos:0, abilityUsed:false, pendingBoost:false, pendingCurse:false, retryReady:false, turnZones:[] },
-        { name:'Emerald Serpents', house:'slytherin', score:0, throws:0, combos:0, abilityUsed:false, pendingBoost:false, pendingCurse:false, retryReady:false, turnZones:[] }
+        createTeam('Scarlet Seekers', 'gryffindor'),
+        createTeam('Moonfire Flyers', 'slytherin')
       ]
     };
+
+    function createTeam(name, house) {
+      return {
+        name,
+        house,
+        score: 0,
+        throws: 0,
+        combos: 0,
+        abilityUsed: false,
+        pendingBoost: false,
+        pendingCurse: false,
+        retryReady: false,
+        turnZones: [],
+        lunarAimTarget: null,
+        emberSurgeArmed: false,
+        emberNextBonus: false,
+        emberShield: false,
+        moonExtraTurnReady: false
+      };
+    }
 
     const els = {
       startBtn: document.getElementById('startBtn'),
@@ -1268,7 +1316,8 @@
       modal: document.getElementById('modal'),
       modalText: document.getElementById('modalText'),
       closeModalBtn: document.getElementById('closeModalBtn'),
-      playAgainBtn: document.getElementById('playAgainBtn')
+      playAgainBtn: document.getElementById('playAgainBtn'),
+      moonMarker: document.getElementById('moonMarker')
     };
 
     function setupHouseSelectors(container) {
@@ -1277,6 +1326,7 @@
           container.querySelectorAll('.house-option').forEach(o => o.classList.remove('active'));
           option.classList.add('active');
           option.querySelector('input').checked = true;
+          syncConfigToState();
         });
       });
     }
@@ -1297,8 +1347,11 @@
     }
 
     function syncConfigToState() {
-      app.teams[0].name = (els.teamAName.value.trim() || 'Team A').slice(0,20);
-      app.teams[1].name = (els.teamBName.value.trim() || 'Team B').slice(0,20);
+      const nameA = (els.teamAName.value.trim() || 'Team A').slice(0, 22);
+      const nameB = (els.teamBName.value.trim() || 'Team B').slice(0, 22);
+
+      app.teams[0].name = nameA;
+      app.teams[1].name = nameB;
       app.teams[0].house = getSelectedHouse('houseA');
       app.teams[1].house = getSelectedHouse('houseB');
       app.mode = els.modeSelect.value;
@@ -1308,62 +1361,67 @@
       els.modeReadout.textContent = modeLabel(app.mode);
       els.targetReadout.textContent = app.targetScore;
       els.snitchReadout.textContent = app.snitchThreshold;
+
+      updateUI();
     }
 
-    function freshTeam(team, original) {
-      return {
-        name: original.name,
-        house: original.house,
-        score: 0,
-        throws: 0,
-        combos: 0,
-        abilityUsed: false,
-        pendingBoost: false,
-        pendingCurse: false,
-        retryReady: false,
-        turnZones: []
-      };
+    function resetTeamState(team) {
+      team.score = 0;
+      team.throws = 0;
+      team.combos = 0;
+      team.abilityUsed = false;
+      team.pendingBoost = false;
+      team.pendingCurse = false;
+      team.retryReady = false;
+      team.turnZones = [];
+      team.lunarAimTarget = null;
+      team.emberSurgeArmed = false;
+      team.emberNextBonus = false;
+      team.emberShield = false;
+      team.moonExtraTurnReady = false;
     }
 
-    function resetMatch(full = false) {
+    function clearBoardEffects() {
+      document.querySelectorAll('.hit').forEach(n => n.remove());
+      els.snitchTarget.hidden = true;
+      els.moonMarker.hidden = true;
+      els.snitchBanner.classList.remove('show');
+    }
+
+    function addLog(message) {
+      app.logs.unshift(message);
+      app.logs = app.logs.slice(0, 20);
+      els.log.innerHTML = app.logs.map(item => `<div class="log-item">${item}</div>`).join('');
+    }
+
+    function resetMatch(fresh = false) {
       syncConfigToState();
 
       app.started = false;
       app.currentTeam = 0;
       app.throwsThisTurn = 0;
       app.snitchActive = false;
+      app.moonAimPromptActive = false;
       app.logs = [];
 
-      app.teams = [
-        freshTeam(app.teams[0], app.teams[0]),
-        freshTeam(app.teams[1], app.teams[1])
-      ];
+      app.teams.forEach(resetTeamState);
+      clearBoardEffects();
 
-      document.querySelectorAll('.hit').forEach(n => n.remove());
-      els.snitchTarget.hidden = true;
-      els.snitchBanner.classList.remove('show');
-
-      if (full) {
-        addLog('New magical match prepared. Configure houses and press start.');
+      if (fresh) {
+        addLog('New magical match prepared. Configure your houses and press start.');
       } else {
-        addLog('Scores reset. Ready for a fresh showdown.');
+        addLog('Scores reset. The pitch awaits another duel.');
       }
 
       updateUI();
     }
 
-    function addLog(message) {
-      app.logs.unshift(message);
-      app.logs = app.logs.slice(0, 18);
-      els.log.innerHTML = app.logs.map(item => `<div class="log-item">${item}</div>`).join('');
-    }
-
     function renderScoreboard() {
       els.scoreboard.innerHTML = app.teams.map((team, index) => {
         const house = houseMeta[team.house];
-        const isActive = index === app.currentTeam && app.started;
+        const active = app.started && index === app.currentTeam;
         return `
-          <div class="team-card ${isActive ? 'active' : ''}">
+          <div class="team-card ${active ? 'active' : ''}">
             <div class="team-top">
               <div>
                 <div class="team-name">${team.name}</div>
@@ -1382,7 +1440,7 @@
             </div>
 
             <div class="house-power">
-              <button class="btn btn-ghost power-btn" data-use-power="${index}" ${(!app.started || team.abilityUsed || index !== app.currentTeam) ? 'disabled' : ''}>
+              <button class="btn btn-ghost power-btn" data-power="${index}" ${(!app.started || team.abilityUsed || index !== app.currentTeam) ? 'disabled' : ''}>
                 Use ${house.ability}
               </button>
             </div>
@@ -1390,8 +1448,8 @@
         `;
       }).join('');
 
-      els.scoreboard.querySelectorAll('[data-use-power]').forEach(btn => {
-        btn.addEventListener('click', () => useHousePower(Number(btn.dataset.usePower)));
+      els.scoreboard.querySelectorAll('[data-power]').forEach(btn => {
+        btn.addEventListener('click', () => useHousePower(Number(btn.dataset.power)));
       });
     }
 
@@ -1401,21 +1459,32 @@
       });
     }
 
+    function getCurrentEffectText(team) {
+      const effects = [];
+      if (team.retryReady) effects.push('Gryffindor retry armed');
+      if (team.pendingBoost === true) effects.push('Ravenclaw precision armed');
+      if (team.pendingBoost === 'huffle-chain') effects.push('Hufflepuff chain armed');
+      if (team.lunarAimTarget) effects.push(`Moonstone aim: ${team.lunarAimTarget}`);
+      if (team.emberSurgeArmed) effects.push('Emberwing surge armed');
+      if (team.emberNextBonus) effects.push('Emberwing +10 next dart');
+      if (team.emberShield) effects.push('Emberwing shield ready');
+
+      const enemy = app.teams[(app.currentTeam + 1) % 2];
+      if (enemy.pendingCurse) effects.push('Opponent curse waiting');
+
+      return effects.length ? effects.join(' · ') : 'none';
+    }
+
     function updateTurnMeta() {
       const team = app.teams[app.currentTeam];
       const house = houseMeta[team.house];
+
       els.currentTurnReadout.textContent = app.started ? team.name : 'Not started';
-      els.turnTeamName.textContent = app.started ? `${team.name}` : 'Awaiting start';
-
-      let effect = 'none';
-      if (team.pendingBoost) effect = `${house.label} precision boost armed`;
-      if (team.retryReady) effect = 'Gryffindor retry armed';
-      if (app.teams[(app.currentTeam + 1) % 2].pendingCurse) effect = 'Opponent curse waiting';
-
-      els.turnMeta.textContent = app.started ? `${house.label} · ${house.ability}` : 'Select teams and begin';
+      els.turnTeamName.textContent = app.started ? team.name : 'Awaiting start';
+      els.turnMeta.textContent = app.started ? `${house.label} · ${house.ability}` : 'Select houses and begin';
       els.throwCounter.textContent = `${app.throwsThisTurn} / 3`;
       els.comboPill.textContent = `Combo: ${team.turnZones.length}`;
-      els.effectPill.textContent = `Effect: ${effect}`;
+      els.effectPill.textContent = `Effect: ${getCurrentEffectText(team)}`;
     }
 
     function updateUI() {
@@ -1430,13 +1499,19 @@
       app.currentTeam = 0;
       app.throwsThisTurn = 0;
       app.snitchActive = false;
-      app.teams.forEach(t => {
-        t.turnZones = [];
-        t.pendingBoost = false;
-        t.pendingCurse = false;
-        t.retryReady = false;
+      app.moonAimPromptActive = false;
+      clearBoardEffects();
+      app.teams.forEach(team => {
+        team.turnZones = [];
+        team.pendingCurse = false;
+        team.pendingBoost = false;
+        team.retryReady = false;
+        team.lunarAimTarget = null;
+        team.emberSurgeArmed = false;
+        team.emberNextBonus = false;
+        team.emberShield = false;
+        team.moonExtraTurnReady = false;
       });
-      document.querySelectorAll('.hit').forEach(n => n.remove());
       addLog(`<strong>${app.teams[0].name}</strong> vs <strong>${app.teams[1].name}</strong> begins in <strong>${modeLabel(app.mode)}</strong>.`);
       updateUI();
     }
@@ -1450,7 +1525,7 @@
       const cy = h / 2;
       const r = w / 2;
 
-      ctx.clearRect(0,0,w,h);
+      ctx.clearRect(0, 0, w, h);
 
       const hazardAngles = [
         [20, 38],
@@ -1463,7 +1538,7 @@
         ctx.moveTo(cx, cy);
         ctx.arc(cx, cy, r, (start - 90) * Math.PI / 180, (end - 90) * Math.PI / 180);
         ctx.closePath();
-        ctx.fillStyle = 'rgba(179,59,46,.16)';
+        ctx.fillStyle = 'rgba(183,70,53,.16)';
         ctx.fill();
       });
 
@@ -1477,8 +1552,8 @@
     function placeSnitch() {
       const r = Math.random() * 220 + 80;
       const a = Math.random() * Math.PI * 2;
-      const x = 310 + Math.cos(a) * Math.min(r, 240);
-      const y = 310 + Math.sin(a) * Math.min(r, 240);
+      const x = 315 + Math.cos(a) * Math.min(r, 240);
+      const y = 315 + Math.sin(a) * Math.min(r, 240);
       app.snitchPos = { x, y };
       els.snitchTarget.style.left = `${x}px`;
       els.snitchTarget.style.top = `${y}px`;
@@ -1494,9 +1569,9 @@
       }
     }
 
-    function getZone(x, y) {
-      const cx = 310;
-      const cy = 310;
+    function classifyZone(x, y) {
+      const cx = 315;
+      const cy = 315;
       const dx = x - cx;
       const dy = y - cy;
       const distance = Math.sqrt(dx * dx + dy * dy);
@@ -1517,63 +1592,122 @@
         [142, 162],
         [258, 278]
       ];
-      if (distance <= 310 && hazards.some(([s,e]) => angle >= s && angle <= e)) {
+
+      if (distance <= 315 && hazards.some(([s, e]) => angle >= s && angle <= e)) {
         return { name: 'Bludger', points: -20, kind: 'bludger' };
       }
 
-      const hoopTop = y < 160;
-      if (hoopTop && x > 90 && x < 190 && distance < 285) {
+      const topBand = y < 162;
+      if (topBand && x > 92 && x < 192 && distance < 288) {
         return { name: 'Lower Hoop', points: 30, kind: 'hoop-low' };
       }
-      if (hoopTop && x >= 190 && x <= 420 && y < 128) {
+      if (topBand && x >= 194 && x <= 426 && y < 130) {
         return { name: 'High Hoop', points: 70, kind: 'hoop-high' };
       }
-      if (hoopTop && x > 430 && x < 530 && distance < 285) {
+      if (topBand && x > 438 && x < 538 && distance < 288) {
         return { name: 'Center Hoop', points: 50, kind: 'hoop-mid' };
       }
 
       if (distance <= 42) return { name: 'Bull', points: 25, kind: 'bull' };
-      if (distance <= 310) return { name: 'Outer Ring', points: 10, kind: 'outer' };
+      if (distance <= 315) return { name: 'Outer Ring', points: 10, kind: 'outer' };
       return { name: 'Miss', points: 0, kind: 'miss' };
     }
 
-    function createHit(x, y, kind) {
+    function createHit(x, y, variant) {
       const hit = document.createElement('div');
-      hit.className = `hit ${kind}`;
+      hit.className = `hit ${variant}`;
       hit.style.left = `${x}px`;
       hit.style.top = `${y}px`;
       els.dartboard.appendChild(hit);
-      setTimeout(() => {
-        hit.style.opacity = '.3';
-      }, 1300);
+      setTimeout(() => hit.style.opacity = '.3', 1300);
+    }
+
+    function showMoonMarker(zoneKind) {
+      const map = {
+        'outer': { x: 315, y: 540 },
+        'bull': { x: 315, y: 315 },
+        'hoop-low': { x: 140, y: 118 },
+        'hoop-high': { x: 315, y: 88 },
+        'hoop-mid': { x: 492, y: 126 }
+      };
+      const pos = map[zoneKind];
+      if (!pos) return;
+      els.moonMarker.hidden = false;
+      els.moonMarker.style.left = `${pos.x}px`;
+      els.moonMarker.style.top = `${pos.y}px`;
     }
 
     function useHousePower(index) {
       if (!app.started || index !== app.currentTeam) return;
       const team = app.teams[index];
       if (team.abilityUsed) return;
-      const house = team.house;
 
       team.abilityUsed = true;
 
-      if (house === 'gryffindor') {
-        team.retryReady = true;
-        addLog(`<strong>${team.name}</strong> activates <strong>Bold Retry</strong>. Their next weak shot may become a 30-point hoop strike.`);
-      }
-      if (house === 'slytherin') {
-        app.teams[(index + 1) % 2].pendingCurse = true;
-        addLog(`<strong>${team.name}</strong> casts <strong>Cunning Curse</strong> on the rival’s next strong throw.`);
-      }
-      if (house === 'ravenclaw') {
-        team.pendingBoost = true;
-        addLog(`<strong>${team.name}</strong> prepares <strong>Strategy Ring</strong>. The next bull or center precision shot gets +15.`);
-      }
-      if (house === 'hufflepuff') {
-        team.pendingBoost = 'huffle-chain';
-        addLog(`<strong>${team.name}</strong> invokes <strong>Steady Chain</strong>. Three unique scoring zones this turn gain a +25 combo bonus.`);
+      switch (team.house) {
+        case 'gryffindor':
+          team.retryReady = true;
+          addLog(`<strong>${team.name}</strong> activates <strong>Bold Retry</strong>. Their next weak shot can become a 30-point strike.`);
+          break;
+        case 'slytherin':
+          app.teams[(index + 1) % 2].pendingCurse = true;
+          addLog(`<strong>${team.name}</strong> casts <strong>Cunning Curse</strong> on the rival’s next strong shot.`);
+          break;
+        case 'ravenclaw':
+          team.pendingBoost = true;
+          addLog(`<strong>${team.name}</strong> prepares <strong>Strategy Ring</strong>. Their next bull or center-hoop hit gains +15.`);
+          break;
+        case 'hufflepuff':
+          team.pendingBoost = 'huffle-chain';
+          addLog(`<strong>${team.name}</strong> invokes <strong>Steady Chain</strong>. Hit three unique zones this turn for +25.`);
+          break;
+        case 'moonstone': {
+          const pick = prompt('Moonstone Lunar Aim: choose a zone — outer, bull, hoop-low, hoop-high, hoop-mid', 'bull');
+          const valid = ['outer', 'bull', 'hoop-low', 'hoop-high', 'hoop-mid'];
+          const chosen = (pick || '').trim().toLowerCase();
+          if (!valid.includes(chosen)) {
+            team.abilityUsed = false;
+            addLog(`<strong>${team.name}</strong> hesitates. <strong>Lunar Aim</strong> was not set.`);
+            break;
+          }
+          team.lunarAimTarget = chosen;
+          showMoonMarker(chosen);
+          addLog(`<strong>${team.name}</strong> calls <strong>${chosen}</strong> with <strong>Lunar Aim</strong>. Land it next throw to double the score.`);
+          break;
+        }
+        case 'emberwing':
+          team.emberSurgeArmed = true;
+          team.emberShield = true;
+          addLog(`<strong>${team.name}</strong> ignites <strong>Flame Surge</strong>. Their next high-value hit primes +10 on the following dart and one Bludger can be ignored.`);
+          break;
       }
 
       updateUI();
+    }
+
+    function getBoardPointFromEvent(clientX, clientY) {
+      const rect = els.dartboard.getBoundingClientRect();
+      const scaleX = 630 / rect.width;
+      const scaleY = 630 / rect.height;
+      return {
+        x: (clientX - rect.left) * scaleX,
+        y: (clientY - rect.top) * scaleY
+      };
+    }
+
+    function maybeFinish(team, bySnitch) {
+      if (team.score >= app.targetScore || bySnitch) {
+        app.started = false;
+        els.snitchTarget.hidden = true;
+        els.snitchBanner.classList.remove('show');
+        els.moonMarker.hidden = true;
+        const text = bySnitch
+          ? `${team.name} captures the Golden Snitch and wins with ${team.score} points.`
+          : `${team.name} reaches ${team.score} points and wins the match.`;
+        els.modalText.textContent = text;
+        els.modal.classList.add('open');
+        addLog(`<strong>${team.name}</strong> wins the match.`);
+      }
     }
 
     function processThrow(clientX, clientY) {
@@ -1583,30 +1717,30 @@
       }
       if (app.throwsThisTurn >= 3) return;
 
-      const rect = els.dartboard.getBoundingClientRect();
-      const scaleX = 620 / rect.width;
-      const scaleY = 620 / rect.height;
-      const x = (clientX - rect.left) * scaleX;
-      const y = (clientY - rect.top) * scaleY;
-
+      const { x, y } = getBoardPointFromEvent(clientX, clientY);
       const team = app.teams[app.currentTeam];
       const enemy = app.teams[(app.currentTeam + 1) % 2];
-      const zone = getZone(x, y);
+      const zone = classifyZone(x, y);
+
       let points = zone.points;
       let message = `<strong>${team.name}</strong> hits <strong>${zone.name}</strong> for <strong>${points}</strong>.`;
       let hitClass = app.currentTeam === 0 ? 'team-a' : 'team-b';
 
-      if (zone.kind === 'snitch') {
-        hitClass = 'snitch';
-      }
-      if (zone.kind === 'bludger') {
-        hitClass = 'bludger';
+      if (zone.kind === 'snitch') hitClass = 'snitch';
+      if (zone.kind === 'bludger') hitClass = 'bludger';
+      if (team.house === 'moonstone') hitClass = zone.kind === 'miss' ? hitClass : 'moon';
+      if (team.house === 'emberwing') hitClass = zone.kind === 'miss' ? hitClass : 'ember';
+
+      if (team.house === 'emberwing' && zone.kind === 'bludger' && team.emberShield) {
+        points = 0;
+        team.emberShield = false;
+        message = `<strong>${team.name}</strong> burns through a <strong>Bludger</strong> using <strong>Ash Trail</strong>. No penalty taken.`;
       }
 
-      if (team.house === 'gryffindor' && team.retryReady && points <= 10) {
+      if (team.house === 'gryffindor' && team.retryReady && points <= 10 && zone.kind !== 'miss') {
         points = 30;
         team.retryReady = false;
-        message = `<strong>${team.name}</strong> turns a weak shot into a fearless <strong>Gryffindor Retry</strong> for <strong>30</strong>.`;
+        message = `<strong>${team.name}</strong> transforms a weak shot with <strong>Bold Retry</strong> into <strong>30</strong>.`;
       }
 
       if (team.house === 'ravenclaw' && team.pendingBoost && (zone.kind === 'bull' || zone.kind === 'hoop-mid')) {
@@ -1618,7 +1752,28 @@
       if (enemy.pendingCurse && points > 30) {
         points -= 20;
         enemy.pendingCurse = false;
-        message = `<strong>${team.name}</strong> suffers a <strong>Slytherin Curse</strong>. ${zone.name} is reduced to <strong>${points}</strong>.`;
+        message = `<strong>${team.name}</strong> is caught by a <strong>Slytherin Curse</strong>. ${zone.name} falls to <strong>${points}</strong>.`;
+      }
+
+      if (team.house === 'moonstone' && team.lunarAimTarget) {
+        if (zone.kind === team.lunarAimTarget) {
+          points *= 2;
+          message = `<strong>${team.name}</strong> lands <strong>Lunar Aim</strong> on ${zone.name}. Score doubled to <strong>${points}</strong>.`;
+        } else {
+          message = `<strong>${team.name}</strong> misses their called <strong>Lunar Aim</strong> and scores <strong>${points}</strong> on ${zone.name}.`;
+        }
+        team.lunarAimTarget = null;
+        els.moonMarker.hidden = true;
+      }
+
+      if (team.house === 'emberwing' && team.emberSurgeArmed && points >= 50) {
+        team.emberSurgeArmed = false;
+        team.emberNextBonus = true;
+        message += ` <strong>Flame Surge ignites the next dart.</strong>`;
+      } else if (team.house === 'emberwing' && team.emberNextBonus && zone.kind !== 'miss') {
+        points += 10;
+        team.emberNextBonus = false;
+        message = `<strong>${team.name}</strong> unleashes <strong>Flame Surge</strong> for <strong>${points}</strong> on ${zone.name}.`;
       }
 
       if (zone.kind !== 'miss' && zone.kind !== 'bludger') {
@@ -1633,11 +1788,20 @@
       }
 
       if ((zone.kind === 'hoop-low' || zone.kind === 'hoop-mid' || zone.kind === 'hoop-high') && app.throwsThisTurn > 0) {
-        const prevCount = team.turnZones.filter(z => z.startsWith('hoop')).length;
-        if (prevCount >= 2) {
+        const hoopHits = team.turnZones.filter(z => z.startsWith('hoop')).length;
+        if (hoopHits >= 2) {
           points += 10;
           team.combos += 1;
           message += ` <strong>Passing play combo +10.</strong>`;
+        }
+      }
+
+      if (team.house === 'moonstone' && zone.kind === 'bull') {
+        const bullHitsThisTurn = (team._bullHitsThisTurn || 0) + 1;
+        team._bullHitsThisTurn = bullHitsThisTurn;
+        if (bullHitsThisTurn >= 2 && !team.moonExtraTurnReady) {
+          team.moonExtraTurnReady = true;
+          addLog(`<strong>${team.name}</strong> triggers <strong>Silver Echo</strong>. They earn an extra turn after this one.`);
         }
       }
 
@@ -1655,39 +1819,40 @@
         maybeFinish(team, false);
       }
 
-      if (app.snitchActive) placeSnitch();
+      if (app.snitchActive && app.started) placeSnitch();
 
       if (app.throwsThisTurn >= 3 && app.started) {
-        setTimeout(endTurn, 250);
+        setTimeout(endTurn, 260);
       }
 
       updateUI();
-    }
-
-    function maybeFinish(team, bySnitch) {
-      if (team.score >= app.targetScore || bySnitch) {
-        app.started = false;
-        els.snitchTarget.hidden = true;
-        els.snitchBanner.classList.remove('show');
-        const reason = bySnitch
-          ? `${team.name} captures the Golden Snitch and wins the match with ${team.score} points.`
-          : `${team.name} reaches ${team.score} points and wins the match.`;
-        els.modalText.textContent = reason;
-        els.modal.classList.add('open');
-        addLog(`<strong>${team.name}</strong> wins the match.`);
-      }
     }
 
     function endTurn() {
       if (!app.started) return;
+
+      const current = app.teams[app.currentTeam];
+      const getsExtraTurn = current.moonExtraTurnReady;
+
+      current.turnZones = [];
+      current._bullHitsThisTurn = 0;
+      current.moonExtraTurnReady = false;
       app.throwsThisTurn = 0;
-      app.teams[app.currentTeam].turnZones = [];
-      app.currentTeam = (app.currentTeam + 1) % 2;
-      addLog(`Turn passes to <strong>${app.teams[app.currentTeam].name}</strong>.`);
+
+      if (getsExtraTurn) {
+        addLog(`<strong>${current.name}</strong> keeps the turn thanks to <strong>Silver Echo</strong>.`);
+      } else {
+        app.currentTeam = (app.currentTeam + 1) % 2;
+        addLog(`Turn passes to <strong>${app.teams[app.currentTeam].name}</strong>.`);
+      }
+
       updateUI();
     }
 
-    els.dartboard.addEventListener('click', (e) => processThrow(e.clientX, e.clientY));
+    els.dartboard.addEventListener('click', (e) => {
+      processThrow(e.clientX, e.clientY);
+    });
+
     els.dartboard.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
@@ -1705,6 +1870,7 @@
     els.targetScore.addEventListener('change', syncConfigToState);
     els.teamAName.addEventListener('input', syncConfigToState);
     els.teamBName.addEventListener('input', syncConfigToState);
+
     document.querySelectorAll('input[name="houseA"], input[name="houseB"]').forEach(input => {
       input.addEventListener('change', syncConfigToState);
     });
@@ -1723,8 +1889,8 @@
 
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-    syncConfigToState();
     drawHazards();
+    syncConfigToState();
     resetMatch(true);
   </script>
 </body>
