@@ -411,11 +411,12 @@
             border: 1px solid var(--line);
             color: var(--text);
             font-weight: 700;
-            font-size: .9rem;
+            font-size: .85rem;
             cursor: pointer;
             text-align: center;
             transition: background .2s, transform .1s;
         }
+        .keypad-btn small { display: block; font-size: .73rem; color: var(--muted); margin-top: .15rem; font-weight: 500; }
         .keypad-btn:hover { background: rgba(215,170,65,.15); border-color: var(--gold); }
         .keypad-btn:active { transform: scale(.97); }
         .keypad-btn.snitch-btn { grid-column: span 2; background: linear-gradient(135deg, rgba(215,170,65,.2), rgba(215,170,65,.05)); border-color: var(--gold); color: var(--gold2); }
@@ -591,7 +592,6 @@
                         <div class="dartboard" id="dartboard" aria-label="Dartboard tracking hits">
                             <canvas class="hazard-overlay" id="hazardCanvas" width="720" height="720" style="pointer-events: none;"></canvas>
                             <div class="zone-layer" id="zoneLayer">
-                                <!-- Dynamic Target Numbers & Zone Labels -->
                                 <div class="zone-number" style="left:50%; top:10%;">20</div>
                                 <div class="zone-number" style="left:72%; top:18%;">1</div>
                                 <div class="zone-number" style="left:88%; top:38%;">18</div>
@@ -639,14 +639,14 @@
                         <div class="field" style="margin-top:.4rem;">
                             <label>Log physical throw:</label>
                             <div class="scoring-keypad">
-                                <button class="keypad-btn" type="button" data-zone="hoop-high" id="btnHigh">High Hoop (70)</button>
-                                <button class="keypad-btn" type="button" data-zone="hoop-mid" id="btnMid">Center Hoop (50)</button>
-                                <button class="keypad-btn" type="button" data-zone="hoop-low" id="btnLow">Lower Hoop (30)</button>
-                                <button class="keypad-btn" type="button" data-zone="bull" id="btnBull">Bull (25)</button>
-                                <button class="keypad-btn" type="button" data-zone="outer" id="btnOuter">Outer Ring (10)</button>
-                                <button class="keypad-btn" type="button" data-zone="bludger" style="color:var(--danger)" id="btnBludger">Bludger (-20)</button>
-                                <button class="keypad-btn" type="button" data-zone="miss">Miss (0)</button>
-                                <button class="keypad-btn snitch-btn" type="button" id="snitchKeyBtn" data-zone="snitch" style="display:none;">Catch Golden Snitch (150)</button>
+                                <button class="keypad-btn" type="button" data-zone="hoop-high" id="btnHigh">High Hoop <small>Seg 20 (70 pts)</small></button>
+                                <button class="keypad-btn" type="button" data-zone="hoop-mid" id="btnMid">Center Hoop <small>Seg 18 (50 pts)</small></button>
+                                <button class="keypad-btn" type="button" data-zone="hoop-low" id="btnLow">Lower Hoop <small>Seg 2 (30 pts)</small></button>
+                                <button class="keypad-btn" type="button" data-zone="bull" id="btnBull">Bullseye <small>Center (25 pts)</small></button>
+                                <button class="keypad-btn" type="button" data-zone="outer" id="btnOuter">Outer Ring <small>Seg 6 (10 pts)</small></button>
+                                <button class="keypad-btn" type="button" data-zone="bludger" style="color:var(--danger)" id="btnBludger">Bludger <small>Seg 15 (-20 pts)</small></button>
+                                <button class="keypad-btn" type="button" data-zone="miss">Miss <small>Off target (0 pts)</small></button>
+                                <button class="keypad-btn snitch-btn" type="button" id="snitchKeyBtn" data-zone="snitch" style="display:none;">Catch Golden Snitch <small>Snitch Target (150 pts)</small></button>
                             </div>
                         </div>
                         <div class="helper-row">
@@ -687,8 +687,8 @@
             <div class="modal-head"><h3>Quidditch Darts Rulebook</h3></div>
             <div class="modal-body" style="display:grid; gap:.8rem;">
                 <p><strong>1. Basic Gameplay:</strong> Throw 3 physical darts per turn, then use the keypad to log hits.</p>
-                <p><strong>2. Scoring Modes:</strong> Choose between Standard Board scoring or Quad Board variant (which multiplies all zone points by 4x for high-stakes matches!).</p>
-                <p><strong>3. Hazards:</strong> Bludger wedges deduct points.</p>
+                <p><strong>2. Segment Aiming:</strong> Each scoring button displays the exact dartboard segment number you should aim for.</p>
+                <p><strong>3. Scoring Modes:</strong> Choose between Standard Board or Quad Board (4x multiplier variant).</p>
             </div>
             <div class="modal-foot"><button class="btn btn-primary" id="closeRulesBtn" type="button">Got it</button></div>
         </div>
@@ -798,23 +798,20 @@
             els.snitchReadout.textContent = app.snitchThreshold;
             els.modePill.textContent = `Mode: ${app.boardType === 'quad' ? 'Quad Board' : 'Standard'}`;
 
+            const mult = app.boardType === 'quad' ? 4 : 1;
             if (app.boardType === 'quad') {
                 els.dartboard.classList.add('quad-board');
-                els.btnHigh.textContent = 'High Hoop (280)';
-                els.btnMid.textContent = 'Center Hoop (200)';
-                els.btnLow.textContent = 'Lower Hoop (120)';
-                els.btnBull.textContent = 'Quad Bull (100)';
-                els.btnOuter.textContent = 'Outer Ring (40)';
-                els.btnBludger.textContent = 'Bludger (-80)';
             } else {
                 els.dartboard.classList.remove('quad-board');
-                els.btnHigh.textContent = 'High Hoop (70)';
-                els.btnMid.textContent = 'Center Hoop (50)';
-                els.btnLow.textContent = 'Lower Hoop (30)';
-                els.btnBull.textContent = 'Bull (25)';
-                els.btnOuter.textContent = 'Outer Ring (10)';
-                els.btnBludger.textContent = 'Bludger (-20)';
             }
+
+            els.btnHigh.innerHTML = `High Hoop <small>Seg 20 (${70 * mult} pts)</small>`;
+            els.btnMid.innerHTML = `Center Hoop <small>Seg 18 (${50 * mult} pts)</small>`;
+            els.btnLow.innerHTML = `Lower Hoop <small>Seg 2 (${30 * mult} pts)</small>`;
+            els.btnBull.innerHTML = `Bullseye <small>Center (${25 * mult} pts)</small>`;
+            els.btnOuter.innerHTML = `Outer Ring <small>Seg 6 (${10 * mult} pts)</small>`;
+            els.btnBludger.innerHTML = `Bludger <small>Seg 15 (${-20 * mult} pts)</small>`;
+
             updateUI();
         }
 
@@ -837,7 +834,6 @@
             els.snitchKeyBtn.style.display = 'none';
             els.snitchBanner.classList.remove('show');
             
-            // Show setup panel, hide turn console and match log during setup
             els.setupPanel.style.display = 'block';
             els.heroPanel.classList.remove('hidden');
             els.appGrid.classList.remove('match-active');
@@ -885,7 +881,6 @@
             app.currentTeam = 0;
             app.throwsThisTurn = 0;
             
-            // Hide setup panel, show turn console and match log
             els.setupPanel.style.display = 'none';
             els.heroPanel.classList.add('hidden');
             els.appGrid.classList.add('match-active');
@@ -912,12 +907,12 @@
         function getZoneDetails(zoneKey) {
             const mult = app.boardType === 'quad' ? 4 : 1;
             switch(zoneKey) {
-                case 'hoop-high': return { name: 'High Hoop', points: 70 * mult, kind: 'hoop-high', coords: {x:360, y:100} };
-                case 'hoop-mid': return { name: 'Center Hoop', points: 50 * mult, kind: 'hoop-mid', coords: {x:560, y:142} };
-                case 'hoop-low': return { name: 'Lower Hoop', points: 30 * mult, kind: 'hoop-low', coords: {x:160, y:135} };
+                case 'hoop-high': return { name: 'High Hoop (Seg 20)', points: 70 * mult, kind: 'hoop-high', coords: {x:360, y:100} };
+                case 'hoop-mid': return { name: 'Center Hoop (Seg 18)', points: 50 * mult, kind: 'hoop-mid', coords: {x:560, y:142} };
+                case 'hoop-low': return { name: 'Lower Hoop (Seg 2)', points: 30 * mult, kind: 'hoop-low', coords: {x:160, y:135} };
                 case 'bull': return { name: 'Bullseye', points: 25 * mult, kind: 'bull', coords: {x:360, y:360} };
-                case 'outer': return { name: 'Outer Ring', points: 10 * mult, kind: 'outer', coords: {x:360, y:620} };
-                case 'bludger': return { name: 'Bludger', points: -20 * mult, kind: 'bludger', coords: {x:220, y:230} };
+                case 'outer': return { name: 'Outer Ring (Seg 6)', points: 10 * mult, kind: 'outer', coords: {x:360, y:620} };
+                case 'bludger': return { name: 'Bludger (Seg 15)', points: -20 * mult, kind: 'bludger', coords: {x:220, y:230} };
                 case 'snitch': return { name: 'Golden Snitch', points: 150 * mult, kind: 'snitch', coords: app.snitchPos };
                 default: return { name: 'Miss', points: 0, kind: 'miss', coords: {x:360, y:360} };
             }
