@@ -9,921 +9,161 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800&family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
   <style>
-    :root{
-      --bg:#0b0910;
-      --bg2:#15101b;
-      --panel:rgba(23,17,30,.84);
-      --panel-soft:rgba(255,255,255,.04);
-      --line:rgba(255,233,193,.14);
-      --text:#f7f1e7;
-      --muted:#cabca3;
-      --gold:#d7aa41;
-      --gold2:#f2d88b;
-      --danger:#b74635;
-      --ok:#65b886;
-      --shadow:0 24px 80px rgba(0,0,0,.45);
-      --gryff:#8f1f2a;
-      --slyth:#113c2d;
-      --raven:#1d2f62;
-      --huff:#8e6c1f;
-      --moon:#8b7cff;
-      --ember:#cf5c2f;
-      --max:1440px;
-    }
-
+    :root{--bg:#0b0910; --bg2:#15101b; --panel:rgba(23,17,30,.84); --panel-soft:rgba(255,255,255,.04); --line:rgba(255,233,193,.14); --text:#f7f1e7; --muted:#cabca3; --gold:#d7aa41; --gold2:#f2d88b; --danger:#b74635; --ok:#65b886; --shadow:0 24px 80px rgba(0,0,0,.45); --gryff:#8f1f2a; --slyth:#113c2d; --raven:#1d2f62; --huff:#8e6c1f; --moon:#8b7cff; --ember:#cf5c2f; --max:1440px;}
     *{box-sizing:border-box}
     html,body{height:100%}
     html{scroll-behavior:smooth}
-    body{
-      margin:0;
-      color:var(--text);
-      font-family:"Manrope", sans-serif;
-      background:
-        radial-gradient(circle at 15% 10%, rgba(215,170,65,.08), transparent 18%),
-        radial-gradient(circle at 84% 16%, rgba(143,31,42,.12), transparent 18%),
-        radial-gradient(circle at 50% 100%, rgba(29,47,98,.18), transparent 28%),
-        linear-gradient(180deg, #0b0910 0%, #120d18 44%, #0b0910 100%);
-      overflow-x:hidden;
-    }
-
-    body::before{
-      content:"";
-      position:fixed;
-      inset:0;
-      pointer-events:none;
-      opacity:.18;
-      background-image:
-        linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
-      background-size:26px 26px;
-      mask-image:radial-gradient(circle at center, black 42%, transparent 100%);
-    }
-
+    body{margin:0; color:var(--text); font-family:"Manrope", sans-serif; background: radial-gradient(circle at 15% 10%, rgba(215,170,65,.08), transparent 18%), radial-gradient(circle at 84% 16%, rgba(143,31,42,.12), transparent 18%), radial-gradient(circle at 50% 100%, rgba(29,47,98,.18), transparent 28%), linear-gradient(180deg, #0b0910 0%, #120d18 44%, #0b0910 100%); overflow-x:hidden;}
+    body::before{content:""; position:fixed; inset:0; pointer-events:none; opacity:.18; background-image: linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px); background-size:26px 26px; mask-image:radial-gradient(circle at center, black 42%, transparent 100%);}
     button,input,select{font:inherit}
     a{text-decoration:none;color:inherit}
-
-    .wrap{
-      width:min(var(--max), calc(100% - 1.2rem));
-      margin-inline:auto;
-    }
-
-    .reveal{
-      opacity:0;
-      transform:translateY(18px);
-      transition:opacity .8s ease, transform .8s ease;
-    }
-    .reveal.visible{
-      opacity:1;
-      transform:none;
-    }
-
-    .topbar{
-      position:sticky;
-      top:0;
-      z-index:100;
-      background:linear-gradient(180deg, rgba(10,8,14,.94), rgba(10,8,14,.65));
-      backdrop-filter:blur(14px) saturate(140%);
-      border-bottom:1px solid var(--line);
-    }
-
-    .topbar-inner{
-      min-height:78px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:1rem;
-    }
-
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:.85rem;
-      text-transform:uppercase;
-      letter-spacing:.12em;
-      font-weight:800;
-    }
-
-    .crest{
-      width:42px;
-      aspect-ratio:1;
-      border-radius:50%;
-      position:relative;
-      background:radial-gradient(circle at 35% 35%, #f9efba, #d7aa41 58%, #6f4a12 100%);
-      box-shadow:0 0 0 2px rgba(255,231,173,.24), 0 10px 30px rgba(215,170,65,.28);
-      flex:none;
-    }
-    .crest::before,.crest::after{
-      content:"";
-      position:absolute;
-      top:50%;
-      width:18px;height:5px;
-      border-radius:999px;
-      background:linear-gradient(90deg, transparent, #edd58a 30%, #a97717 100%);
-    }
+    .wrap{width:min(var(--max), calc(100% - 1.2rem)); margin-inline:auto;}
+    .reveal{opacity:0; transform:translateY(18px); transition:opacity .8s ease, transform .8s ease;}
+    .reveal.visible{opacity:1; transform:none;}
+    .topbar{position:sticky; top:0; z-index:100; background:linear-gradient(180deg, rgba(10,8,14,.94), rgba(10,8,14,.65)); backdrop-filter:blur(14px) saturate(140%); border-bottom:1px solid var(--line);}
+    .topbar-inner{min-height:78px; display:flex; align-items:center; justify-content:space-between; gap:1rem;}
+    .brand{display:flex; align-items:center; gap:.85rem; text-transform:uppercase; letter-spacing:.12em; font-weight:800;}
+    .crest{width:42px; aspect-ratio:1; border-radius:50%; position:relative; background:radial-gradient(circle at 35% 35%, #f9efba, #d7aa41 58%, #6f4a12 100%); box-shadow:0 0 0 2px rgba(255,231,173,.24), 0 10px 30px rgba(215,170,65,.28); flex:none;}
+    .crest::before,.crest::after{content:""; position:absolute; top:50%; width:18px;height:5px; border-radius:999px; background:linear-gradient(90deg, transparent, #edd58a 30%, #a97717 100%);}
     .crest::before{left:-12px; transform:translateY(-50%) rotate(-18deg)}
     .crest::after{right:-12px; transform:translateY(-50%) rotate(18deg)}
-
-    .brand span{
-      font-family:"Cinzel", serif;
-      color:var(--gold2);
-      font-size:1rem;
-    }
-
-    .top-actions{
-      display:flex;
-      align-items:center;
-      gap:.8rem;
-      flex-wrap:wrap;
-    }
-
-    .btn{
-      appearance:none;
-      border:0;
-      border-radius:999px;
-      min-height:46px;
-      padding:.85rem 1.1rem;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      gap:.55rem;
-      cursor:pointer;
-      font-weight:800;
-      transition:transform .18s ease, box-shadow .25s ease, background .25s ease, border-color .25s ease, opacity .25s ease;
-    }
+    .brand span{font-family:"Cinzel", serif; color:var(--gold2); font-size:1rem;}
+    .top-actions{display:flex; align-items:center; gap:.8rem; flex-wrap:wrap;}
+    .btn{appearance:none; border:0; border-radius:999px; min-height:46px; padding:.85rem 1.1rem; display:inline-flex; align-items:center; justify-content:center; gap:.55rem; cursor:pointer; font-weight:800; transition:transform .18s ease, box-shadow .25s ease, background .25s ease, border-color .25s ease, opacity .25s ease;}
     .btn:hover{transform:translateY(-2px)}
     .btn:active{transform:translateY(0) scale(.985)}
     .btn:disabled{opacity:.45; cursor:not-allowed; transform:none}
-
-    .btn-primary{
-      color:#2b1a05;
-      background:linear-gradient(135deg, var(--gold2), var(--gold));
-      box-shadow:0 12px 36px rgba(215,170,65,.25);
-    }
-    .btn-ghost{
-      color:var(--text);
-      background:rgba(255,255,255,.04);
-      border:1px solid var(--line);
-      backdrop-filter:blur(10px);
-    }
-    .btn-danger{
-      color:#fff4ef;
-      background:linear-gradient(135deg, #cb5647, #8f281f);
-      box-shadow:0 12px 36px rgba(183,70,53,.22);
-    }
-
+    .btn-primary{color:#2b1a05; background:linear-gradient(135deg, var(--gold2), var(--gold)); box-shadow:0 12px 36px rgba(215,170,65,.25);}
+    .btn-ghost{color:var(--text); background:rgba(255,255,255,.04); border:1px solid var(--line); backdrop-filter:blur(10px);}
+    .btn-danger{color:#fff4ef; background:linear-gradient(135deg, #cb5647, #8f281f); box-shadow:0 12px 36px rgba(183,70,53,.22);}
     main{padding:1rem 0 2rem}
-
-    .app-grid{
-      display:grid;
-      grid-template-columns:340px minmax(0, 1fr) 360px;
-      gap:1rem;
-      align-items:start;
-    }
-
-    .panel{
-      border-radius:28px;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.02)),
-        var(--panel);
-      border:1px solid var(--line);
-      box-shadow:var(--shadow);
-      backdrop-filter:blur(14px);
-      overflow:hidden;
-    }
-
-    .panel-head{
-      padding:1rem 1rem .25rem;
-    }
-    .panel-head h2,.panel-head h3{
-      margin:0;
-      font-family:"Cinzel", serif;
-      letter-spacing:-.02em;
-    }
-
+    .app-grid{display:grid; grid-template-columns:340px minmax(0, 1fr) 360px; gap:1rem; align-items:start;}
+    .panel{border-radius:28px; background: linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.02)), var(--panel); border:1px solid var(--line); box-shadow:var(--shadow); backdrop-filter:blur(14px); overflow:hidden;}
+    .panel-head{padding:1rem 1rem .25rem;}
+    .panel-head h2,.panel-head h3{margin:0; font-family:"Cinzel", serif; letter-spacing:-.02em;}
     .panel-body{padding:1rem}
-
-    .setup-stack{
-      display:grid;
-      gap:1rem;
-    }
-
-    .field{
-      display:grid;
-      gap:.45rem;
-    }
-    .field label{
-      color:var(--muted);
-      font-size:.92rem;
-      font-weight:700;
-      letter-spacing:.02em;
-    }
-
-    .input,.select{
-      width:100%;
-      min-height:50px;
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,.08);
-      background:rgba(255,255,255,.04);
-      color:var(--text);
-      padding:.85rem .95rem;
-      outline:none;
-      transition:border-color .2s ease, background .2s ease, box-shadow .2s ease;
-    }
-    .input:focus,.select:focus{
-      border-color:rgba(242,216,139,.4);
-      box-shadow:0 0 0 4px rgba(242,216,139,.08);
-      background:rgba(255,255,255,.06);
-    }
-
-    .house-grid{
-      display:grid;
-      gap:.65rem;
-    }
-
-    .house-option{
-      position:relative;
-      display:grid;
-      grid-template-columns:auto 1fr auto;
-      gap:.8rem;
-      align-items:center;
-      padding:.95rem;
-      border-radius:18px;
-      border:1px solid rgba(255,255,255,.08);
-      background:rgba(255,255,255,.03);
-      cursor:pointer;
-      transition:transform .2s ease, border-color .25s ease, background .25s ease;
-    }
-    .house-option:hover{
-      transform:translateY(-2px);
-      border-color:rgba(242,216,139,.2);
-      background:rgba(255,255,255,.05);
-    }
-    .house-option.active{
-      border-color:rgba(242,216,139,.34);
-      box-shadow:inset 0 0 0 1px rgba(242,216,139,.16);
-      background:rgba(255,255,255,.065);
-    }
-    .house-option input{
-      position:absolute;
-      opacity:0;
-      pointer-events:none;
-    }
-
-    .house-sigil{
-      width:18px;height:18px;border-radius:50%;
-      box-shadow:0 0 0 1px rgba(255,255,255,.16);
-      flex:none;
-    }
-
-    .g{background:var(--gryff)}
-    .s{background:var(--slyth)}
-    .r{background:var(--raven)}
-    .h{background:var(--huff)}
-    .m{background:var(--moon)}
-    .e{background:var(--ember)}
-
-    .house-copy strong{
-      display:block;
-      margin-bottom:.12rem;
-    }
-    .house-copy span{
-      color:var(--muted);
-      font-size:.84rem;
-      line-height:1.35;
-    }
-
-    .mini-note{
-      padding:.9rem .95rem;
-      border-radius:16px;
-      background:rgba(255,255,255,.03);
-      border:1px dashed rgba(255,255,255,.12);
-      color:var(--muted);
-      line-height:1.6;
-      font-size:.9rem;
-    }
-
-    .center-stack{
-      display:grid;
-      gap:1rem;
-    }
-
-    .hero-panel{
-      position:relative;
-      min-height:200px;
-      padding:1.1rem;
-      overflow:hidden;
-    }
-
-    .hero-grid{
-      display:grid;
-      grid-template-columns:1.2fr .8fr;
-      gap:1rem;
-      align-items:center;
-    }
-
-    .eyebrow{
-      display:inline-flex;
-      align-items:center;
-      gap:.5rem;
-      padding:.5rem .78rem;
-      border-radius:999px;
-      border:1px solid rgba(242,216,139,.16);
-      color:var(--gold2);
-      background:rgba(255,255,255,.03);
-      font-size:.78rem;
-      font-weight:800;
-      text-transform:uppercase;
-      letter-spacing:.14em;
-    }
-
-    .hero-panel h1{
-      margin:.8rem 0 .7rem;
-      font-family:"Cinzel", serif;
-      font-size:clamp(2.1rem, 4vw, 4rem);
-      line-height:.95;
-      max-width:10ch;
-    }
-
-    .hero-panel p{
-      margin:0;
-      max-width:58ch;
-      color:var(--muted);
-      line-height:1.7;
-    }
-
-    .pitch-visual{
-      position:relative;
-      min-height:220px;
-      border-radius:24px;
-      border:1px solid rgba(255,255,255,.08);
-      background:
-        radial-gradient(circle at 50% 20%, rgba(255,255,255,.07), transparent 20%),
-        linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.01));
-      overflow:hidden;
-      isolation:isolate;
-    }
-
-    .pitch-visual .hoop{
-      position:absolute;
-      top:16%;
-      width:84px;height:84px;
-      border-radius:50%;
-      border:6px solid rgba(242,216,139,.82);
-      box-shadow:0 0 24px rgba(215,170,65,.18);
-    }
-    .pitch-visual .hoop::after{
-      content:"";
-      position:absolute;
-      left:50%;
-      bottom:-90px;
-      transform:translateX(-50%);
-      width:6px;height:90px;
-      border-radius:999px;
-      background:linear-gradient(180deg, rgba(242,216,139,.7), rgba(242,216,139,.12));
-    }
+    .setup-stack{display:grid; gap:1rem;}
+    .field{display:grid; gap:.45rem;}
+    .field label{color:var(--muted); font-size:.92rem; font-weight:700; letter-spacing:.02em;}
+    .input,.select{width:100%; min-height:50px; border-radius:16px; border:1px solid rgba(255,255,255,.08); background:rgba(255,255,255,.04); color:var(--text); padding:.85rem .95rem; outline:none; transition:border-color .2s ease, background .2s ease, box-shadow .2s ease;}
+    .input:focus,.select:focus{border-color:rgba(242,216,139,.4); box-shadow:0 0 0 4px rgba(242,216,139,.08); background:rgba(255,255,255,.06);}
+    .house-grid{display:grid; gap:.65rem;}
+    .house-option{position:relative; display:grid; grid-template-columns:auto 1fr auto; gap:.8rem; align-items:center; padding:.95rem; border-radius:18px; border:1px solid rgba(255,255,255,.08); background:rgba(255,255,255,.03); cursor:pointer; transition:transform .2s ease, border-color .25s ease, background .25s ease;}
+    .house-option:hover{transform:translateY(-2px); border-color:rgba(242,216,139,.2); background:rgba(255,255,255,.05);}
+    .house-option.active{border-color:rgba(242,216,139,.34); box-shadow:inset 0 0 0 1px rgba(242,216,139,.16); background:rgba(255,255,255,.065);}
+    .house-option input{position:absolute; opacity:0; pointer-events:none;}
+    .house-sigil{width:18px;height:18px;border-radius:50%; box-shadow:0 0 0 1px rgba(255,255,255,.16); flex:none;}
+    .g{background:var(--gryff)} .s{background:var(--slyth)} .r{background:var(--raven)} .h{background:var(--huff)} .m{background:var(--moon)} .e{background:var(--ember)}
+    .house-copy strong{display:block; margin-bottom:.12rem;}
+    .house-copy span{color:var(--muted); font-size:.84rem; line-height:1.35;}
+    .mini-note{padding:.9rem .95rem; border-radius:16px; background:rgba(255,255,255,.03); border:1px dashed rgba(255,255,255,.12); color:var(--muted); line-height:1.6; font-size:.9rem;}
+    .center-stack{display:grid; gap:1rem;}
+    .hero-panel{position:relative; min-height:200px; padding:1.1rem; overflow:hidden;}
+    .hero-grid{display:grid; grid-template-columns:1.2fr .8fr; gap:1rem; align-items:center;}
+    .eyebrow{display:inline-flex; align-items:center; gap:.5rem; padding:.5rem .78rem; border-radius:999px; border:1px solid rgba(242,216,139,.16); color:var(--gold2); background:rgba(255,255,255,.03); font-size:.78rem; font-weight:800; text-transform:uppercase; letter-spacing:.14em;}
+    .hero-panel h1{margin:.8rem 0 .7rem; font-family:"Cinzel", serif; font-size:clamp(2.1rem, 4vw, 4rem); line-height:.95; max-width:10ch;}
+    .hero-panel p{margin:0; max-width:58ch; color:var(--muted); line-height:1.7;}
+    .pitch-visual{position:relative; min-height:220px; border-radius:24px; border:1px solid rgba(255,255,255,.08); background: radial-gradient(circle at 50% 20%, rgba(255,255,255,.07), transparent 20%), linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.01)); overflow:hidden; isolation:isolate;}
+    .pitch-visual .hoop{position:absolute; top:16%; width:84px;height:84px; border-radius:50%; border:6px solid rgba(242,216,139,.82); box-shadow:0 0 24px rgba(215,170,65,.18);}
+    .pitch-visual .hoop::after{content:""; position:absolute; left:50%; bottom:-90px; transform:translateX(-50%); width:6px;height:90px; border-radius:999px; background:linear-gradient(180deg, rgba(242,216,139,.7), rgba(242,216,139,.12));}
     .pitch-visual .hoop:nth-child(1){left:10%; width:70px;height:70px}
     .pitch-visual .hoop:nth-child(2){left:39%; top:8%; width:96px;height:96px}
     .pitch-visual .hoop:nth-child(3){right:10%; width:76px;height:76px}
-    .fog{
-      position:absolute;
-      inset:auto -10% -8% -10%;
-      height:38%;
-      background:
-        radial-gradient(circle at 30% 50%, rgba(215,170,65,.16), transparent 24%),
-        radial-gradient(circle at 70% 50%, rgba(255,255,255,.08), transparent 22%),
-        linear-gradient(180deg, transparent, rgba(0,0,0,.28));
-      filter:blur(10px);
-    }
-    .snitch-orbit{
-      position:absolute;
-      left:50%; top:54%;
-      width:28px;height:28px;
-      border-radius:50%;
-      transform:translate(-50%, -50%);
-      background:radial-gradient(circle at 35% 35%, #fff6cb, #ddb44f 60%, #956711 100%);
-      box-shadow:0 0 0 2px rgba(255,230,160,.16), 0 0 22px rgba(242,216,139,.3);
-      animation:snitchGlide 7s linear infinite;
-    }
-    .snitch-orbit::before,.snitch-orbit::after{
-      content:"";
-      position:absolute;
-      top:50%;
-      width:22px;height:10px;
-      transform:translateY(-50%);
-      border-radius:50%;
-      background:linear-gradient(90deg, rgba(255,255,255,.02), rgba(255,255,255,.72), rgba(255,255,255,.02));
-    }
-    .snitch-orbit::before{
-      left:-18px;
-      clip-path:polygon(100% 50%, 10% 0, 0 50%, 10% 100%);
-      transform:translateY(-50%) rotate(-12deg);
-    }
-    .snitch-orbit::after{
-      right:-18px;
-      clip-path:polygon(0 50%, 90% 0, 100% 50%, 90% 100%);
-      transform:translateY(-50%) rotate(12deg);
-    }
-
-    @keyframes snitchGlide{
-      0%{left:16%; top:28%}
-      25%{left:74%; top:22%}
-      50%{left:66%; top:70%}
-      75%{left:24%; top:62%}
-      100%{left:16%; top:28%}
-    }
-
-    .status-ribbon{
-      display:grid;
-      grid-template-columns:repeat(4, minmax(0,1fr));
-      gap:.8rem;
-    }
-
-    .ribbon-block{
-      padding:1rem;
-      border-top:1px solid rgba(242,216,139,.18);
-      background:linear-gradient(180deg, rgba(255,255,255,.04), transparent);
-    }
-    .ribbon-block span{
-      display:block;
-      color:var(--muted);
-      font-size:.84rem;
-      margin-bottom:.28rem;
-    }
-    .ribbon-block strong{
-      font-size:1.15rem;
-    }
-
-    .game-surface{
-      display:grid;
-      grid-template-columns:minmax(0, 1fr) 310px;
-      gap:1rem;
-      align-items:start;
-    }
-
+    .fog{position:absolute; inset:auto -10% -8% -10%; height:38%; background: radial-gradient(circle at 30% 50%, rgba(215,170,65,.16), transparent 24%), radial-gradient(circle at 70% 50%, rgba(255,255,255,.08), transparent 22%), linear-gradient(180deg, transparent, rgba(0,0,0,.28)); filter:blur(10px);}
+    .snitch-orbit{position:absolute; left:50%; top:54%; width:28px;height:28px; border-radius:50%; transform:translate(-50%, -50%); background:radial-gradient(circle at 35% 35%, #fff6cb, #ddb44f 60%, #956711 100%); box-shadow:0 0 0 2px rgba(255,230,160,.16), 0 0 22px rgba(242,216,139,.3); animation:snitchGlide 7s linear infinite;}
+    .snitch-orbit::before,.snitch-orbit::after{content:""; position:absolute; top:50%; width:22px;height:10px; transform:translateY(-50%); border-radius:50%; background:linear-gradient(90deg, rgba(255,255,255,.02), rgba(255,255,255,.72), rgba(255,255,255,.02));}
+    .snitch-orbit::before{left:-18px; clip-path:polygon(100% 50%, 10% 0, 0 50%, 10% 100%); transform:translateY(-50%) rotate(-12deg);}
+    .snitch-orbit::after{right:-18px; clip-path:polygon(0 50%, 90% 0, 100% 50%, 90% 100%); transform:translateY(-50%) rotate(12deg);}
+    @keyframes snitchGlide{0%{left:16%; top:28%} 25%{left:74%; top:22%} 50%{left:66%; top:70%} 75%{left:24%; top:62%} 100%{left:16%; top:28%}}
+    .status-ribbon{display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:.8rem;}
+    .ribbon-block{padding:1rem; border-top:1px solid rgba(242,216,139,.18); background:linear-gradient(180deg, rgba(255,255,255,.04), transparent);}
+    .ribbon-block span{display:block; color:var(--muted); font-size:.84rem; margin-bottom:.28rem;}
+    .ribbon-block strong{font-size:1.15rem;}
+    .game-surface{display:grid; grid-template-columns:minmax(0, 1fr) 310px; gap:1rem; align-items:start;}
     .board-shell{padding:1rem}
-
-    .board-stage{
-      display:grid;
-      grid-template-columns:1fr 230px;
-      gap:1rem;
-      align-items:center;
-    }
-
-    .dartboard-wrap{
-      position:relative;
-      display:grid;
-      place-items:center;
-      min-height:660px;
-      padding:1rem;
-    }
-
-    .dartboard{
-      position:relative;
-      width:min(100%, 630px);
-      aspect-ratio:1;
-      border-radius:50%;
-      cursor:crosshair;
-      background:
-        radial-gradient(circle, #211723 0 8.5%, #c4a04b 8.5% 11.5%, #491621 11.5% 23%, #e5d4aa 23% 25.2%, #173928 25.2% 40%, #9e7c2f 40% 42.2%, #3f1321 42.2% 58%, #e5d4aa 58% 60.2%, #113427 60.2% 76%, #9e7c2f 76% 78%, #35101b 78% 100%);
-      box-shadow:
-        0 0 0 14px rgba(255,255,255,.04),
-        0 0 0 15px rgba(242,216,139,.14),
-        0 25px 70px rgba(0,0,0,.42),
-        inset 0 10px 20px rgba(255,255,255,.05);
-      overflow:hidden;
-      isolation:isolate;
-    }
-
-    .dartboard::before{
-      content:"";
-      position:absolute;
-      inset:0;
-      background:repeating-conic-gradient(from -9deg, rgba(255,255,255,.08) 0 4deg, transparent 4deg 18deg);
-      mix-blend-mode:screen;
-      opacity:.48;
-    }
-
-    .hazard-overlay{
-      position:absolute;
-      inset:0;
-      border-radius:50%;
-      pointer-events:none;
-      opacity:.92;
-    }
-
-    .zone-layer{
-      position:absolute;
-      inset:0;
-      z-index:2;
-      pointer-events:none;
-    }
-
-    .zone-label{
-      position:absolute;
-      padding:.36rem .52rem;
-      border-radius:999px;
-      background:rgba(14,10,18,.84);
-      border:1px solid rgba(242,216,139,.16);
-      color:var(--text);
-      font-size:.76rem;
-      white-space:nowrap;
-      backdrop-filter:blur(10px);
-      transform:translate(-50%, -50%);
-    }
-
-    .hit{
-      position:absolute;
-      width:22px;height:22px;
-      border-radius:50%;
-      transform:translate(-50%, -50%);
-      pointer-events:none;
-      z-index:8;
-      box-shadow:0 0 0 2px rgba(255,255,255,.12), 0 0 18px rgba(255,255,255,.18);
-      animation:pop .45s ease both;
-    }
-    .hit::after{
-      content:"";
-      position:absolute;
-      inset:-7px;
-      border-radius:50%;
-      border:1px solid rgba(255,255,255,.16);
-      opacity:.65;
-    }
+    .board-stage{display:grid; grid-template-columns:1fr 230px; gap:1rem; align-items:center;}
+    .dartboard-wrap{position:relative; display:grid; place-items:center; min-height:660px; padding:1rem;}
+    .dartboard{position:relative; width:min(100%, 630px); aspect-ratio:1; border-radius:50%; cursor:crosshair; background: radial-gradient(circle, #211723 0 8.5%, #c4a04b 8.5% 11.5%, #491621 11.5% 23%, #e5d4aa 23% 25.2%, #173928 25.2% 40%, #9e7c2f 40% 42.2%, #3f1321 42.2% 58%, #e5d4aa 58% 60.2%, #113427 60.2% 76%, #9e7c2f 76% 78%, #35101b 78% 100%); box-shadow: 0 0 0 14px rgba(255,255,255,.04), 0 0 0 15px rgba(242,216,139,.14), 0 25px 70px rgba(0,0,0,.42), inset 0 10px 20px rgba(255,255,255,.05); overflow:hidden; isolation:isolate;}
+    .dartboard::before{content:""; position:absolute; inset:0; background:repeating-conic-gradient(from -9deg, rgba(255,255,255,.08) 0 4deg, transparent 4deg 18deg); mix-blend-mode:screen; opacity:.48;}
+    .hazard-overlay{position:absolute; inset:0; border-radius:50%; pointer-events:none; opacity:.92;}
+    .zone-layer{position:absolute; inset:0; z-index:2; pointer-events:none;}
+    .zone-label{position:absolute; padding:.36rem .52rem; border-radius:999px; background:rgba(14,10,18,.84); border:1px solid rgba(242,216,139,.16); color:var(--text); font-size:.76rem; white-space:nowrap; backdrop-filter:blur(10px); transform:translate(-50%, -50%);}
+    .hit{position:absolute; width:22px;height:22px; border-radius:50%; transform:translate(-50%, -50%); pointer-events:none; z-index:8; box-shadow:0 0 0 2px rgba(255,255,255,.12), 0 0 18px rgba(255,255,255,.18); animation:pop .45s ease both;}
+    .hit::after{content:""; position:absolute; inset:-7px; border-radius:50%; border:1px solid rgba(255,255,255,.16); opacity:.65;}
     .hit.team-a{background:linear-gradient(135deg, var(--gold2), #fff0bf)}
     .hit.team-b{background:linear-gradient(135deg, #9bd2ff, #5a76ff)}
     .hit.snitch{background:linear-gradient(135deg, #fff3af, #d7aa41); box-shadow:0 0 0 2px rgba(255,240,184,.22), 0 0 24px rgba(242,216,139,.4)}
     .hit.bludger{background:linear-gradient(135deg, #d05b4a, #6b1d1b)}
     .hit.moon{background:linear-gradient(135deg, #c5bcff, #7b69ff)}
     .hit.ember{background:linear-gradient(135deg, #ffb080, #cf5c2f)}
-
-    @keyframes pop{
-      from{opacity:0; transform:translate(-50%,-50%) scale(.4)}
-      to{opacity:1; transform:translate(-50%,-50%) scale(1)}
-    }
-
-    .snitch-target{
-      position:absolute;
-      width:34px;height:34px;
-      border-radius:50%;
-      transform:translate(-50%, -50%);
-      background:radial-gradient(circle at 35% 35%, #fff6c5, #ddb44f 58%, #956711 100%);
-      box-shadow:0 0 0 2px rgba(255,233,174,.22), 0 0 28px rgba(242,216,139,.45);
-      z-index:5;
-      animation:snitchPulse 1.6s ease-in-out infinite;
-    }
-    .snitch-target::before,.snitch-target::after{
-      content:"";
-      position:absolute;
-      top:50%;
-      width:24px;height:10px;
-      transform:translateY(-50%);
-      border-radius:50%;
-      background:linear-gradient(90deg, rgba(255,255,255,.03), rgba(255,255,255,.76), rgba(255,255,255,.03));
-    }
-    .snitch-target::before{
-      left:-18px;
-      clip-path:polygon(100% 50%, 10% 0, 0 50%, 10% 100%);
-      transform:translateY(-50%) rotate(-16deg);
-    }
-    .snitch-target::after{
-      right:-18px;
-      clip-path:polygon(0 50%, 90% 0, 100% 50%, 90% 100%);
-      transform:translateY(-50%) rotate(16deg);
-    }
-
-    @keyframes snitchPulse{
-      0%,100%{transform:translate(-50%, -50%) scale(1)}
-      50%{transform:translate(-50%, -50%) scale(1.08)}
-    }
-
-    .target-marker{
-      position:absolute;
-      width:64px;height:64px;
-      border-radius:50%;
-      transform:translate(-50%, -50%);
-      border:2px dashed rgba(197,188,255,.7);
-      box-shadow:0 0 0 10px rgba(197,188,255,.06);
-      z-index:4;
-      pointer-events:none;
-      animation:markerPulse 1.4s ease-in-out infinite;
-    }
-    @keyframes markerPulse{
-      0%,100%{transform:translate(-50%, -50%) scale(1)}
-      50%{transform:translate(-50%, -50%) scale(1.06)}
-    }
-
-    .board-legend{
-      display:grid;
-      gap:.8rem;
-    }
-
-    .legend-block{
-      padding:1rem;
-      border-radius:18px;
-      background:rgba(255,255,255,.03);
-      border:1px solid rgba(255,255,255,.08);
-    }
-    .legend-block strong{
-      display:block;
-      margin-bottom:.35rem;
-      color:var(--gold2);
-    }
-    .legend-block p{
-      margin:0;
-      color:var(--muted);
-      font-size:.9rem;
-      line-height:1.6;
-    }
-
-    .sidebar-stack{
-      display:grid;
-      gap:1rem;
-    }
-
-    .scoreboard{
-      display:grid;
-      gap:.8rem;
-    }
-
-    .team-card{
-      padding:1rem;
-      border-radius:20px;
-      background:rgba(255,255,255,.03);
-      border:1px solid rgba(255,255,255,.08);
-      transition:border-color .25s ease, background .25s ease, transform .2s ease;
-    }
-    .team-card.active{
-      border-color:rgba(242,216,139,.26);
-      background:rgba(255,255,255,.06);
-      transform:translateY(-2px);
-    }
-
-    .team-top{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:.8rem;
-      margin-bottom:.8rem;
-    }
-
-    .house-chip{
-      display:inline-flex;
-      align-items:center;
-      gap:.55rem;
-      padding:.5rem .72rem;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.08);
-      font-size:.82rem;
-      font-weight:800;
-      letter-spacing:.06em;
-      text-transform:uppercase;
-    }
-    .house-chip .dot{
-      width:10px;height:10px;border-radius:50%;
-    }
-
-    .team-name{
-      font-weight:800;
-      font-size:1rem;
-    }
-    .team-score{
-      font-family:"Cinzel", serif;
-      font-size:2.1rem;
-      line-height:1;
-      color:var(--gold2);
-    }
-
-    .team-meta{
-      display:grid;
-      grid-template-columns:repeat(3, minmax(0,1fr));
-      gap:.5rem;
-    }
-
-    .tiny{
-      padding:.6rem .55rem;
-      border-radius:14px;
-      background:rgba(255,255,255,.03);
-      border:1px solid rgba(255,255,255,.06);
-    }
-    .tiny span{
-      display:block;
-      color:var(--muted);
-      font-size:.72rem;
-      margin-bottom:.2rem;
-    }
-    .tiny strong{
-      font-size:.88rem;
-    }
-
-    .house-power{
-      margin-top:.8rem;
-      display:grid;
-      gap:.6rem;
-    }
+    @keyframes pop{from{opacity:0; transform:translate(-50%,-50%) scale(.4)} to{opacity:1; transform:translate(-50%,-50%) scale(1)}}
+    .snitch-target{position:absolute; width:34px;height:34px; border-radius:50%; transform:translate(-50%, -50%); background:radial-gradient(circle at 35% 35%, #fff6c5, #ddb44f 58%, #956711 100%); box-shadow:0 0 0 2px rgba(255,233,174,.22), 0 0 28px rgba(242,216,139,.45); z-index:5; animation:snitchPulse 1.6s ease-in-out infinite;}
+    .snitch-target::before,.snitch-target::after{content:""; position:absolute; top:50%; width:24px;height:10px; transform:translateY(-50%); border-radius:50%; background:linear-gradient(90deg, rgba(255,255,255,.03), rgba(255,255,255,.76), rgba(255,255,255,.03));}
+    .snitch-target::before{left:-18px; clip-path:polygon(100% 50%, 10% 0, 0 50%, 10% 100%); transform:translateY(-50%) rotate(-16deg);}
+    .snitch-target::after{right:-18px; clip-path:polygon(0 50%, 90% 0, 100% 50%, 90% 100%); transform:translateY(-50%) rotate(16deg);}
+    @keyframes snitchPulse{0%,100%{transform:translate(-50%, -50%) scale(1)} 50%{transform:translate(-50%, -50%) scale(1.08)}}
+    .target-marker{position:absolute; width:64px;height:64px; border-radius:50%; transform:translate(-50%, -50%); border:2px dashed rgba(197,188,255,.7); box-shadow:0 0 0 10px rgba(197,188,255,.06); z-index:4; pointer-events:none; animation:markerPulse 1.4s ease-in-out infinite;}
+    @keyframes markerPulse{0%,100%{transform:translate(-50%, -50%) scale(1)} 50%{transform:translate(-50%, -50%) scale(1.06)}}
+    .board-legend{display:grid; gap:.8rem;}
+    .legend-block{padding:1rem; border-radius:18px; background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.08);}
+    .legend-block strong{display:block; margin-bottom:.35rem; color:var(--gold2);}
+    .legend-block p{margin:0; color:var(--muted); font-size:.9rem; line-height:1.6;}
+    .sidebar-stack{display:grid; gap:1rem;}
+    .scoreboard{display:grid; gap:.8rem;}
+    .team-card{padding:1rem; border-radius:20px; background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.08); transition:border-color .25s ease, background .25s ease, transform .2s ease;}
+    .team-card.active{border-color:rgba(242,216,139,.26); background:rgba(255,255,255,.06); transform:translateY(-2px);}
+    .team-top{display:flex; justify-content:space-between; align-items:center; gap:.8rem; margin-bottom:.8rem;}
+    .house-chip{display:inline-flex; align-items:center; gap:.55rem; padding:.5rem .72rem; border-radius:999px; border:1px solid rgba(255,255,255,.08); font-size:.82rem; font-weight:800; letter-spacing:.06em; text-transform:uppercase;}
+    .house-chip .dot{width:10px;height:10px;border-radius:50%;}
+    .team-name{font-weight:800; font-size:1rem;}
+    .team-score{font-family:"Cinzel", serif; font-size:2.1rem; line-height:1; color:var(--gold2);}
+    .team-meta{display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:.5rem;}
+    .tiny{padding:.6rem .55rem; border-radius:14px; background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.06);}
+    .tiny span{display:block; color:var(--muted); font-size:.72rem; margin-bottom:.2rem;}
+    .tiny strong{font-size:.88rem;}
+    .house-power{margin-top:.8rem; display:grid; gap:.6rem;}
     .power-btn{width:100%}
-
-    .turn-console{
-      display:grid;
-      gap:.8rem;
-    }
-
-    .turn-pill{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:1rem;
-      padding:.95rem 1rem;
-      border-radius:18px;
-      border:1px solid rgba(242,216,139,.16);
-      background:rgba(255,255,255,.04);
-    }
+    .turn-console{display:grid; gap:.8rem;}
+    .turn-pill{display:flex; justify-content:space-between; align-items:center; gap:1rem; padding:.95rem 1rem; border-radius:18px; border:1px solid rgba(242,216,139,.16); background:rgba(255,255,255,.04);}
     .turn-pill strong{font-size:1rem}
     .turn-pill span{color:var(--muted); font-size:.88rem}
-
-    .throws-track{
-      display:grid;
-      grid-template-columns:repeat(3, minmax(0,1fr));
-      gap:.6rem;
-    }
-
-    .throw-dot{
-      min-height:54px;
-      border-radius:16px;
-      display:grid;
-      place-items:center;
-      border:1px solid rgba(255,255,255,.08);
-      background:rgba(255,255,255,.03);
-      color:var(--muted);
-      font-weight:800;
-    }
-    .throw-dot.used{
-      color:var(--text);
-      background:rgba(255,255,255,.06);
-      border-color:rgba(242,216,139,.18);
-    }
-
-    .helper-row{
-      display:flex;
-      flex-wrap:wrap;
-      gap:.7rem;
-    }
-
-    .pill{
-      padding:.5rem .72rem;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.08);
-      background:rgba(255,255,255,.03);
-      color:var(--muted);
-      font-size:.82rem;
-      font-weight:700;
-    }
-
-    .snitch-banner{
-      margin-top:.1rem;
-      padding:.95rem 1rem;
-      border-radius:18px;
-      border:1px solid rgba(242,216,139,.2);
-      background:linear-gradient(135deg, rgba(242,216,139,.08), rgba(255,255,255,.03));
-      color:var(--gold2);
-      font-weight:800;
-      display:none;
-    }
+    .throws-track{display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:.6rem;}
+    .throw-dot{min-height:54px; border-radius:16px; display:grid; place-items:center; border:1px solid rgba(255,255,255,.08); background:rgba(255,255,255,.03); color:var(--muted); font-weight:800;}
+    .throw-dot.used{color:var(--text); background:rgba(255,255,255,.06); border-color:rgba(242,216,139,.18);}
+    .helper-row{display:flex; flex-wrap:wrap; gap:.7rem;}
+    .pill{padding:.5rem .72rem; border-radius:999px; border:1px solid rgba(255,255,255,.08); background:rgba(255,255,255,.03); color:var(--muted); font-size:.82rem; font-weight:700;}
+    .snitch-banner{margin-top:.1rem; padding:.95rem 1rem; border-radius:18px; border:1px solid rgba(242,216,139,.2); background:linear-gradient(135deg, rgba(242,216,139,.08), rgba(255,255,255,.03)); color:var(--gold2); font-weight:800; display:none;}
     .snitch-banner.show{display:block}
-
-    .log{
-      max-height:340px;
-      overflow:auto;
-      display:grid;
-      gap:.55rem;
-      padding-right:.2rem;
-    }
+    .log{max-height:340px; overflow:auto; display:grid; gap:.55rem; padding-right:.2rem;}
     .log::-webkit-scrollbar{width:8px}
-    .log::-webkit-scrollbar-thumb{
-      background:rgba(255,255,255,.12);
-      border-radius:999px;
-    }
-
-    .log-item{
-      padding:.8rem .9rem;
-      border-radius:16px;
-      background:rgba(255,255,255,.03);
-      border:1px solid rgba(255,255,255,.06);
-      line-height:1.5;
-      color:var(--muted);
-      animation:rise .35s ease both;
-    }
+    .log::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12); border-radius:999px;}
+    .log-item{padding:.8rem .9rem; border-radius:16px; background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.06); line-height:1.5; color:var(--muted); animation:rise .35s ease both;}
     .log-item strong{color:var(--text)}
-    @keyframes rise{
-      from{opacity:0; transform:translateY(14px)}
-      to{opacity:1; transform:translateY(0)}
-    }
-
-    .rules-list{
-      display:grid;
-      gap:.8rem;
-    }
-
-    .modal-backdrop{
-      position:fixed;
-      inset:0;
-      background:rgba(7,5,10,.6);
-      backdrop-filter:blur(10px);
-      display:none;
-      align-items:center;
-      justify-content:center;
-      padding:1rem;
-      z-index:220;
-    }
+    @keyframes rise{from{opacity:0; transform:translateY(14px)} to{opacity:1; transform:translateY(0)}}
+    .rules-list{display:grid; gap:.8rem;}
+    .modal-backdrop{position:fixed; inset:0; background:rgba(7,5,10,.6); backdrop-filter:blur(10px); display:none; align-items:center; justify-content:center; padding:1rem; z-index:220;}
     .modal-backdrop.open{display:flex}
-
-    .modal{
-      width:min(700px, 100%);
-      border-radius:28px;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02)),
-        rgba(22,16,30,.95);
-      border:1px solid var(--line);
-      box-shadow:var(--shadow);
-      overflow:hidden;
-    }
-
+    .modal{width:min(700px, 100%); border-radius:28px; background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02)), rgba(22,16,30,.95); border:1px solid var(--line); box-shadow:var(--shadow); overflow:hidden;}
     .modal-head,.modal-body,.modal-foot{padding:1rem 1.1rem}
     .modal-head{border-bottom:1px solid rgba(255,255,255,.08)}
-    .modal-head h3{
-      margin:0;
-      font-family:"Cinzel", serif;
-      color:var(--gold2);
-      font-size:1.5rem;
-    }
-    .modal-body p{
-      margin:0;
-      color:var(--muted);
-      line-height:1.8;
-    }
-    .modal-foot{
-      display:flex;
-      justify-content:flex-end;
-      gap:.8rem;
-      border-top:1px solid rgba(255,255,255,.08);
-    }
-
-    @media (max-width: 1220px){
-      .app-grid{
-        grid-template-columns:1fr;
-      }
-      .game-surface,
-      .board-stage,
-      .hero-grid{
-        grid-template-columns:1fr;
-      }
-    }
-
-    @media (max-width: 780px){
-      .status-ribbon{
-        grid-template-columns:repeat(2, minmax(0,1fr));
-      }
-      .topbar-inner{
-        align-items:flex-start;
-        padding:.8rem 0;
-      }
-      .top-actions{
-        width:100%;
-      }
-      .top-actions .btn{
-        flex:1 1 calc(50% - .4rem);
-      }
-      .dartboard-wrap{
-        min-height:460px;
-        padding:.25rem;
-      }
-      .panel{border-radius:22px}
-    }
-
-    @media (max-width: 520px){
-      .wrap{
-        width:min(var(--max), calc(100% - .8rem));
-      }
-      .top-actions .btn{
-        flex:1 1 100%;
-      }
-      .status-ribbon,.team-meta{
-        grid-template-columns:1fr;
-      }
-      .hero-panel h1{max-width:none}
-    }
+    .modal-head h3{margin:0; font-family:"Cinzel", serif; color:var(--gold2); font-size:1.5rem;}
+    .modal-body p{margin:0; color:var(--muted); line-height:1.8;}
+    .modal-foot{display:flex; justify-content:flex-end; gap:.8rem; border-top:1px solid rgba(255,255,255,.08);}
+    @media (max-width: 1220px){.app-grid{grid-template-columns:1fr;} .game-surface, .board-stage, .hero-grid{grid-template-columns:1fr;}}
+    @media (max-width: 780px){.status-ribbon{grid-template-columns:repeat(2, minmax(0,1fr));} .topbar-inner{align-items:flex-start; padding:.8rem 0;} .top-actions{width:100%;} .top-actions .btn{flex:1 1 calc(50% - .4rem);} .dartboard-wrap{min-height:460px; padding:.25rem;} .panel{border-radius:22px}}
+    @media (max-width: 520px){.wrap{width:min(var(--max), calc(100% - .8rem));} .top-actions .btn{flex:1 1 100%;} .status-ribbon,.team-meta{grid-template-columns:1fr;} .hero-panel h1{max-width:none}}
   </style>
 </head>
 <body>
   <header class="topbar">
     <div class="wrap topbar-inner">
       <div class="brand">
-  <span class="crest" aria-hidden="true"></span>
-  <span>Quidditch Darts</span>
-  <small style="display:block; font-size:.72rem; color:var(--muted); letter-spacing:.08em; text-transform:none;">
-    Inspired by Hellcastle
-  </small>
-</div>
-
+        <span class="crest" aria-hidden="true"></span>
+        <span>Quidditch Darts</span>
+        <small style="display:block; font-size:.72rem; color:var(--muted); letter-spacing:.08em; text-transform:none;">
+          Inspired by Hellcastle
+        </small>
+      </div>
       <div class="top-actions">
         <button class="btn btn-ghost" id="newMatchBtn" type="button">New Match</button>
         <button class="btn btn-primary" id="startBtn" type="button">Start Match</button>
@@ -944,12 +184,10 @@
               <label for="teamAName">Team A name</label>
               <input id="teamAName" class="input" type="text" value="Scarlet Seekers" maxlength="22" />
             </div>
-
             <div class="field">
               <label for="teamBName">Team B name</label>
               <input id="teamBName" class="input" type="text" value="Moonfire Flyers" maxlength="22" />
             </div>
-
             <div class="field">
               <label>Team A house</label>
               <div class="house-grid" id="houseAGroup">
@@ -973,7 +211,6 @@
                 </label>
               </div>
             </div>
-
             <div class="field">
               <label>Team B house</label>
               <div class="house-grid" id="houseBGroup">
@@ -997,7 +234,6 @@
                 </label>
               </div>
             </div>
-
             <div class="field">
               <label for="modeSelect">Match mode</label>
               <select id="modeSelect" class="select">
@@ -1006,7 +242,6 @@
                 <option value="chasers">Three Chasers</option>
               </select>
             </div>
-
             <div class="field">
               <label for="targetScore">Target score</label>
               <select id="targetScore" class="select">
@@ -1016,7 +251,6 @@
                 <option value="500">500 points</option>
               </select>
             </div>
-
             <div class="mini-note">
               Click anywhere on the dartboard to throw. Three throws per turn. At 75% of target score, the Golden Snitch appears and becomes a 150-point capture target.
             </div>
@@ -1072,20 +306,17 @@
               <div class="board-stage">
                 <div class="dartboard-wrap">
                   <div class="dartboard" id="dartboard" role="button" tabindex="0" aria-label="Interactive magical dartboard. Click to throw a dart.">
-                    <canvas class="hazard-overlay" id="hazardCanvas" width="630" height="630"></canvas>
-
+                    <canvas class="hazard-overlay" id="hazardCanvas" width="630" height="630" style="pointer-events: none;"></canvas>
                     <div class="zone-layer">
                       <div class="zone-label" style="left:21%; top:18%;">30 · Lower Hoop</div>
                       <div class="zone-label" style="left:50%; top:9.5%;">70 · High Hoop</div>
                       <div class="zone-label" style="left:80%; top:22%;">50 · Center Hoop</div>
                       <div class="zone-label" style="left:50%; top:50%;">25 · Bull</div>
                     </div>
-
                     <div class="snitch-target" id="snitchTarget" hidden aria-hidden="true"></div>
                     <div class="target-marker" id="moonMarker" hidden aria-hidden="true"></div>
                   </div>
                 </div>
-
                 <div class="board-legend">
                   <div class="legend-block">
                     <strong>Core scoring</strong>
@@ -1109,7 +340,6 @@
 
             <aside class="sidebar-stack">
               <div class="scoreboard" id="scoreboard"></div>
-
               <div class="panel">
                 <div class="panel-head">
                   <h3>Turn console</h3>
@@ -1122,24 +352,19 @@
                     </div>
                     <span id="throwCounter">0 / 3</span>
                   </div>
-
                   <div class="throws-track" id="throwsTrack">
                     <div class="throw-dot">1</div>
                     <div class="throw-dot">2</div>
                     <div class="throw-dot">3</div>
                   </div>
-
                   <div class="helper-row">
                     <span class="pill" id="comboPill">Combo: 0</span>
                     <span class="pill" id="effectPill">Effect: none</span>
                   </div>
-
                   <div class="snitch-banner" id="snitchBanner">The Golden Snitch is in play.</div>
-
                   <button class="btn btn-ghost" id="endTurnBtn" type="button">End turn early</button>
                 </div>
               </div>
-
               <div class="panel">
                 <div class="panel-head">
                   <h3>Match log</h3>
@@ -1209,48 +434,12 @@
 
   <script>
     const houseMeta = {
-      gryffindor: {
-        label: 'Gryffindor',
-        color: getComputedStyle(document.documentElement).getPropertyValue('--gryff').trim(),
-        ability: 'Bold Retry',
-        desc: 'Upgrade one weak throw to 30.',
-        chip: 'G'
-      },
-      slytherin: {
-        label: 'Slytherin',
-        color: getComputedStyle(document.documentElement).getPropertyValue('--slyth').trim(),
-        ability: 'Cunning Curse',
-        desc: 'Reduce rival’s next strong shot.',
-        chip: 'S'
-      },
-      ravenclaw: {
-        label: 'Ravenclaw',
-        color: getComputedStyle(document.documentElement).getPropertyValue('--raven').trim(),
-        ability: 'Strategy Ring',
-        desc: 'Next precision hit gains +15.',
-        chip: 'R'
-      },
-      hufflepuff: {
-        label: 'Hufflepuff',
-        color: getComputedStyle(document.documentElement).getPropertyValue('--huff').trim(),
-        ability: 'Steady Chain',
-        desc: 'Three unique zones gain +25.',
-        chip: 'H'
-      },
-      moonstone: {
-        label: 'Moonstone',
-        color: getComputedStyle(document.documentElement).getPropertyValue('--moon').trim(),
-        ability: 'Lunar Aim',
-        desc: 'Choose a zone and double it on hit.',
-        chip: 'M'
-      },
-      emberwing: {
-        label: 'Emberwing',
-        color: getComputedStyle(document.documentElement).getPropertyValue('--ember').trim(),
-        ability: 'Flame Surge',
-        desc: 'Prime a high hit, next dart gets +10.',
-        chip: 'E'
-      }
+      gryffindor: {label: 'Gryffindor', color: getComputedStyle(document.documentElement).getPropertyValue('--gryff').trim(), ability: 'Bold Retry', desc: 'Upgrade one weak throw to 30.', chip: 'G' },
+      slytherin: {label: 'Slytherin', color: getComputedStyle(document.documentElement).getPropertyValue('--slyth').trim(), ability: 'Cunning Curse', desc: 'Reduce rival’s next strong shot.', chip: 'S' },
+      ravenclaw: {label: 'Ravenclaw', color: getComputedStyle(document.documentElement).getPropertyValue('--raven').trim(), ability: 'Strategy Ring', desc: 'Next precision hit gains +15.', chip: 'R' },
+      hufflepuff: {label: 'Hufflepuff', color: getComputedStyle(document.documentElement).getPropertyValue('--huff').trim(), ability: 'Steady Chain', desc: 'Three unique zones gain +25.', chip: 'H' },
+      moonstone: {label: 'Moonstone', color: getComputedStyle(document.documentElement).getPropertyValue('--moon').trim(), ability: 'Lunar Aim', desc: 'Choose a zone and double it on hit.', chip: 'M' },
+      emberwing: {label: 'Emberwing', color: getComputedStyle(document.documentElement).getPropertyValue('--ember').trim(), ability: 'Flame Surge', desc: 'Prime a high hit, next dart gets +10.', chip: 'E' }
     };
 
     const app = {
@@ -1343,17 +532,12 @@
     }
 
     function modeLabel(mode) {
-      return ({
-        duel: 'House Duel',
-        pub: 'Pub Cup',
-        chasers: 'Three Chasers'
-      })[mode] || 'House Duel';
+      return ({duel: 'House Duel', pub: 'Pub Cup', chasers: 'Three Chasers'})[mode] || 'House Duel';
     }
 
     function syncConfigToState() {
       const nameA = (els.teamAName.value.trim() || 'Team A').slice(0, 22);
       const nameB = (els.teamBName.value.trim() || 'Team B').slice(0, 22);
-
       app.teams[0].name = nameA;
       app.teams[1].name = nameB;
       app.teams[0].house = getSelectedHouse('houseA');
@@ -1365,7 +549,6 @@
       els.modeReadout.textContent = modeLabel(app.mode);
       els.targetReadout.textContent = app.targetScore;
       els.snitchReadout.textContent = app.snitchThreshold;
-
       updateUI();
     }
 
@@ -1400,23 +583,19 @@
 
     function resetMatch(fresh = false) {
       syncConfigToState();
-
       app.started = false;
       app.currentTeam = 0;
       app.throwsThisTurn = 0;
       app.snitchActive = false;
       app.moonAimPromptActive = false;
       app.logs = [];
-
       app.teams.forEach(resetTeamState);
       clearBoardEffects();
-
       if (fresh) {
         addLog('New magical match prepared. Configure your houses and press start.');
       } else {
         addLog('Scores reset. The pitch awaits another duel.');
       }
-
       updateUI();
     }
 
@@ -1436,13 +615,11 @@
               </div>
               <div class="team-score">${team.score}</div>
             </div>
-
             <div class="team-meta">
               <div class="tiny"><span>Throws</span><strong>${team.throws}</strong></div>
               <div class="tiny"><span>Combos</span><strong>${team.combos}</strong></div>
               <div class="tiny"><span>Power</span><strong>${team.abilityUsed ? 'Used' : 'Ready'}</strong></div>
             </div>
-
             <div class="house-power">
               <button class="btn btn-ghost power-btn" data-power="${index}" ${(!app.started || team.abilityUsed || index !== app.currentTeam) ? 'disabled' : ''}>
                 Use ${house.ability}
@@ -1472,17 +649,14 @@
       if (team.emberSurgeArmed) effects.push('Emberwing surge armed');
       if (team.emberNextBonus) effects.push('Emberwing +10 next dart');
       if (team.emberShield) effects.push('Emberwing shield ready');
-
       const enemy = app.teams[(app.currentTeam + 1) % 2];
       if (enemy.pendingCurse) effects.push('Opponent curse waiting');
-
       return effects.length ? effects.join(' · ') : 'none';
     }
 
     function updateTurnMeta() {
       const team = app.teams[app.currentTeam];
       const house = houseMeta[team.house];
-
       els.currentTurnReadout.textContent = app.started ? team.name : 'Not started';
       els.turnTeamName.textContent = app.started ? team.name : 'Awaiting start';
       els.turnMeta.textContent = app.started ? `${house.label} · ${house.ability}` : 'Select houses and begin';
@@ -1528,15 +702,8 @@
       const cx = w / 2;
       const cy = h / 2;
       const r = w / 2;
-
       ctx.clearRect(0, 0, w, h);
-
-      const hazardAngles = [
-        [20, 38],
-        [142, 162],
-        [258, 278]
-      ];
-
+      const hazardAngles = [[20, 38], [142, 162], [258, 278]];
       hazardAngles.forEach(([start, end]) => {
         ctx.beginPath();
         ctx.moveTo(cx, cy);
@@ -1545,7 +712,6 @@
         ctx.fillStyle = 'rgba(183,70,53,.16)';
         ctx.fill();
       });
-
       ctx.beginPath();
       ctx.arc(cx, cy, r - 3, 0, Math.PI * 2);
       ctx.strokeStyle = 'rgba(255,255,255,.05)';
@@ -1591,12 +757,7 @@
         }
       }
 
-      const hazards = [
-        [20, 38],
-        [142, 162],
-        [258, 278]
-      ];
-
+      const hazards = [[20, 38], [142, 162], [258, 278]];
       if (distance <= 315 && hazards.some(([s, e]) => angle >= s && angle <= e)) {
         return { name: 'Bludger', points: -20, kind: 'bludger' };
       }
@@ -1611,7 +772,6 @@
       if (topBand && x > 438 && x < 538 && distance < 288) {
         return { name: 'Center Hoop', points: 50, kind: 'hoop-mid' };
       }
-
       if (distance <= 42) return { name: 'Bull', points: 25, kind: 'bull' };
       if (distance <= 315) return { name: 'Outer Ring', points: 10, kind: 'outer' };
       return { name: 'Miss', points: 0, kind: 'miss' };
@@ -1645,7 +805,6 @@
       if (!app.started || index !== app.currentTeam) return;
       const team = app.teams[index];
       if (team.abilityUsed) return;
-
       team.abilityUsed = true;
 
       switch (team.house) {
@@ -1685,17 +844,16 @@
           addLog(`<strong>${team.name}</strong> ignites <strong>Flame Surge</strong>. Their next high-value hit primes +10 on the following dart and one Bludger can be ignored.`);
           break;
       }
-
       updateUI();
     }
 
     function getBoardPointFromEvent(clientX, clientY) {
       const rect = els.dartboard.getBoundingClientRect();
-      const scaleX = 630 / rect.width;
-      const scaleY = 630 / rect.height;
+      const size = Math.min(rect.width, rect.height);
+      const scale = 630 / size;
       return {
-        x: (clientX - rect.left) * scaleX,
-        y: (clientY - rect.top) * scaleY
+        x: (clientX - rect.left) * scale,
+        y: (clientY - rect.top) * scale
       };
     }
 
@@ -1705,9 +863,7 @@
         els.snitchTarget.hidden = true;
         els.snitchBanner.classList.remove('show');
         els.moonMarker.hidden = true;
-        const text = bySnitch
-          ? `${team.name} captures the Golden Snitch and wins with ${team.score} points.`
-          : `${team.name} reaches ${team.score} points and wins the match.`;
+        const text = bySnitch ? `${team.name} captures the Golden Snitch and wins with ${team.score} points.` : `${team.name} reaches ${team.score} points and wins the match.`;
         els.modalText.textContent = text;
         els.modal.classList.add('open');
         addLog(`<strong>${team.name}</strong> wins the match.`);
@@ -1729,7 +885,6 @@
       let points = zone.points;
       let message = `<strong>${team.name}</strong> hits <strong>${zone.name}</strong> for <strong>${points}</strong>.`;
       let hitClass = app.currentTeam === 0 ? 'team-a' : 'team-b';
-
       if (zone.kind === 'snitch') hitClass = 'snitch';
       if (zone.kind === 'bludger') hitClass = 'bludger';
       if (team.house === 'moonstone') hitClass = zone.kind === 'miss' ? hitClass : 'moon';
@@ -1828,16 +983,13 @@
       if (app.throwsThisTurn >= 3 && app.started) {
         setTimeout(endTurn, 260);
       }
-
       updateUI();
     }
 
     function endTurn() {
       if (!app.started) return;
-
       const current = app.teams[app.currentTeam];
       const getsExtraTurn = current.moonExtraTurnReady;
-
       current.turnZones = [];
       current._bullHitsThisTurn = 0;
       current.moonExtraTurnReady = false;
@@ -1849,7 +1001,6 @@
         app.currentTeam = (app.currentTeam + 1) % 2;
         addLog(`Turn passes to <strong>${app.teams[app.currentTeam].name}</strong>.`);
       }
-
       updateUI();
     }
 
@@ -1869,7 +1020,6 @@
     els.resetBtn.addEventListener('click', () => resetMatch(false));
     els.newMatchBtn.addEventListener('click', () => resetMatch(true));
     els.endTurnBtn.addEventListener('click', endTurn);
-
     els.modeSelect.addEventListener('change', syncConfigToState);
     els.targetScore.addEventListener('change', syncConfigToState);
     els.teamAName.addEventListener('input', syncConfigToState);
