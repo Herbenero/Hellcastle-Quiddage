@@ -12,7 +12,7 @@
         :root {
             --bg: #0b0910;
             --bg2: #15101b;
-            --panel: rgba(23,17,30,.84);
+            --panel: rgba(23,17,30,.88);
             --panel-soft: rgba(255,255,255,.04);
             --line: rgba(255,233,193,.14);
             --text: #f7f1e7;
@@ -28,7 +28,7 @@
             --huff: #8e6c1f;
             --moon: #8b7cff;
             --ember: #cf5c2f;
-            --max: 1440px;
+            --max: 1520px;
         }
         * { box-sizing: border-box; }
         html, body { height: 100%; }
@@ -56,7 +56,7 @@
         }
         button, input, select { font: inherit; }
         a { text-decoration: none; color: inherit; }
-        .wrap { width: min(var(--max), calc(100% - 1.2rem)); margin-inline: auto; }
+        .wrap { width: min(var(--max), calc(100% - 1.5rem)); margin-inline: auto; }
         
         .topbar {
             position: sticky;
@@ -109,7 +109,7 @@
             border: 0;
             border-radius: 999px;
             min-height: 46px;
-            padding: .85rem 1.1rem;
+            padding: .85rem 1.2rem;
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -138,8 +138,19 @@
             box-shadow: 0 12px 36px rgba(183,70,53,.22);
         }
 
-        main { padding: 1rem 0 2rem; }
-        .app-grid { display: grid; grid-template-columns: 340px minmax(0, 1fr) 360px; gap: 1rem; align-items: start; }
+        main { padding: 1.2rem 0 2.5rem; }
+        
+        /* Application State Layouts */
+        .app-grid {
+            display: grid;
+            grid-template-columns: 360px minmax(0, 1fr);
+            gap: 1.5rem;
+            align-items: start;
+            transition: all .4s ease;
+        }
+        .app-grid.match-active {
+            grid-template-columns: minmax(0, 1.2fr) 440px;
+        }
         
         .panel {
             border-radius: 28px;
@@ -148,10 +159,11 @@
             box-shadow: var(--shadow);
             backdrop-filter: blur(14px);
             overflow: hidden;
+            transition: opacity .3s ease, transform .3s ease;
         }
-        .panel-head { padding: 1rem 1rem .25rem; }
+        .panel-head { padding: 1.1rem 1.2rem .3rem; }
         .panel-head h2, .panel-head h3 { margin: 0; font-family: "Cinzel", serif; letter-spacing: -.02em; }
-        .panel-body { padding: 1rem; }
+        .panel-body { padding: 1.2rem; }
         
         .setup-stack { display: grid; gap: 1rem; }
         .field { display: grid; gap: .45rem; }
@@ -210,9 +222,9 @@
             font-size: .9rem;
         }
         
-        .center-stack { display: grid; gap: 1rem; }
-        .hero-panel { position: relative; min-height: 200px; padding: 1.1rem; overflow: hidden; }
-        .hero-grid { display: grid; grid-template-columns: 1.2fr .8fr; gap: 1rem; align-items: center; }
+        .center-stack { display: grid; gap: 1.2rem; }
+        .hero-panel { position: relative; min-height: 200px; padding: 1.5rem; overflow: hidden; transition: all .4s ease; }
+        .hero-panel.hidden { display: none; }
         .eyebrow {
             display: inline-flex;
             align-items: center;
@@ -227,26 +239,33 @@
             text-transform: uppercase;
             letter-spacing: .14em;
         }
-        .hero-panel h1 { margin: .8rem 0 .7rem; font-family: "Cinzel", serif; font-size: clamp(2.1rem, 4vw, 4rem); line-height: .95; max-width: 10ch; }
+        .hero-panel h1 { margin: .8rem 0 .7rem; font-family: "Cinzel", serif; font-size: clamp(2.2rem, 4vw, 3.8rem); line-height: .98; }
         .hero-panel p { margin: 0; max-width: 58ch; color: var(--muted); line-height: 1.7; }
         
-        .status-ribbon { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: .8rem; }
-        .ribbon-block { padding: 1rem; border-top: 1px solid rgba(242,216,139,.18); background: linear-gradient(180deg, rgba(255,255,255,.04), transparent); }
+        .status-ribbon { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 1rem; }
+        .ribbon-block { padding: 1.1rem; border-top: 1px solid rgba(242,216,139,.18); background: linear-gradient(180deg, rgba(255,255,255,.04), transparent); }
         .ribbon-block span { display: block; color: var(--muted); font-size: .84rem; margin-bottom: .28rem; }
-        .ribbon-block strong { font-size: 1.15rem; }
+        .ribbon-block strong { font-size: 1.2rem; }
         
-        .game-surface { display: grid; grid-template-columns: minmax(0, 1fr) 310px; gap: 1rem; align-items: start; }
-        .board-shell { padding: 1rem; }
-        .board-stage { display: grid; grid-template-columns: 1fr 230px; gap: 1rem; align-items: center; }
-        .dartboard-wrap { position: relative; display: grid; place-items:center; min-height: 660px; padding: 1rem; }
+        /* Large Board Display Area */
+        .board-card { padding: 1.5rem; display: grid; place-items: center; }
+        .dartboard-wrap {
+            position: relative;
+            display: grid;
+            place-items: center;
+            width: 100%;
+            max-width: 720px;
+            aspect-ratio: 1;
+            padding: 1.5rem;
+        }
         
         .dartboard {
             position: relative;
-            width: min(100%, 630px);
+            width: 100%;
             aspect-ratio: 1;
             border-radius: 50%;
             background: radial-gradient(circle, #211723 0 8.5%, #c4a04b 8.5% 11.5%, #491621 11.5% 23%, #e5d4aa 23% 25.2%, #173928 25.2% 40%, #9e7c2f 40% 42.2%, #3f1321 42.2% 58%, #e5d4aa 58% 60.2%, #113427 60.2% 76%, #9e7c2f 76% 78%, #35101b 78% 100%);
-            box-shadow: 0 0 0 14px rgba(255,255,255,.04), 0 0 0 15px rgba(242,216,139,.14), 0 25px 70px rgba(0,0,0,.42), inset 0 10px 20px rgba(255,255,255,.05);
+            box-shadow: 0 0 0 16px rgba(255,255,255,.04), 0 0 0 18px rgba(242,216,139,.16), 0 30px 80px rgba(0,0,0,.5), inset 0 12px 24px rgba(255,255,255,.06);
             overflow: hidden;
             isolation: isolate;
         }
@@ -263,27 +282,27 @@
         .zone-layer { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
         .zone-label {
             position: absolute;
-            padding: .36rem .52rem;
+            padding: .45rem .75rem;
             border-radius: 999px;
-            background: rgba(14,10,18,.88);
-            border: 1px solid rgba(242,216,139,.3);
+            background: rgba(14,10,18,.92);
+            border: 1px solid rgba(242,216,139,.35);
             color: var(--text);
-            font-size: .76rem;
-            font-weight: 700;
+            font-size: .85rem;
+            font-weight: 800;
             white-space: nowrap;
             backdrop-filter: blur(10px);
             transform: translate(-50%, -50%);
-            box-shadow: 0 4px 12px rgba(0,0,0,.5);
+            box-shadow: 0 6px 16px rgba(0,0,0,.6);
         }
         
         .hit {
             position: absolute;
-            width: 22px; height: 22px;
+            width: 26px; height: 26px;
             border-radius: 50%;
             transform: translate(-50%, -50%);
             pointer-events: none;
             z-index: 8;
-            box-shadow: 0 0 0 2px rgba(255,255,255,.12), 0 0 18px rgba(255,255,255,.18);
+            box-shadow: 0 0 0 2px rgba(255,255,255,.16), 0 0 22px rgba(255,255,255,.24);
             animation: pop .45s ease both;
         }
         @keyframes pop {
@@ -297,72 +316,69 @@
         
         .snitch-target {
             position: absolute;
-            width: 34px; height: 34px;
+            width: 40px; height: 40px;
             border-radius: 50%;
             transform: translate(-50%, -50%);
             background: radial-gradient(circle at 35% 35%, #fff6c5, #ddb44f 58%, #956711 100%);
-            box-shadow: 0 0 0 2px rgba(255,233,174,.22), 0 0 28px rgba(242,216,139,.45);
+            box-shadow: 0 0 0 2px rgba(255,233,174,.25), 0 0 35px rgba(242,216,139,.55);
             z-index: 5;
             animation: snitchPulse 1.6s ease-in-out infinite;
             cursor: pointer;
         }
         @keyframes snitchPulse {
             0%, 100% { transform: translate(-50%, -50%) scale(1); }
-            50% { transform: translate(-50%, -50%) scale(1.08); }
+            50% { transform: translate(-50%, -50%) scale(1.1); }
         }
 
-        .board-legend { display: grid; gap: .8rem; }
-        .legend-block { padding: 1rem; border-radius: 18px; background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.08); }
-        .legend-block strong { display: block; margin-bottom: .35rem; color: var(--gold2); }
-        .legend-block p { margin: 0; color: var(--muted); font-size: .9rem; line-height: 1.6; }
+        /* Right Control Console Sidebar */
+        .sidebar-stack { display: grid; gap: 1.2rem; }
         
-        .sidebar-stack { display: grid; gap: 1rem; }
-        .scoreboard { display: grid; gap: .8rem; }
+        /* Teams Side by Side */
+        .scoreboard { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: .8rem; }
         .team-card {
-            padding: 1rem;
+            padding: 1.1rem;
             border-radius: 20px;
             background: rgba(255,255,255,.03);
             border: 1px solid rgba(255,255,255,.08);
             transition: border-color .25s ease, background .25s ease, transform .2s ease;
         }
-        .team-card.active { border-color: rgba(242,216,139,.26); background: rgba(255,255,255,.06); transform: translateY(-2px); }
-        .team-top { display: flex; justify-content: space-between; align-items: center; gap: .8rem; margin-bottom: .8rem; }
+        .team-card.active { border-color: rgba(242,216,139,.32); background: rgba(255,255,255,.07); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(215,170,65,.1); }
+        .team-top { display: flex; flex-direction: column; gap: .6rem; margin-bottom: .8rem; }
         .house-chip {
             display: inline-flex;
             align-items: center;
             gap: .55rem;
-            padding: .5rem .72rem;
+            padding: .35rem .65rem;
             border-radius: 999px;
             border: 1px solid rgba(255,255,255,.08);
-            font-size: .82rem;
+            font-size: .75rem;
             font-weight: 800;
             letter-spacing: .06em;
             text-transform: uppercase;
+            width: fit-content;
         }
-        .house-chip .dot { width: 10px; height: 10px; border-radius: 50%; }
-        .team-name { font-weight: 800; font-size: 1rem; }
-        .team-score { font-family: "Cinzel", serif; font-size: 2.1rem; line-height: 1; color: var(--gold2); }
-        .team-meta { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: .5rem; }
-        .tiny { padding: .6rem .55rem; border-radius: 14px; background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.06); }
-        .tiny span { display: block; color: var(--muted); font-size: .72rem; margin-bottom: .2rem; }
-        .tiny strong { font-size: .88rem; }
-        .house-power { margin-top: .8rem; display: grid; gap: .6rem; }
-        .power-btn { width: 100%; }
+        .house-chip .dot { width: 8px; height: 8px; border-radius: 50%; }
+        .team-name { font-weight: 800; font-size: 1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .team-score { font-family: "Cinzel", serif; font-size: 2.3rem; line-height: 1; color: var(--gold2); }
+        .team-meta { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: .4rem; }
+        .tiny { padding: .5rem; border-radius: 12px; background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.06); }
+        .tiny span { display: block; color: var(--muted); font-size: .7rem; margin-bottom: .15rem; }
+        .tiny strong { font-size: .85rem; }
         
-        .turn-console { display: grid; gap: .8rem; }
+        .turn-console { display: grid; gap: .9rem; }
         .turn-pill {
             display: flex;
             justify-content: space-between;
             align-items: center;
             gap: 1rem;
-            padding: .95rem 1rem;
+            padding: 1rem 1.1rem;
             border-radius: 18px;
-            border: 1px solid rgba(242,216,139,.16);
+            border: 1px solid rgba(242,216,139,.18);
             background: rgba(255,255,255,.04);
         }
         .throws-track { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: .6rem; }
         .throw-dot {
-            min-height: 54px;
+            min-height: 52px;
             border-radius: 16px;
             display: grid;
             place-items: center;
@@ -373,15 +389,15 @@
         }
         .throw-dot.used { color: var(--text); background: rgba(255,255,255,.06); border-color: rgba(242,216,139,.18); }
         
-        .scoring-keypad { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: .6rem; margin-top: .5rem; }
+        .scoring-keypad { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: .6rem; margin-top: .4rem; }
         .keypad-btn {
-            padding: .75rem .5rem;
+            padding: .8rem .6rem;
             border-radius: 14px;
             background: rgba(255,255,255,.05);
             border: 1px solid var(--line);
             color: var(--text);
             font-weight: 700;
-            font-size: .88rem;
+            font-size: .9rem;
             cursor: pointer;
             text-align: center;
             transition: background .2s, transform .1s;
@@ -390,27 +406,28 @@
         .keypad-btn:active { transform: scale(.97); }
         .keypad-btn.snitch-btn { grid-column: span 2; background: linear-gradient(135deg, rgba(215,170,65,.2), rgba(215,170,65,.05)); border-color: var(--gold); color: var(--gold2); }
         
-        .helper-row { display: flex; flex-wrap: wrap; gap: .7rem; margin-top: .5rem; }
-        .pill { padding: .5rem .72rem; border-radius: 999px; border: 1px solid rgba(255,255,255,.08); background: rgba(255,255,255,.03); color: var(--muted); font-size: .82rem; font-weight: 700; }
-        .snitch-banner { margin-top: .1rem; padding: .95rem 1rem; border-radius: 18px; border: 1px solid rgba(242,216,139,.2); background: linear-gradient(135deg, rgba(242,216,139,.08), rgba(255,255,255,.03)); color: var(--gold2); font-weight: 800; display: none; }
+        .helper-row { display: flex; flex-wrap: wrap; gap: .7rem; margin-top: .4rem; }
+        .pill { padding: .5rem .75rem; border-radius: 999px; border: 1px solid rgba(255,255,255,.08); background: rgba(255,255,255,.03); color: var(--muted); font-size: .82rem; font-weight: 700; }
+        .snitch-banner { margin-top: .1rem; padding: 1rem; border-radius: 18px; border: 1px solid rgba(242,216,139,.22); background: linear-gradient(135deg, rgba(242,216,139,.09), rgba(255,255,255,.03)); color: var(--gold2); font-weight: 800; display: none; text-align: center; }
         .snitch-banner.show { display: block; }
         
-        .log { max-height: 340px; overflow: auto; display: grid; gap: .55rem; padding-right: .2rem; }
-        .log-item { padding: .8rem .9rem; border-radius: 16px; background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.06); line-height: 1.5; color: var(--muted); }
+        /* Bottom Match Log */
+        .log-panel { margin-top: 1.5rem; }
+        .log { max-height: 180px; overflow: auto; display: grid; gap: .55rem; padding-right: .3rem; }
+        .log-item { padding: .8rem 1rem; border-radius: 16px; background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.06); line-height: 1.5; color: var(--muted); font-size: .92rem; }
         .log-item strong { color: var(--text); }
         
-        .modal-backdrop { position: fixed; inset: 0; background: rgba(7,5,10,.6); backdrop-filter: blur(10px); display: none; align-items: center; justify-content: center; padding: 1rem; z-index: 220; }
+        .modal-backdrop { position: fixed; inset: 0; background: rgba(7,5,10,.65); backdrop-filter: blur(10px); display: none; align-items: center; justify-content: center; padding: 1rem; z-index: 220; }
         .modal-backdrop.open { display: flex; }
         .modal { width: min(700px, 100%); border-radius: 28px; background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02)), rgba(22,16,30,.95); border: 1px solid var(--line); box-shadow: var(--shadow); overflow: hidden; }
-        .modal-head, .modal-body, .modal-foot { padding: 1rem 1.1rem; }
+        .modal-head, .modal-body, .modal-foot { padding: 1.2rem 1.4rem; }
         .modal-head { border-bottom: 1px solid rgba(255,255,255,.08); }
         .modal-head h3 { margin: 0; font-family: "Cinzel", serif; color: var(--gold2); font-size: 1.5rem; }
         .modal-body p { margin: 0; color: var(--muted); line-height: 1.8; }
         .modal-foot { display: flex; justify-content: flex-end; gap: .8rem; border-top: 1px solid rgba(255,255,255,.08); }
 
-        @media (max-width: 1220px) {
-            .app-grid { grid-template-columns: 1fr; }
-            .game-surface, .board-stage, .hero-grid { grid-template-columns: 1fr; }
+        @media (max-width: 1200px) {
+            .app-grid, .app-grid.match-active { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -433,9 +450,9 @@
     </header>
 
     <main class="wrap">
-        <div class="app-grid">
-            <!-- Setup Sidebar -->
-            <aside class="panel">
+        <div class="app-grid" id="appGrid">
+            <!-- Setup Sidebar (Hides on Start) -->
+            <aside class="panel" id="setupPanel">
                 <div class="panel-head"><h2>Match setup</h2></div>
                 <div class="panel-body">
                     <div class="setup-stack">
@@ -488,104 +505,88 @@
                 </div>
             </aside>
 
-            <!-- Center Content: Dartboard Tracker -->
+            <!-- Main Play Area: Dartboard & Console -->
             <section class="center-stack">
-                <div class="panel hero-panel">
-                    <div class="hero-grid">
-                        <div>
-                            <div class="eyebrow">Six-house magical darts</div>
-                            <h1>Board sport for the House Cup.</h1>
-                            <p>Score through the hoops, dodge Bludgers, and chase the Snitch before your rival turns the tide.</p>
-                        </div>
-                    </div>
+                <div class="panel hero-panel" id="heroPanel">
+                    <div class="eyebrow">Six-house magical darts</div>
+                    <h1>Board sport for the House Cup.</h1>
+                    <p>Score through the hoops, dodge Bludgers, and chase the Snitch before your rival turns the tide.</p>
                 </div>
 
                 <div class="status-ribbon">
                     <div class="panel ribbon-block"><span>Target score</span><strong id="targetReadout">300</strong></div>
                     <div class="panel ribbon-block"><span>Snitch unlock</span><strong id="snitchReadout">225</strong></div>
-                    <div class="panel ribbon-block"><span>Current turn</span><strong id="currentTurnReadout">Not started</strong></div>
+                    <div class="panel-block panel" style="padding:1.1rem; border-top:1px solid rgba(242,216,139,.18); background:linear-gradient(180deg, rgba(255,255,255,.04), transparent);"><span>Current turn</span><strong id="currentTurnReadout">Not started</strong></div>
                 </div>
 
-                <div class="panel">
-                    <div class="panel-head"><h2>Magical dartboard tracker with scoring zones</h2></div>
-                    <div class="panel-body game-surface">
-                        <div class="board-shell">
-                            <div class="board-stage">
-                                <div class="dartboard-wrap">
-                                    <div class="dartboard" id="dartboard" aria-label="Dartboard tracking hits">
-                                        <canvas class="hazard-overlay" id="hazardCanvas" width="630" height="630" style="pointer-events: none;"></canvas>
-                                        <div class="zone-layer">
-                                            <div class="zone-label" style="left:20%; top:18%;">Lower Hoop (30)</div>
-                                            <div class="zone-label" style="left:50%; top:9%;">High Hoop (70)</div>
-                                            <div class="zone-label" style="left:80%; top:22%;">Center Hoop (50)</div>
-                                            <div class="zone-label" style="left:50%; top:50%;">Bullseye (25)</div>
-                                            <div class="zone-label" style="left:50%; top:86%;">Outer Ring (10)</div>
-                                            <div class="zone-label" style="left:22%; top:70%; color:var(--danger);">Bludger (-20)</div>
-                                        </div>
-                                        <div class="snitch-target" id="snitchTarget" hidden title="Click here if Snitch is caught on physical board!"></div>
-                                    </div>
-                                </div>
-                                <div class="board-legend">
-                                    <div class="legend-block">
-                                        <strong>Scoring Breakdown</strong>
-                                        <p>• Outer Ring: 10 pts<br>• Bullseye: 25 pts<br>• Lower Hoop: 30 pts<br>• Center Hoop: 50 pts<br>• High Hoop: 70 pts</p>
-                                    </div>
-                                    <div class="legend-block">
-                                        <strong>Hazards & Snitch</strong>
-                                        <p>Bludger wedges deduct 20 points. Catching the Golden Snitch awards 150 points and wins the match.</p>
-                                    </div>
-                                </div>
+                <!-- High-Vis Large Dartboard Display -->
+                <div class="panel board-card">
+                    <div class="dartboard-wrap">
+                        <div class="dartboard" id="dartboard" aria-label="Dartboard tracking hits">
+                            <canvas class="hazard-overlay" id="hazardCanvas" width="720" height="720" style="pointer-events: none;"></canvas>
+                            <div class="zone-layer">
+                                <div class="zone-label" style="left:20%; top:18%;">Lower Hoop (30)</div>
+                                <div class="zone-label" style="left:50%; top:8%;">High Hoop (70)</div>
+                                <div class="zone-label" style="left:80%; top:22%;">Center Hoop (50)</div>
+                                <div class="zone-label" style="left:50%; top:50%;">Bullseye (25)</div>
+                                <div class="zone-label" style="left:50%; top:88%;">Outer Ring (10)</div>
+                                <div class="zone-label" style="left:22%; top:72%; color:var(--danger);">Bludger (-20)</div>
                             </div>
+                            <div class="snitch-target" id="snitchTarget" hidden title="Click here if Snitch is caught on physical board!"></div>
                         </div>
-
-                        <!-- Sidebar Control Console -->
-                        <aside class="sidebar-stack">
-                            <div class="scoreboard" id="scoreboard"></div>
-                            <div class="panel">
-                                <div class="panel-head"><h3>Turn console</h3></div>
-                                <div class="panel-body turn-console">
-                                    <div class="turn-pill">
-                                        <div>
-                                            <strong id="turnTeamName">Awaiting start</strong>
-                                            <span id="turnMeta" style="font-size:0.85rem; color:var(--muted); display:block;">Select houses and begin</span>
-                                        </div>
-                                        <span id="throwCounter">0 / 3</span>
-                                    </div>
-                                    <div class="throws-track" id="throwsTrack">
-                                        <div class="throw-dot">1</div>
-                                        <div class="throw-dot">2</div>
-                                        <div class="throw-dot">3</div>
-                                    </div>
-                                    <div class="field" style="margin-top:.4rem;">
-                                        <label>Log physical throw:</label>
-                                        <div class="scoring-keypad">
-                                            <button class="keypad-btn" type="button" data-zone="hoop-high">High Hoop (70)</button>
-                                            <button class="keypad-btn" type="button" data-zone="hoop-mid">Center Hoop (50)</button>
-                                            <button class="keypad-btn" type="button" data-zone="hoop-low">Lower Hoop (30)</button>
-                                            <button class="keypad-btn" type="button" data-zone="bull">Bull (25)</button>
-                                            <button class="keypad-btn" type="button" data-zone="outer">Outer Ring (10)</button>
-                                            <button class="keypad-btn" type="button" data-zone="bludger" style="color:var(--danger)">Bludger (-20)</button>
-                                            <button class="keypad-btn" type="button" data-zone="miss">Miss (0)</button>
-                                            <button class="keypad-btn snitch-btn" type="button" id="snitchKeyBtn" data-zone="snitch" style="display:none;">Catch Golden Snitch (150)</button>
-                                        </div>
-                                    </div>
-                                    <div class="helper-row">
-                                        <span class="pill" id="comboPill">Combo: 0</span>
-                                    </div>
-                                    <div class="snitch-banner" id="snitchBanner">The Golden Snitch is in play!</div>
-                                    <button class="btn btn-ghost" id="endTurnBtn" type="button" style="width:100%; margin-top:.4rem;">End turn early</button>
-                                </div>
-                            </div>
-                            <div class="panel">
-                                <div class="panel-head"><h3>Match log</h3></div>
-                                <div class="panel-body">
-                                    <div class="log" id="log"></div>
-                                </div>
-                            </div>
-                        </aside>
                     </div>
                 </div>
             </section>
+
+            <!-- Right Control Console (Becomes Left/Primary on Active Match) -->
+            <aside class="sidebar-stack">
+                <!-- Teams Side by Side -->
+                <div class="scoreboard" id="scoreboard"></div>
+                
+                <div class="panel">
+                    <div class="panel-head"><h3>Turn console</h3></div>
+                    <div class="panel-body turn-console">
+                        <div class="turn-pill">
+                            <div>
+                                <strong id="turnTeamName">Awaiting start</strong>
+                                <span id="turnMeta" style="font-size:0.85rem; color:var(--muted); display:block;">Select houses and begin</span>
+                            </div>
+                            <span id="throwCounter">0 / 3</span>
+                        </div>
+                        <div class="throws-track" id="throwsTrack">
+                            <div class="throw-dot">1</div>
+                            <div class="throw-dot">2</div>
+                            <div class="throw-dot">3</div>
+                        </div>
+                        <div class="field" style="margin-top:.4rem;">
+                            <label>Log physical throw:</label>
+                            <div class="scoring-keypad">
+                                <button class="keypad-btn" type="button" data-zone="hoop-high">High Hoop (70)</button>
+                                <button class="keypad-btn" type="button" data-zone="hoop-mid">Center Hoop (50)</button>
+                                <button class="keypad-btn" type="button" data-zone="hoop-low">Lower Hoop (30)</button>
+                                <button class="keypad-btn" type="button" data-zone="bull">Bull (25)</button>
+                                <button class="keypad-btn" type="button" data-zone="outer">Outer Ring (10)</button>
+                                <button class="keypad-btn" type="button" data-zone="bludger" style="color:var(--danger)">Bludger (-20)</button>
+                                <button class="keypad-btn" type="button" data-zone="miss">Miss (0)</button>
+                                <button class="keypad-btn snitch-btn" type="button" id="snitchKeyBtn" data-zone="snitch" style="display:none;">Catch Golden Snitch (150)</button>
+                            </div>
+                        </div>
+                        <div class="helper-row">
+                            <span class="pill" id="comboPill">Combo: 0</span>
+                        </div>
+                        <div class="snitch-banner" id="snitchBanner">The Golden Snitch is in play!</div>
+                        <button class="btn btn-ghost" id="endTurnBtn" type="button" style="width:100%; margin-top:.4rem;">End turn early</button>
+                    </div>
+                </div>
+            </aside>
+        </div>
+
+        <!-- Match Log at the Bottom -->
+        <div class="panel log-panel">
+            <div class="panel-head"><h3>Match log</h3></div>
+            <div class="panel-body">
+                <div class="log" id="log"></div>
+            </div>
         </div>
     </main>
 
@@ -629,7 +630,7 @@
             throwsThisTurn: 0,
             logs: [],
             snitchActive: false,
-            snitchPos: { x: 315, y: 190 },
+            snitchPos: { x: 360, y: 210 },
             teams: [
                 {name: 'Scarlet Seekers', house: 'gryffindor', score: 0, throws: 0, combos: 0, abilityUsed: false},
                 {name: 'Moonfire Flyers', house: 'slytherin', score: 0, throws: 0, combos: 0, abilityUsed: false}
@@ -665,7 +666,10 @@
             playAgainBtn: document.getElementById('playAgainBtn'),
             rulesModal: document.getElementById('rulesModal'),
             closeRulesBtn: document.getElementById('closeRulesBtn'),
-            dartboard: document.getElementById('dartboard')
+            dartboard: document.getElementById('dartboard'),
+            appGrid: document.getElementById('appGrid'),
+            setupPanel: document.getElementById('setupPanel'),
+            heroPanel: document.getElementById('heroPanel')
         };
 
         function syncConfigToState() {
@@ -696,6 +700,12 @@
             els.snitchTarget.hidden = true;
             els.snitchKeyBtn.style.display = 'none';
             els.snitchBanner.classList.remove('show');
+            
+            // Restore setup and hero panels on reset
+            els.setupPanel.style.display = 'block';
+            els.heroPanel.classList.remove('hidden');
+            els.appGrid.classList.remove('match-active');
+
             if (fresh) addLog('New match prepared. Configure your teams and press start.');
             updateUI();
         }
@@ -707,15 +717,12 @@
                 return `
                     <div class="team-card ${active ? 'active' : ''}">
                         <div class="team-top">
-                            <div>
-                                <div class="team-name">${team.name}</div>
-                                <div class="house-chip"><span class="dot" style="background:${house.color}"></span>${house.label}</div>
-                            </div>
+                            <div class="house-chip"><span class="dot" style="background:${house.color}"></span>${house.label}</div>
+                            <div class="team-name" title="${team.name}">${team.name}</div>
                             <div class="team-score">${team.score}</div>
                         </div>
                         <div class="team-meta">
                             <div class="tiny"><span>Throws</span><strong>${team.throws}</strong></div>
-                            <div class="tiny"><span>Combos</span><strong>${team.combos}</strong></div>
                             <div class="tiny"><span>Power</span><strong>${team.abilityUsed ? 'Used' : 'Ready'}</strong></div>
                         </div>
                     </div>
@@ -739,17 +746,23 @@
             app.started = true;
             app.currentTeam = 0;
             app.throwsThisTurn = 0;
+            
+            // Hide setup panel & top banner, resize grid layout for big dartboard view
+            els.setupPanel.style.display = 'none';
+            els.heroPanel.classList.add('hidden');
+            els.appGrid.classList.add('match-active');
+
             addLog(`Match begins between <strong>${app.teams[0].name}</strong> and <strong>${app.teams[1].name}</strong>.`);
             updateUI();
         }
 
         function drawHazards() {
             const ctx = els.hazardCanvas.getContext('2d');
-            ctx.clearRect(0, 0, 630, 630);
+            ctx.clearRect(0, 0, 720, 720);
             [[20, 38], [142, 162], [258, 278]].forEach(([start, end]) => {
                 ctx.beginPath();
-                ctx.moveTo(315, 315);
-                ctx.arc(315, 315, 315, (start - 90) * Math.PI / 180, (end - 90) * Math.PI / 180);
+                ctx.moveTo(360, 360);
+                ctx.arc(360, 360, 360, (start - 90) * Math.PI / 180, (end - 90) * Math.PI / 180);
                 ctx.closePath();
                 ctx.fillStyle = 'rgba(183,70,53,.18)';
                 ctx.fill();
@@ -758,14 +771,14 @@
 
         function getZoneDetails(zoneKey) {
             switch(zoneKey) {
-                case 'hoop-high': return { name: 'High Hoop', points: 70, kind: 'hoop-high', coords: {x:315, y:88} };
-                case 'hoop-mid': return { name: 'Center Hoop', points: 50, kind: 'hoop-mid', coords: {x:492, y:126} };
-                case 'hoop-low': return { name: 'Lower Hoop', points: 30, kind: 'hoop-low', coords: {x:140, y:118} };
-                case 'bull': return { name: 'Bullseye', points: 25, kind: 'bull', coords: {x:315, y:315} };
-                case 'outer': return { name: 'Outer Ring', points: 10, kind: 'outer', coords: {x:315, y:540} };
-                case 'bludger': return { name: 'Bludger', points: -20, kind: 'bludger', coords: {x:200, y:200} };
+                case 'hoop-high': return { name: 'High Hoop', points: 70, kind: 'hoop-high', coords: {x:360, y:100} };
+                case 'hoop-mid': return { name: 'Center Hoop', points: 50, kind: 'hoop-mid', coords: {x:560, y:142} };
+                case 'hoop-low': return { name: 'Lower Hoop', points: 30, kind: 'hoop-low', coords: {x:160, y:135} };
+                case 'bull': return { name: 'Bullseye', points: 25, kind: 'bull', coords: {x:360, y:360} };
+                case 'outer': return { name: 'Outer Ring', points: 10, kind: 'outer', coords: {x:360, y:620} };
+                case 'bludger': return { name: 'Bludger', points: -20, kind: 'bludger', coords: {x:220, y:230} };
                 case 'snitch': return { name: 'Golden Snitch', points: 150, kind: 'snitch', coords: app.snitchPos };
-                default: return { name: 'Miss', points: 0, kind: 'miss', coords: {x:315, y:315} };
+                default: return { name: 'Miss', points: 0, kind: 'miss', coords: {x:360, y:360} };
             }
         }
 
