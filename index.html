@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quidditch Darts — House Cup Web App</title>
-    <meta name="description" content="A playable fantasy darts web app inspired by Quidditch, with six magical houses, special abilities, snitch mode, turn tracking, and physical scoring input." />
+    <meta name="description" content="A playable fantasy darts web app inspired by Quidditch, featuring Standard and Quad board modes, six magical houses, special abilities, and live tracking." />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800&family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
@@ -267,6 +267,9 @@
             overflow: hidden;
             isolation: isolate;
         }
+        .dartboard.quad-board {
+            background: radial-gradient(circle, #120d18 0 7%, #6f4a12 7% 10%, #8f1f2a 10% 20%, #f2d88b 20% 22%, #113c2d 22% 35%, #d7aa41 35% 37%, #1d2f62 37% 50%, #f2d88b 50% 52%, #491621 52% 66%, #d7aa41 66% 68%, #211723 68% 100%);
+        }
         .dartboard::before {
             content: "";
             position: absolute;
@@ -278,6 +281,21 @@
         
         .hazard-overlay { position: absolute; inset: 0; border-radius: 50%; pointer-events: none; opacity: .92; }
         .zone-layer { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+        .zone-number {
+            position: absolute;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(14,10,18,.92);
+            border: 1px solid var(--gold);
+            color: var(--gold2);
+            font-size: .75rem;
+            font-weight: 800;
+            display: grid;
+            place-items: center;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 4px 10px rgba(0,0,0,.5);
+        }
         .zone-label {
             position: absolute;
             padding: .45rem .75rem;
@@ -407,7 +425,8 @@
         .snitch-banner { margin-top: .1rem; padding: 1rem; border-radius: 18px; border: 1px solid rgba(242,216,139,.22); background: linear-gradient(135deg, rgba(242,216,139,.09), rgba(255,255,255,.03)); color: var(--gold2); font-weight: 800; display: none; text-align: center; }
         .snitch-banner.show { display: block; }
         
-        .log-panel { margin-top: 1.5rem; }
+        .log-panel { margin-top: 1.5rem; transition: opacity .3s ease; }
+        .log-panel.hidden { display: none; }
         .log { max-height: 180px; overflow: auto; display: grid; gap: .55rem; padding-right: .3rem; }
         .log-item { padding: .8rem 1rem; border-radius: 16px; background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.06); line-height: 1.5; color: var(--muted); font-size: .92rem; }
         .log-item strong { color: var(--text); }
@@ -458,6 +477,13 @@
                         <div class="field">
                             <label for="teamBName">Team B name</label>
                             <input id="teamBName" class="input" type="text" value="Moonfire Flyers" maxlength="22" />
+                        </div>
+                        <div class="field">
+                            <label for="boardType">Board layout</label>
+                            <select id="boardType" class="select">
+                                <option value="standard" selected>Standard Board</option>
+                                <option value="quad">Quad Board (4x Multiplier Variant)</option>
+                            </select>
                         </div>
                         <div class="field">
                             <label>Team A house</label>
@@ -545,7 +571,7 @@
                 </div>
             </aside>
 
-            <!-- Main Play Area: Dartboard & Console -->
+            <!-- Main Play Area: Dartboard & Status -->
             <section class="center-stack">
                 <div class="panel hero-panel" id="heroPanel">
                     <div class="eyebrow">Six-house magical darts</div>
@@ -559,18 +585,30 @@
                     <div class="panel-block panel" style="padding:1.1rem; border-top:1px solid rgba(242,216,139,.18); background:linear-gradient(180deg, rgba(255,255,255,.04), transparent);"><span>Current turn</span><strong id="currentTurnReadout">Not started</strong></div>
                 </div>
 
-                <!-- High-Vis Large Dartboard Display -->
+                <!-- High-Vis Large Dartboard Display with Numbered Target Zones -->
                 <div class="panel board-card">
                     <div class="dartboard-wrap">
                         <div class="dartboard" id="dartboard" aria-label="Dartboard tracking hits">
                             <canvas class="hazard-overlay" id="hazardCanvas" width="720" height="720" style="pointer-events: none;"></canvas>
-                            <div class="zone-layer">
-                                <div class="zone-label" style="left:20%; top:18%;">Lower Hoop (30)</div>
-                                <div class="zone-label" style="left:50%; top:8%;">High Hoop (70)</div>
-                                <div class="zone-label" style="left:80%; top:22%;">Center Hoop (50)</div>
-                                <div class="zone-label" style="left:50%; top:50%;">Bullseye (25)</div>
-                                <div class="zone-label" style="left:50%; top:88%;">Outer Ring (10)</div>
-                                <div class="zone-label" style="left:22%; top:72%; color:var(--danger);">Bludger (-20)</div>
+                            <div class="zone-layer" id="zoneLayer">
+                                <!-- Dynamic Target Numbers & Zone Labels -->
+                                <div class="zone-number" style="left:50%; top:10%;">20</div>
+                                <div class="zone-number" style="left:72%; top:18%;">1</div>
+                                <div class="zone-number" style="left:88%; top:38%;">18</div>
+                                <div class="zone-number" style="left:88%; top:62%;">4</div>
+                                <div class="zone-number" style="left:72%; top:82%;">13</div>
+                                <div class="zone-number" style="left:50%; top:90%;">6</div>
+                                <div class="zone-number" style="left:28%; top:82%;">10</div>
+                                <div class="zone-number" style="left:12%; top:62%;">15</div>
+                                <div class="zone-number" style="left:12%; top:38%;">2</div>
+                                <div class="zone-number" style="left:28%; top:18%;">17</div>
+                                
+                                <div class="zone-label" style="left:50%; top:24%;">High Hoop</div>
+                                <div class="zone-label" style="left:68%; top:45%;">Center Hoop</div>
+                                <div class="zone-label" style="left:32%; top:45%;">Lower Hoop</div>
+                                <div class="zone-label" style="left:50%; top:50%;">Bull</div>
+                                <div class="zone-label" style="left:50%; top:78%;">Outer Ring</div>
+                                <div class="zone-label" style="left:22%; top:72%; color:var(--danger);">Bludger</div>
                             </div>
                             <div class="snitch-target" id="snitchTarget" hidden title="Click here if Snitch is caught on physical board!"></div>
                         </div>
@@ -578,8 +616,8 @@
                 </div>
             </section>
 
-            <!-- Right Control Console -->
-            <aside class="sidebar-stack">
+            <!-- Right Control Console (Hidden during setup) -->
+            <aside class="sidebar-stack hidden" id="consoleSidebar">
                 <!-- Teams Side by Side -->
                 <div class="scoreboard" id="scoreboard"></div>
                 
@@ -601,18 +639,19 @@
                         <div class="field" style="margin-top:.4rem;">
                             <label>Log physical throw:</label>
                             <div class="scoring-keypad">
-                                <button class="keypad-btn" type="button" data-zone="hoop-high">High Hoop (70)</button>
-                                <button class="keypad-btn" type="button" data-zone="hoop-mid">Center Hoop (50)</button>
-                                <button class="keypad-btn" type="button" data-zone="hoop-low">Lower Hoop (30)</button>
-                                <button class="keypad-btn" type="button" data-zone="bull">Bull (25)</button>
-                                <button class="keypad-btn" type="button" data-zone="outer">Outer Ring (10)</button>
-                                <button class="keypad-btn" type="button" data-zone="bludger" style="color:var(--danger)">Bludger (-20)</button>
+                                <button class="keypad-btn" type="button" data-zone="hoop-high" id="btnHigh">High Hoop (70)</button>
+                                <button class="keypad-btn" type="button" data-zone="hoop-mid" id="btnMid">Center Hoop (50)</button>
+                                <button class="keypad-btn" type="button" data-zone="hoop-low" id="btnLow">Lower Hoop (30)</button>
+                                <button class="keypad-btn" type="button" data-zone="bull" id="btnBull">Bull (25)</button>
+                                <button class="keypad-btn" type="button" data-zone="outer" id="btnOuter">Outer Ring (10)</button>
+                                <button class="keypad-btn" type="button" data-zone="bludger" style="color:var(--danger)" id="btnBludger">Bludger (-20)</button>
                                 <button class="keypad-btn" type="button" data-zone="miss">Miss (0)</button>
                                 <button class="keypad-btn snitch-btn" type="button" id="snitchKeyBtn" data-zone="snitch" style="display:none;">Catch Golden Snitch (150)</button>
                             </div>
                         </div>
                         <div class="helper-row">
                             <span class="pill" id="comboPill">Combo: 0</span>
+                            <span class="pill" id="modePill">Mode: Standard</span>
                         </div>
                         <div class="snitch-banner" id="snitchBanner">The Golden Snitch is in play!</div>
                         <button class="btn btn-ghost" id="endTurnBtn" type="button" style="width:100%; margin-top:.4rem;">End turn early</button>
@@ -621,8 +660,8 @@
             </aside>
         </div>
 
-        <!-- Match Log at the Bottom -->
-        <div class="panel log-panel">
+        <!-- Match Log at the Bottom (Hidden during setup) -->
+        <div class="panel log-panel hidden" id="logPanel">
             <div class="panel-head"><h3>Match log</h3></div>
             <div class="panel-body">
                 <div class="log" id="log"></div>
@@ -648,8 +687,8 @@
             <div class="modal-head"><h3>Quidditch Darts Rulebook</h3></div>
             <div class="modal-body" style="display:grid; gap:.8rem;">
                 <p><strong>1. Basic Gameplay:</strong> Throw 3 physical darts per turn, then use the keypad to log hits.</p>
-                <p><strong>2. Scoring Zones:</strong> High Hoop (70), Center Hoop (50), Lower Hoop (30), Bullseye (25), and Outer Ring (10).</p>
-                <p><strong>3. Hazards:</strong> Bludger wedges deduct 20 points.</p>
+                <p><strong>2. Scoring Modes:</strong> Choose between Standard Board scoring or Quad Board variant (which multiplies all zone points by 4x for high-stakes matches!).</p>
+                <p><strong>3. Hazards:</strong> Bludger wedges deduct points.</p>
             </div>
             <div class="modal-foot"><button class="btn btn-primary" id="closeRulesBtn" type="button">Got it</button></div>
         </div>
@@ -668,6 +707,7 @@
         const app = {
             targetScore: 300,
             snitchThreshold: 225,
+            boardType: 'standard',
             started: false,
             currentTeam: 0,
             throwsThisTurn: 0,
@@ -687,6 +727,7 @@
             rulesBtn: document.getElementById('rulesBtn'),
             teamAName: document.getElementById('teamAName'),
             teamBName: document.getElementById('teamBName'),
+            boardType: document.getElementById('boardType'),
             targetScore: document.getElementById('targetScore'),
             targetReadout: document.getElementById('targetReadout'),
             snitchReadout: document.getElementById('snitchReadout'),
@@ -698,6 +739,7 @@
             throwCounter: document.getElementById('throwCounter'),
             throwsTrack: document.getElementById('throwsTrack'),
             comboPill: document.getElementById('comboPill'),
+            modePill: document.getElementById('modePill'),
             log: document.getElementById('log'),
             endTurnBtn: document.getElementById('endTurnBtn'),
             snitchTarget: document.getElementById('snitchTarget'),
@@ -712,10 +754,17 @@
             dartboard: document.getElementById('dartboard'),
             appGrid: document.getElementById('appGrid'),
             setupPanel: document.getElementById('setupPanel'),
-            heroPanel: document.getElementById('heroPanel')
+            heroPanel: document.getElementById('heroPanel'),
+            consoleSidebar: document.getElementById('consoleSidebar'),
+            logPanel: document.getElementById('logPanel'),
+            btnHigh: document.getElementById('btnHigh'),
+            btnMid: document.getElementById('btnMid'),
+            btnLow: document.getElementById('btnLow'),
+            btnBull: document.getElementById('btnBull'),
+            btnOuter: document.getElementById('btnOuter'),
+            btnBludger: document.getElementById('btnBludger')
         };
 
-        // Handle custom radio styling UI state updates
         function setupRadioGroups() {
             ['houseAGroup', 'houseBGroup'].forEach(groupId => {
                 const group = document.getElementById(groupId);
@@ -741,10 +790,31 @@
             app.teams[1].name = (els.teamBName.value.trim() || 'Team B').slice(0, 22);
             app.teams[0].house = getSelectedHouse('houseAGroup');
             app.teams[1].house = getSelectedHouse('houseBGroup');
+            app.boardType = els.boardType.value;
             app.targetScore = Number(els.targetScore.value);
             app.snitchThreshold = Math.floor(app.targetScore * 0.75);
+            
             els.targetReadout.textContent = app.targetScore;
             els.snitchReadout.textContent = app.snitchThreshold;
+            els.modePill.textContent = `Mode: ${app.boardType === 'quad' ? 'Quad Board' : 'Standard'}`;
+
+            if (app.boardType === 'quad') {
+                els.dartboard.classList.add('quad-board');
+                els.btnHigh.textContent = 'High Hoop (280)';
+                els.btnMid.textContent = 'Center Hoop (200)';
+                els.btnLow.textContent = 'Lower Hoop (120)';
+                els.btnBull.textContent = 'Quad Bull (100)';
+                els.btnOuter.textContent = 'Outer Ring (40)';
+                els.btnBludger.textContent = 'Bludger (-80)';
+            } else {
+                els.dartboard.classList.remove('quad-board');
+                els.btnHigh.textContent = 'High Hoop (70)';
+                els.btnMid.textContent = 'Center Hoop (50)';
+                els.btnLow.textContent = 'Lower Hoop (30)';
+                els.btnBull.textContent = 'Bull (25)';
+                els.btnOuter.textContent = 'Outer Ring (10)';
+                els.btnBludger.textContent = 'Bludger (-20)';
+            }
             updateUI();
         }
 
@@ -767,9 +837,12 @@
             els.snitchKeyBtn.style.display = 'none';
             els.snitchBanner.classList.remove('show');
             
+            // Show setup panel, hide turn console and match log during setup
             els.setupPanel.style.display = 'block';
             els.heroPanel.classList.remove('hidden');
             els.appGrid.classList.remove('match-active');
+            els.consoleSidebar.classList.add('hidden');
+            els.logPanel.classList.add('hidden');
 
             if (fresh) addLog('New match prepared. Configure your teams and press start.');
             updateUI();
@@ -812,11 +885,14 @@
             app.currentTeam = 0;
             app.throwsThisTurn = 0;
             
+            // Hide setup panel, show turn console and match log
             els.setupPanel.style.display = 'none';
             els.heroPanel.classList.add('hidden');
             els.appGrid.classList.add('match-active');
+            els.consoleSidebar.classList.remove('hidden');
+            els.logPanel.classList.remove('hidden');
 
-            addLog(`Match begins between <strong>${app.teams[0].name}</strong> and <strong>${app.teams[1].name}</strong>.`);
+            addLog(`Match begins between <strong>${app.teams[0].name}</strong> and <strong>${app.teams[1].name}</strong> (${app.boardType === 'quad' ? 'Quad Board' : 'Standard Board'}).`);
             updateUI();
         }
 
@@ -834,14 +910,15 @@
         }
 
         function getZoneDetails(zoneKey) {
+            const mult = app.boardType === 'quad' ? 4 : 1;
             switch(zoneKey) {
-                case 'hoop-high': return { name: 'High Hoop', points: 70, kind: 'hoop-high', coords: {x:360, y:100} };
-                case 'hoop-mid': return { name: 'Center Hoop', points: 50, kind: 'hoop-mid', coords: {x:560, y:142} };
-                case 'hoop-low': return { name: 'Lower Hoop', points: 30, kind: 'hoop-low', coords: {x:160, y:135} };
-                case 'bull': return { name: 'Bullseye', points: 25, kind: 'bull', coords: {x:360, y:360} };
-                case 'outer': return { name: 'Outer Ring', points: 10, kind: 'outer', coords: {x:360, y:620} };
-                case 'bludger': return { name: 'Bludger', points: -20, kind: 'bludger', coords: {x:220, y:230} };
-                case 'snitch': return { name: 'Golden Snitch', points: 150, kind: 'snitch', coords: app.snitchPos };
+                case 'hoop-high': return { name: 'High Hoop', points: 70 * mult, kind: 'hoop-high', coords: {x:360, y:100} };
+                case 'hoop-mid': return { name: 'Center Hoop', points: 50 * mult, kind: 'hoop-mid', coords: {x:560, y:142} };
+                case 'hoop-low': return { name: 'Lower Hoop', points: 30 * mult, kind: 'hoop-low', coords: {x:160, y:135} };
+                case 'bull': return { name: 'Bullseye', points: 25 * mult, kind: 'bull', coords: {x:360, y:360} };
+                case 'outer': return { name: 'Outer Ring', points: 10 * mult, kind: 'outer', coords: {x:360, y:620} };
+                case 'bludger': return { name: 'Bludger', points: -20 * mult, kind: 'bludger', coords: {x:220, y:230} };
+                case 'snitch': return { name: 'Golden Snitch', points: 150 * mult, kind: 'snitch', coords: app.snitchPos };
                 default: return { name: 'Miss', points: 0, kind: 'miss', coords: {x:360, y:360} };
             }
         }
@@ -903,6 +980,7 @@
         els.endTurnBtn.addEventListener('click', endTurn);
         els.closeModalBtn.addEventListener('click', () => els.modal.classList.remove('open'));
         els.playAgainBtn.addEventListener('click', () => { els.modal.classList.remove('open'); resetMatch(true); });
+        els.boardType.addEventListener('change', syncConfigToState);
 
         setupRadioGroups();
         drawHazards();
