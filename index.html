@@ -140,10 +140,9 @@
 
         main { padding: 1.2rem 0 2.5rem; }
         
-        /* Application State Layouts */
         .app-grid {
             display: grid;
-            grid-template-columns: 360px minmax(0, 1fr);
+            grid-template-columns: 380px minmax(0, 1fr);
             gap: 1.5rem;
             align-items: start;
             transition: all .4s ease;
@@ -185,14 +184,14 @@
             background: rgba(255,255,255,.06);
         }
         
-        .house-grid { display: grid; gap: .65rem; }
+        .house-scroll { max-height: 220px; overflow-y: auto; display: grid; gap: .65rem; padding-right: .3rem; }
         .house-option {
             position: relative;
             display: grid;
             grid-template-columns: auto 1fr auto;
             gap: .8rem;
             align-items: center;
-            padding: .95rem;
+            padding: .85rem;
             border-radius: 18px;
             border: 1px solid rgba(255,255,255,.08);
             background: rgba(255,255,255,.03);
@@ -209,8 +208,8 @@
         .h { background: var(--huff); }
         .m { background: var(--moon); }
         .e { background: var(--ember); }
-        .house-copy strong { display: block; margin-bottom: .12rem; }
-        .house-copy span { color: var(--muted); font-size: .84rem; line-height: 1.35; }
+        .house-copy strong { display: block; margin-bottom: .12rem; font-size: .9rem; }
+        .house-copy span { color: var(--muted); font-size: .8rem; line-height: 1.35; display: block; }
         
         .mini-note {
             padding: .9rem .95rem;
@@ -247,7 +246,6 @@
         .ribbon-block span { display: block; color: var(--muted); font-size: .84rem; margin-bottom: .28rem; }
         .ribbon-block strong { font-size: 1.2rem; }
         
-        /* Large Board Display Area */
         .board-card { padding: 1.5rem; display: grid; place-items: center; }
         .dartboard-wrap {
             position: relative;
@@ -330,10 +328,8 @@
             50% { transform: translate(-50%, -50%) scale(1.1); }
         }
 
-        /* Right Control Console Sidebar */
         .sidebar-stack { display: grid; gap: 1.2rem; }
         
-        /* Teams Side by Side */
         .scoreboard { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: .8rem; }
         .team-card {
             padding: 1.1rem;
@@ -411,7 +407,6 @@
         .snitch-banner { margin-top: .1rem; padding: 1rem; border-radius: 18px; border: 1px solid rgba(242,216,139,.22); background: linear-gradient(135deg, rgba(242,216,139,.09), rgba(255,255,255,.03)); color: var(--gold2); font-weight: 800; display: none; text-align: center; }
         .snitch-banner.show { display: block; }
         
-        /* Bottom Match Log */
         .log-panel { margin-top: 1.5rem; }
         .log { max-height: 180px; overflow: auto; display: grid; gap: .55rem; padding-right: .3rem; }
         .log-item { padding: .8rem 1rem; border-radius: 16px; background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.06); line-height: 1.5; color: var(--muted); font-size: .92rem; }
@@ -451,7 +446,7 @@
 
     <main class="wrap">
         <div class="app-grid" id="appGrid">
-            <!-- Setup Sidebar (Hides on Start) -->
+            <!-- Setup Sidebar -->
             <aside class="panel" id="setupPanel">
                 <div class="panel-head"><h2>Match setup</h2></div>
                 <div class="panel-body">
@@ -466,26 +461,71 @@
                         </div>
                         <div class="field">
                             <label>Team A house</label>
-                            <div class="house-grid" id="houseAGroup">
+                            <div class="house-scroll" id="houseAGroup">
                                 <label class="house-option active">
                                     <input type="radio" name="houseA" value="gryffindor" checked />
                                     <span class="house-sigil g"></span>
-                                    <span class="house-copy"><strong>Gryffindor</strong><span>Upgrade one weak throw into a brave strike.</span></span>
+                                    <span class="house-copy"><strong>Gryffindor</strong><span>Brave strike upgrade.</span></span>
                                 </label>
                                 <label class="house-option">
                                     <input type="radio" name="houseA" value="ravenclaw" />
                                     <span class="house-sigil r"></span>
-                                    <span class="house-copy"><strong>Ravenclaw</strong><span>Precision planning boosts one smart shot.</span></span>
+                                    <span class="house-copy"><strong>Ravenclaw</strong><span>Precision planning boost.</span></span>
+                                </label>
+                                <label class="house-option">
+                                    <input type="radio" name="houseA" value="hufflepuff" />
+                                    <span class="house-sigil h"></span>
+                                    <span class="house-copy"><strong>Hufflepuff</strong><span>Steady defense shield.</span></span>
+                                </label>
+                                <label class="house-option">
+                                    <input type="radio" name="houseA" value="slytherin" />
+                                    <span class="house-sigil s"></span>
+                                    <span class="house-copy"><strong>Slytherin</strong><span>Cunning curse strike.</span></span>
+                                </label>
+                                <label class="house-option">
+                                    <input type="radio" name="houseA" value="moon" />
+                                    <span class="house-sigil m"></span>
+                                    <span class="house-copy"><strong>Moon</strong><span>Lunar aura burst.</span></span>
+                                </label>
+                                <label class="house-option">
+                                    <input type="radio" name="houseA" value="ember" />
+                                    <span class="house-sigil e"></span>
+                                    <span class="house-copy"><strong>Ember</strong><span>Blazing double strike.</span></span>
                                 </label>
                             </div>
                         </div>
                         <div class="field">
                             <label>Team B house</label>
-                            <div class="house-grid" id="houseBGroup">
+                            <div class="house-scroll" id="houseBGroup">
+                                <label class="house-option">
+                                    <input type="radio" name="houseB" value="gryffindor" />
+                                    <span class="house-sigil g"></span>
+                                    <span class="house-copy"><strong>Gryffindor</strong><span>Brave strike upgrade.</span></span>
+                                </label>
+                                <label class="house-option">
+                                    <input type="radio" name="houseB" value="ravenclaw" />
+                                    <span class="house-sigil r"></span>
+                                    <span class="house-copy"><strong>Ravenclaw</strong><span>Precision planning boost.</span></span>
+                                </label>
+                                <label class="house-option">
+                                    <input type="radio" name="houseB" value="hufflepuff" />
+                                    <span class="house-sigil h"></span>
+                                    <span class="house-copy"><strong>Hufflepuff</strong><span>Steady defense shield.</span></span>
+                                </label>
                                 <label class="house-option active">
                                     <input type="radio" name="houseB" value="slytherin" checked />
                                     <span class="house-sigil s"></span>
-                                    <span class="house-copy"><strong>Slytherin</strong><span>Curse the rival’s next powerful scoring shot.</span></span>
+                                    <span class="house-copy"><strong>Slytherin</strong><span>Cunning curse strike.</span></span>
+                                </label>
+                                <label class="house-option">
+                                    <input type="radio" name="houseB" value="moon" />
+                                    <span class="house-sigil m"></span>
+                                    <span class="house-copy"><strong>Moon</strong><span>Lunar aura burst.</span></span>
+                                </label>
+                                <label class="house-option">
+                                    <input type="radio" name="houseB" value="ember" />
+                                    <span class="house-sigil e"></span>
+                                    <span class="house-copy"><strong>Ember</strong><span>Blazing double strike.</span></span>
                                 </label>
                             </div>
                         </div>
@@ -538,7 +578,7 @@
                 </div>
             </section>
 
-            <!-- Right Control Console (Becomes Left/Primary on Active Match) -->
+            <!-- Right Control Console -->
             <aside class="sidebar-stack">
                 <!-- Teams Side by Side -->
                 <div class="scoreboard" id="scoreboard"></div>
@@ -618,8 +658,11 @@
     <script>
         const houseMeta = {
             gryffindor: {label: 'Gryffindor', color: '#8f1f2a', ability: 'Bold Retry'},
+            ravenclaw: {label: 'Ravenclaw', color: '#1d2f62', ability: 'Strategy Ring'},
+            hufflepuff: {label: 'Hufflepuff', color: '#8e6c1f', ability: 'Steady Shield'},
             slytherin: {label: 'Slytherin', color: '#113c2d', ability: 'Cunning Curse'},
-            ravenclaw: {label: 'Ravenclaw', color: '#1d2f62', ability: 'Strategy Ring'}
+            moon: {label: 'Moon', color: '#8b7cff', ability: 'Lunar Burst'},
+            ember: {label: 'Ember', color: '#cf5c2f', ability: 'Blazing Strike'}
         };
 
         const app = {
@@ -672,9 +715,32 @@
             heroPanel: document.getElementById('heroPanel')
         };
 
+        // Handle custom radio styling UI state updates
+        function setupRadioGroups() {
+            ['houseAGroup', 'houseBGroup'].forEach(groupId => {
+                const group = document.getElementById(groupId);
+                group.querySelectorAll('.house-option').forEach(label => {
+                    const radio = label.querySelector('input[type="radio"]');
+                    radio.addEventListener('change', () => {
+                        group.querySelectorAll('.house-option').forEach(l => l.classList.remove('active'));
+                        if (radio.checked) label.classList.add('active');
+                        syncConfigToState();
+                    });
+                });
+            });
+        }
+
+        function getSelectedHouse(groupId) {
+            const group = document.getElementById(groupId);
+            const checked = group.querySelector('input[type="radio"]:checked');
+            return checked ? checked.value : 'gryffindor';
+        }
+
         function syncConfigToState() {
             app.teams[0].name = (els.teamAName.value.trim() || 'Team A').slice(0, 22);
             app.teams[1].name = (els.teamBName.value.trim() || 'Team B').slice(0, 22);
+            app.teams[0].house = getSelectedHouse('houseAGroup');
+            app.teams[1].house = getSelectedHouse('houseBGroup');
             app.targetScore = Number(els.targetScore.value);
             app.snitchThreshold = Math.floor(app.targetScore * 0.75);
             els.targetReadout.textContent = app.targetScore;
@@ -701,7 +767,6 @@
             els.snitchKeyBtn.style.display = 'none';
             els.snitchBanner.classList.remove('show');
             
-            // Restore setup and hero panels on reset
             els.setupPanel.style.display = 'block';
             els.heroPanel.classList.remove('hidden');
             els.appGrid.classList.remove('match-active');
@@ -712,7 +777,7 @@
 
         function renderScoreboard() {
             els.scoreboard.innerHTML = app.teams.map((team, index) => {
-                const house = houseMeta[team.house];
+                const house = houseMeta[team.house] || houseMeta['gryffindor'];
                 const active = app.started && index === app.currentTeam;
                 return `
                     <div class="team-card ${active ? 'active' : ''}">
@@ -747,7 +812,6 @@
             app.currentTeam = 0;
             app.throwsThisTurn = 0;
             
-            // Hide setup panel & top banner, resize grid layout for big dartboard view
             els.setupPanel.style.display = 'none';
             els.heroPanel.classList.add('hidden');
             els.appGrid.classList.add('match-active');
@@ -840,6 +904,7 @@
         els.closeModalBtn.addEventListener('click', () => els.modal.classList.remove('open'));
         els.playAgainBtn.addEventListener('click', () => { els.modal.classList.remove('open'); resetMatch(true); });
 
+        setupRadioGroups();
         drawHazards();
         syncConfigToState();
         resetMatch(true);
