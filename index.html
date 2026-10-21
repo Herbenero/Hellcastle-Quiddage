@@ -3,43 +3,44 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Quidditch Darts — Golden Snitch Edition</title>
-  <meta name="description" content="A magical dart game concept inspired by Harry Potter's Quidditch — cinematic, fast, and enchanted." />
+  <title>Quidditch Darts — House Cup Web App</title>
+  <meta name="description" content="A playable Quidditch-inspired darts web app with house abilities, scoring, turn tracking, snitch mode, and magical match flow." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800&family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
   <style>
     :root{
-      --bg:#0d0b12;
-      --bg-2:#17111f;
-      --panel:rgba(28,20,39,.72);
-      --panel-2:rgba(255,255,255,.06);
-      --text:#f6efe3;
-      --muted:#d2c3aa;
-      --gold:#d9ab39;
-      --gold-2:#f5d577;
-      --ember:#8f3b17;
-      --wine:#4f1224;
-      --green:#12352c;
-      --line:rgba(255,236,197,.16);
-      --shadow:0 20px 80px rgba(0,0,0,.45);
-      --radius:22px;
-      --max:1240px;
-      --snitchX: 50%;
-      --snitchY: 50%;
+      --bg:#0d0b10;
+      --bg-2:#16101c;
+      --panel:rgba(24,17,32,.82);
+      --panel-soft:rgba(255,255,255,.045);
+      --text:#f7f1e7;
+      --muted:#cabca3;
+      --gold:#d7aa41;
+      --gold-2:#f2d88b;
+      --line:rgba(255,233,193,.14);
+      --shadow:0 24px 80px rgba(0,0,0,.45);
+      --gryff:#8b1d27;
+      --slyth:#0f3a2b;
+      --raven:#1b2a57;
+      --huff:#8f6b1e;
+      --danger:#b33b2e;
+      --ok:#64b587;
+      --max:1380px;
     }
 
     *{box-sizing:border-box}
+    html,body{height:100%}
     html{scroll-behavior:smooth}
     body{
       margin:0;
-      font-family:"Inter", sans-serif;
-      background:
-        radial-gradient(circle at 20% 15%, rgba(217,171,57,.12), transparent 18%),
-        radial-gradient(circle at 80% 12%, rgba(143,59,23,.18), transparent 20%),
-        radial-gradient(circle at 50% 110%, rgba(79,18,36,.24), transparent 28%),
-        linear-gradient(180deg, #0a0910 0%, #110d18 38%, #0c0a11 100%);
+      font-family:"Manrope", sans-serif;
       color:var(--text);
+      background:
+        radial-gradient(circle at 15% 10%, rgba(215,170,65,.10), transparent 20%),
+        radial-gradient(circle at 85% 18%, rgba(139,29,39,.12), transparent 20%),
+        radial-gradient(circle at 50% 100%, rgba(27,42,87,.18), transparent 28%),
+        linear-gradient(180deg, #0b0910 0%, #120d18 44%, #0b0910 100%);
       overflow-x:hidden;
     }
 
@@ -48,315 +49,454 @@
       position:fixed;
       inset:0;
       pointer-events:none;
-      opacity:.18;
+      opacity:.2;
       background-image:
-        linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
-      background-size:28px 28px;
-      mask-image:radial-gradient(circle at center, black 45%, transparent 100%);
+        linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+      background-size:26px 26px;
+      mask-image:radial-gradient(circle at center, black 42%, transparent 100%);
     }
 
-    a{color:inherit;text-decoration:none}
-    img{max-width:100%}
-    .wrap{width:min(var(--max), calc(100% - 2rem)); margin-inline:auto}
+    button, input, select{
+      font:inherit;
+    }
+
+    .wrap{
+      width:min(var(--max), calc(100% - 1.2rem));
+      margin-inline:auto;
+    }
 
     .reveal{
       opacity:0;
-      transform:translateY(22px);
-      transition:opacity .8s ease, transform .8s ease;
+      transform:translateY(18px);
+      transition:opacity .7s ease, transform .7s ease;
     }
     .reveal.visible{
       opacity:1;
-      transform:translateY(0);
+      transform:none;
     }
 
-    .site-header{
+    .topbar{
       position:sticky;
       top:0;
       z-index:100;
+      background:linear-gradient(180deg, rgba(10,8,14,.95), rgba(10,8,14,.65));
       backdrop-filter:blur(14px) saturate(140%);
-      background:linear-gradient(180deg, rgba(12,10,17,.88), rgba(12,10,17,.48));
       border-bottom:1px solid var(--line);
     }
 
-    .nav{
+    .topbar-inner{
+      min-height:78px;
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap:1rem;
-      min-height:78px;
     }
 
     .brand{
       display:flex;
       align-items:center;
-      gap:.9rem;
-      letter-spacing:.08em;
+      gap:.85rem;
       text-transform:uppercase;
+      letter-spacing:.12em;
       font-weight:800;
     }
 
     .crest{
-      width:44px;
+      width:42px;
       aspect-ratio:1;
       border-radius:50%;
       position:relative;
-      background:
-        radial-gradient(circle at 35% 35%, #f8e7ab, #c78d19 58%, #6f4510 100%);
-      box-shadow:
-        0 0 0 2px rgba(255,230,163,.3),
-        0 8px 30px rgba(217,171,57,.28);
+      background:radial-gradient(circle at 35% 35%, #f9efba, #d7aa41 58%, #6f4a12 100%);
+      box-shadow:0 0 0 2px rgba(255,231,173,.25), 0 10px 30px rgba(215,170,65,.28);
+      flex:none;
     }
     .crest::before,.crest::after{
       content:"";
       position:absolute;
       top:50%;
       width:18px;height:5px;
-      background:linear-gradient(90deg, transparent, #e7cf83 25%, #a57511 100%);
       border-radius:999px;
-      transform:translateY(-50%);
-      opacity:.95;
+      background:linear-gradient(90deg, transparent, #edd58a 30%, #a97717 100%);
     }
     .crest::before{left:-12px; transform:translateY(-50%) rotate(-18deg)}
     .crest::after{right:-12px; transform:translateY(-50%) rotate(18deg)}
 
     .brand span{
       font-family:"Cinzel", serif;
-      font-size:1rem;
       color:var(--gold-2);
+      font-size:.98rem;
     }
 
-    .nav-links{
-      display:flex;
-      align-items:center;
-      gap:1.2rem;
-      color:var(--muted);
-      font-size:.95rem;
-    }
-
-    .nav-links a{
-      position:relative;
-      padding:.4rem 0;
-    }
-    .nav-links a::after{
-      content:"";
-      position:absolute;
-      left:0;bottom:-2px;
-      width:0;height:1px;
-      background:var(--gold);
-      transition:width .25s ease;
-    }
-    .nav-links a:hover::after{width:100%}
-
-    .nav-cta{
+    .top-actions{
       display:flex;
       align-items:center;
       gap:.8rem;
+      flex-wrap:wrap;
     }
 
     .btn{
+      appearance:none;
+      border:0;
+      border-radius:999px;
+      min-height:46px;
+      padding:.85rem 1.1rem;
       display:inline-flex;
       align-items:center;
       justify-content:center;
-      gap:.65rem;
-      min-height:48px;
-      padding:.9rem 1.2rem;
-      border-radius:999px;
-      border:1px solid transparent;
-      font-weight:700;
-      letter-spacing:.02em;
-      transition:transform .2s ease, box-shadow .25s ease, border-color .25s ease, background .25s ease;
+      gap:.55rem;
       cursor:pointer;
+      font-weight:800;
+      transition:transform .18s ease, box-shadow .25s ease, background .25s ease, border-color .25s ease, opacity .25s ease;
     }
-    .btn:hover{transform:translateY(-2px) scale(1.01)}
+    .btn:hover{transform:translateY(-2px)}
     .btn:active{transform:translateY(0) scale(.985)}
+    .btn:disabled{opacity:.45; cursor:not-allowed; transform:none}
 
     .btn-primary{
-      color:#241503;
+      color:#2b1a05;
       background:linear-gradient(135deg, var(--gold-2), var(--gold));
-      box-shadow:0 12px 40px rgba(217,171,57,.28);
+      box-shadow:0 12px 36px rgba(215,170,65,.25);
     }
-    .btn-primary:hover{box-shadow:0 18px 50px rgba(217,171,57,.38)}
 
     .btn-ghost{
       color:var(--text);
-      border-color:var(--line);
-      background:rgba(255,255,255,.03);
+      background:rgba(255,255,255,.04);
+      border:1px solid var(--line);
       backdrop-filter:blur(10px);
     }
-    .btn-ghost:hover{
-      border-color:rgba(245,213,119,.4);
+
+    .btn-danger{
+      color:#fff3ef;
+      background:linear-gradient(135deg, #c34d3e, #8f281f);
+      box-shadow:0 12px 36px rgba(179,59,46,.22);
+    }
+
+    main{
+      padding:1rem 0 2rem;
+    }
+
+    .app-grid{
+      display:grid;
+      grid-template-columns:320px minmax(0, 1fr) 340px;
+      gap:1rem;
+      align-items:start;
+    }
+
+    .panel{
+      border-radius:26px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.02)),
+        var(--panel);
+      border:1px solid var(--line);
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(14px);
+      overflow:hidden;
+    }
+
+    .panel-head{
+      padding:1rem 1rem .2rem;
+    }
+
+    .panel-head h2,
+    .panel-head h3{
+      margin:0;
+      font-family:"Cinzel", serif;
+      letter-spacing:-.02em;
+    }
+
+    .panel-body{
+      padding:1rem;
+    }
+
+    .setup-stack{
+      display:grid;
+      gap:1rem;
+    }
+
+    .field{
+      display:grid;
+      gap:.45rem;
+    }
+
+    .field label{
+      color:var(--muted);
+      font-size:.92rem;
+      font-weight:700;
+      letter-spacing:.02em;
+    }
+
+    .input, .select{
+      width:100%;
+      min-height:50px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.04);
+      color:var(--text);
+      padding:.85rem .95rem;
+      outline:none;
+      transition:border-color .2s ease, background .2s ease, box-shadow .2s ease;
+    }
+    .input:focus, .select:focus{
+      border-color:rgba(242,216,139,.4);
+      box-shadow:0 0 0 4px rgba(242,216,139,.08);
       background:rgba(255,255,255,.06);
     }
 
-    .hero{
+    .house-grid{
+      display:grid;
+      gap:.7rem;
+    }
+
+    .house-option{
       position:relative;
-      padding:clamp(3rem, 5vw, 5rem) 0 3rem;
+      display:grid;
+      grid-template-columns:auto 1fr auto;
+      gap:.8rem;
+      align-items:center;
+      padding:.9rem .95rem;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.03);
+      cursor:pointer;
+      transition:transform .2s ease, border-color .25s ease, background .25s ease;
+    }
+    .house-option:hover{
+      transform:translateY(-2px);
+      border-color:rgba(242,216,139,.2);
+      background:rgba(255,255,255,.05);
+    }
+    .house-option input{
+      position:absolute;
+      opacity:0;
+      pointer-events:none;
+    }
+    .house-option.active{
+      border-color:rgba(242,216,139,.34);
+      box-shadow:inset 0 0 0 1px rgba(242,216,139,.2);
+      background:rgba(255,255,255,.065);
+    }
+
+    .house-sigil{
+      width:18px;height:18px;border-radius:50%;
+      box-shadow:0 0 0 1px rgba(255,255,255,.16);
+    }
+    .house-g{background:var(--gryff)}
+    .house-s{background:var(--slyth)}
+    .house-r{background:var(--raven)}
+    .house-h{background:var(--huff)}
+
+    .house-copy strong{
+      display:block;
+      margin-bottom:.12rem;
+    }
+    .house-copy span{
+      color:var(--muted);
+      font-size:.84rem;
+    }
+
+    .mini-note{
+      padding:.85rem .95rem;
+      border-radius:16px;
+      background:rgba(255,255,255,.03);
+      border:1px dashed rgba(255,255,255,.12);
+      color:var(--muted);
+      line-height:1.6;
+      font-size:.9rem;
+    }
+
+    .center-stack{
+      display:grid;
+      gap:1rem;
+    }
+
+    .hero-panel{
+      position:relative;
+      min-height:200px;
+      padding:1.1rem;
       overflow:hidden;
     }
 
     .hero-grid{
       display:grid;
-      grid-template-columns:1.08fr .92fr;
-      gap:clamp(1.4rem, 3vw, 3rem);
+      grid-template-columns:1.2fr .8fr;
+      gap:1rem;
       align-items:center;
-      min-height:calc(100vh - 90px);
     }
 
     .eyebrow{
       display:inline-flex;
       align-items:center;
-      gap:.55rem;
-      padding:.5rem .8rem;
-      border:1px solid rgba(245,213,119,.18);
+      gap:.5rem;
+      padding:.5rem .75rem;
       border-radius:999px;
+      border:1px solid rgba(242,216,139,.15);
       color:var(--gold-2);
       background:rgba(255,255,255,.03);
-      backdrop-filter:blur(10px);
-      font-size:.82rem;
-      font-weight:700;
+      font-size:.78rem;
+      font-weight:800;
       text-transform:uppercase;
-      letter-spacing:.16em;
+      letter-spacing:.14em;
     }
 
-    .hero h1{
-      margin:.9rem 0 1rem;
+    .hero-panel h1{
+      margin:.8rem 0 .7rem;
       font-family:"Cinzel", serif;
-      font-size:clamp(3.2rem, 8vw, 7rem);
-      line-height:.92;
-      letter-spacing:-.03em;
+      font-size:clamp(2rem, 4vw, 4rem);
+      line-height:.95;
       max-width:10ch;
-      text-wrap:balance;
     }
 
-    .hero h1 .accent{
-      color:var(--gold-2);
-      text-shadow:0 0 18px rgba(245,213,119,.18);
-    }
-
-    .hero-copy{
-      max-width:62ch;
+    .hero-panel p{
+      margin:0;
+      max-width:58ch;
       color:var(--muted);
-      font-size:clamp(1rem, 1.6vw, 1.14rem);
-      line-height:1.8;
+      line-height:1.7;
     }
 
-    .hero-actions{
-      display:flex;
-      flex-wrap:wrap;
-      gap:.9rem;
-      margin-top:1.6rem;
-    }
-
-    .hero-meta{
-      margin-top:2rem;
-      display:grid;
-      grid-template-columns:repeat(3, minmax(0,1fr));
-      gap:1rem;
-      max-width:720px;
-    }
-
-    .meta-block{
-      padding:1rem 1rem 1.1rem;
-      border-top:1px solid rgba(245,213,119,.22);
-      background:linear-gradient(180deg, rgba(255,255,255,.04), transparent);
-    }
-    .meta-block strong{
-      display:block;
-      font-size:1.4rem;
-      color:var(--text);
-      margin-bottom:.2rem;
-    }
-    .meta-block span{
-      color:var(--muted);
-      font-size:.92rem;
-    }
-
-    .visual{
+    .pitch-visual{
       position:relative;
-      min-height:680px;
-      display:grid;
-      place-items:center;
-    }
-
-    .arena{
-      position:relative;
-      width:min(100%, 620px);
-      aspect-ratio:1/1.1;
-      border-radius:36px;
+      min-height:220px;
+      border-radius:24px;
+      border:1px solid rgba(255,255,255,.08);
       background:
-        radial-gradient(circle at 50% 35%, rgba(255,255,255,.08), transparent 30%),
-        linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02)),
-        rgba(18,12,26,.72);
-      border:1px solid rgba(245,213,119,.14);
-      box-shadow:var(--shadow);
+        radial-gradient(circle at 50% 20%, rgba(255,255,255,.07), transparent 20%),
+        linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.01));
       overflow:hidden;
-      backdrop-filter:blur(12px);
       isolation:isolate;
     }
 
-    .arena::before{
+    .pitch-visual .hoop{
+      position:absolute;
+      top:16%;
+      width:84px;height:84px;
+      border-radius:50%;
+      border:6px solid rgba(242,216,139,.82);
+      box-shadow:0 0 24px rgba(215,170,65,.18);
+    }
+    .pitch-visual .hoop::after{
       content:"";
       position:absolute;
-      inset:7%;
-      border-radius:28px;
-      border:1px solid rgba(255,255,255,.08);
-      pointer-events:none;
+      left:50%;
+      bottom:-90px;
+      transform:translateX(-50%);
+      width:6px;height:90px;
+      border-radius:999px;
+      background:linear-gradient(180deg, rgba(242,216,139,.7), rgba(242,216,139,.12));
     }
-
-    .mist{
+    .pitch-visual .hoop:nth-child(1){left:10%; width:70px;height:70px}
+    .pitch-visual .hoop:nth-child(2){left:39%; top:8%; width:96px;height:96px}
+    .pitch-visual .hoop:nth-child(3){right:10%; width:76px;height:76px}
+    .fog{
       position:absolute;
-      inset:auto -10% -10% -10%;
+      inset:auto -10% -8% -10%;
       height:38%;
       background:
-        radial-gradient(circle at 20% 40%, rgba(217,171,57,.12), transparent 26%),
-        radial-gradient(circle at 70% 50%, rgba(255,255,255,.08), transparent 24%),
-        linear-gradient(180deg, transparent, rgba(0,0,0,.34));
+        radial-gradient(circle at 30% 50%, rgba(215,170,65,.16), transparent 24%),
+        radial-gradient(circle at 70% 50%, rgba(255,255,255,.08), transparent 22%),
+        linear-gradient(180deg, transparent, rgba(0,0,0,.28));
       filter:blur(10px);
-      z-index:0;
     }
-
-    .hoop{
+    .snitch-orbit{
       position:absolute;
-      width:140px;height:140px;
+      left:50%; top:54%;
+      width:28px;height:28px;
       border-radius:50%;
-      border:8px solid rgba(242,200,91,.82);
-      box-shadow:
-        0 0 0 2px rgba(255,230,163,.18),
-        0 0 28px rgba(217,171,57,.22),
-        inset 0 0 18px rgba(255,250,222,.08);
-      background:radial-gradient(circle, transparent 55%, rgba(255,255,255,.04));
+      transform:translate(-50%, -50%);
+      background:radial-gradient(circle at 35% 35%, #fff6cb, #ddb44f 60%, #956711 100%);
+      box-shadow:0 0 0 2px rgba(255,230,160,.16), 0 0 22px rgba(242,216,139,.3);
+      animation:snitchGlide 7s linear infinite;
     }
-    .hoop::after{
+    .snitch-orbit::before,.snitch-orbit::after{
       content:"";
       position:absolute;
-      left:50%;
-      bottom:-130px;
-      width:8px;height:132px;
-      transform:translateX(-50%);
-      background:linear-gradient(180deg, rgba(242,200,91,.8), rgba(242,200,91,.14));
-      border-radius:999px;
+      top:50%;
+      width:22px;height:10px;
+      transform:translateY(-50%);
+      border-radius:50%;
+      background:linear-gradient(90deg, rgba(255,255,255,.02), rgba(255,255,255,.72), rgba(255,255,255,.02));
     }
-    .hoop.h1{top:14%; left:18%; width:110px;height:110px}
-    .hoop.h2{top:8%; left:40%; width:150px;height:150px}
-    .hoop.h3{top:17%; right:14%; width:122px;height:122px}
+    .snitch-orbit::before{
+      left:-18px;
+      clip-path:polygon(100% 50%, 10% 0, 0 50%, 10% 100%);
+      transform:translateY(-50%) rotate(-12deg);
+    }
+    .snitch-orbit::after{
+      right:-18px;
+      clip-path:polygon(0 50%, 90% 0, 100% 50%, 90% 100%);
+      transform:translateY(-50%) rotate(12deg);
+    }
+
+    @keyframes snitchGlide{
+      0%{left:16%; top:28%}
+      25%{left:74%; top:22%}
+      50%{left:66%; top:70%}
+      75%{left:24%; top:62%}
+      100%{left:16%; top:28%}
+    }
+
+    .status-ribbon{
+      display:grid;
+      grid-template-columns:repeat(4, minmax(0,1fr));
+      gap:.8rem;
+    }
+
+    .ribbon-block{
+      padding:1rem;
+      border-top:1px solid rgba(242,216,139,.18);
+      background:linear-gradient(180deg, rgba(255,255,255,.04), transparent);
+    }
+    .ribbon-block span{
+      display:block;
+      color:var(--muted);
+      font-size:.84rem;
+      margin-bottom:.28rem;
+    }
+    .ribbon-block strong{
+      font-size:1.15rem;
+    }
+
+    .game-surface{
+      display:grid;
+      grid-template-columns:minmax(0, 1fr) 290px;
+      gap:1rem;
+      align-items:start;
+    }
+
+    .board-shell{
+      padding:1rem;
+    }
+
+    .board-stage{
+      display:grid;
+      grid-template-columns:1fr 220px;
+      gap:1rem;
+      align-items:center;
+    }
+
+    .dartboard-wrap{
+      position:relative;
+      display:grid;
+      place-items:center;
+      padding:1rem;
+      min-height:640px;
+    }
 
     .dartboard{
-      position:absolute;
-      left:50%;
-      bottom:7%;
-      transform:translateX(-50%);
-      width:min(78%, 430px);
+      position:relative;
+      width:min(100%, 620px);
       aspect-ratio:1;
       border-radius:50%;
+      cursor:crosshair;
       background:
-        radial-gradient(circle, #221824 0 10%, #caa24d 10% 13%, #3a1320 13% 22%, #e8d5a0 22% 24.5%, #1d432d 24.5% 38%, #9f7e31 38% 40%, #3f1522 40% 56%, #e8d5a0 56% 58%, #173928 58% 74%, #9f7e31 74% 76%, #39131f 76% 100%);
+        radial-gradient(circle, #211723 0 8.5%, #c4a04b 8.5% 11.5%, #491621 11.5% 23%, #e5d4aa 23% 25.2%, #173928 25.2% 40%, #9e7c2f 40% 42.2%, #3f1321 42.2% 58%, #e5d4aa 58% 60.2%, #113427 60.2% 76%, #9e7c2f 76% 78%, #35101b 78% 100%);
       box-shadow:
         0 0 0 14px rgba(255,255,255,.04),
-        0 0 0 15px rgba(245,213,119,.15),
-        0 25px 60px rgba(0,0,0,.45),
-        inset 0 10px 26px rgba(255,255,255,.06);
+        0 0 0 15px rgba(242,216,139,.14),
+        0 25px 70px rgba(0,0,0,.42),
+        inset 0 10px 20px rgba(255,255,255,.05);
       overflow:hidden;
+      isolation:isolate;
     }
 
     .dartboard::before{
@@ -364,777 +504,1228 @@
       position:absolute;
       inset:0;
       background:
-        conic-gradient(from 0deg,
-          rgba(255,255,255,.08) 0 5deg, transparent 5deg 15deg,
-          rgba(255,255,255,.04) 15deg 20deg, transparent 20deg 30deg,
-          rgba(255,255,255,.08) 30deg 35deg, transparent 35deg 45deg,
-          rgba(255,255,255,.04) 45deg 50deg, transparent 50deg 60deg,
-          rgba(255,255,255,.08) 60deg 65deg, transparent 65deg 75deg,
-          rgba(255,255,255,.04) 75deg 80deg, transparent 80deg 90deg,
-          rgba(255,255,255,.08) 90deg 95deg, transparent 95deg 105deg,
-          rgba(255,255,255,.04) 105deg 110deg, transparent 110deg 120deg,
-          rgba(255,255,255,.08) 120deg 125deg, transparent 125deg 135deg,
-          rgba(255,255,255,.04) 135deg 140deg, transparent 140deg 150deg,
-          rgba(255,255,255,.08) 150deg 155deg, transparent 155deg 165deg,
-          rgba(255,255,255,.04) 165deg 170deg, transparent 170deg 180deg,
-          rgba(255,255,255,.08) 180deg 185deg, transparent 185deg 195deg,
-          rgba(255,255,255,.04) 195deg 200deg, transparent 200deg 210deg,
-          rgba(255,255,255,.08) 210deg 215deg, transparent 215deg 225deg,
-          rgba(255,255,255,.04) 225deg 230deg, transparent 230deg 240deg,
-          rgba(255,255,255,.08) 240deg 245deg, transparent 245deg 255deg,
-          rgba(255,255,255,.04) 255deg 260deg, transparent 260deg 270deg,
-          rgba(255,255,255,.08) 270deg 275deg, transparent 275deg 285deg,
-          rgba(255,255,255,.04) 285deg 290deg, transparent 290deg 300deg,
-          rgba(255,255,255,.08) 300deg 305deg, transparent 305deg 315deg,
-          rgba(255,255,255,.04) 315deg 320deg, transparent 320deg 330deg,
-          rgba(255,255,255,.08) 330deg 335deg, transparent 335deg 345deg,
-          rgba(255,255,255,.04) 345deg 350deg, transparent 350deg 360deg);
+        repeating-conic-gradient(
+          from -9deg,
+          rgba(255,255,255,.08) 0 4deg,
+          transparent 4deg 18deg
+        );
       mix-blend-mode:screen;
-      opacity:.72;
+      opacity:.5;
     }
 
-    .bull{
-      position:absolute;
-      inset:50% auto auto 50%;
-      width:74px;height:74px;
-      transform:translate(-50%, -50%);
-      border-radius:50%;
-      background:radial-gradient(circle, #ffd66b 0 22%, #8f2417 22% 57%, #ffd66b 57% 100%);
-      box-shadow:0 0 26px rgba(245,213,119,.22);
-    }
-
-    .snitch{
-      position:absolute;
-      left:var(--snitchX);
-      top:var(--snitchY);
-      width:28px;height:28px;
-      border-radius:50%;
-      transform:translate(-50%, -50%);
-      background:radial-gradient(circle at 35% 35%, #fff2b8, #e3bc52 55%, #9f6d12 100%);
-      box-shadow:
-        0 0 0 2px rgba(255,235,170,.18),
-        0 0 18px rgba(245,213,119,.45),
-        0 0 42px rgba(245,213,119,.2);
-      z-index:5;
-      animation:snitchFloat 5s ease-in-out infinite;
-    }
-    .snitch::before,.snitch::after{
-      content:"";
-      position:absolute;
-      top:50%;
-      width:28px;height:12px;
-      transform:translateY(-50%);
-      border-radius:50% 50% 50% 50%;
-      background:
-        linear-gradient(90deg, rgba(255,255,255,.05), rgba(255,255,255,.7), rgba(255,255,255,.06));
-      opacity:.85;
-      filter:blur(.2px);
-    }
-    .snitch::before{
-      left:-22px;
-      clip-path:polygon(100% 50%, 10% 0, 0 50%, 10% 100%);
-      transform:translateY(-50%) rotate(-12deg);
-    }
-    .snitch::after{
-      right:-22px;
-      clip-path:polygon(0 50%, 90% 0, 100% 50%, 90% 100%);
-      transform:translateY(-50%) rotate(12deg);
-    }
-
-    @keyframes snitchFloat{
-      0%,100%{translate:0 0}
-      50%{translate:0 -10px}
-    }
-
-    .spell-trail{
-      position:absolute;
-      inset:auto auto 18% 8%;
-      width:56%;
-      height:32%;
-      border-radius:999px;
-      background:
-        radial-gradient(circle at 80% 50%, rgba(245,213,119,.22), transparent 16%),
-        linear-gradient(90deg, transparent, rgba(245,213,119,.18), transparent);
-      filter:blur(12px);
-      transform:rotate(-10deg);
-      z-index:1;
-      opacity:.8;
-    }
-
-    .panel-float{
-      position:absolute;
-      right:4%;
-      bottom:5%;
-      width:min(290px, 42%);
-      border:1px solid rgba(245,213,119,.14);
-      background:linear-gradient(180deg, rgba(22,17,31,.88), rgba(22,17,31,.6));
-      border-radius:22px;
-      padding:1rem;
-      backdrop-filter:blur(14px);
-      box-shadow:var(--shadow);
-      z-index:6;
-    }
-    .panel-float h3{
-      margin:0 0 .4rem;
-      font-family:"Cinzel", serif;
-      font-size:1.05rem;
-      color:var(--gold-2);
-    }
-    .panel-float p{
-      margin:0;
-      color:var(--muted);
-      line-height:1.6;
-      font-size:.92rem;
-    }
-
-    section{
-      padding:clamp(4rem, 8vw, 7rem) 0;
-      position:relative;
-    }
-
-    .section-head{
-      display:grid;
-      grid-template-columns:.8fr 1.2fr;
-      gap:2rem;
-      align-items:end;
-      margin-bottom:2.2rem;
-    }
-    .section-head h2{
-      margin:0;
-      font-family:"Cinzel", serif;
-      font-size:clamp(2rem, 4vw, 4rem);
-      line-height:1;
-      letter-spacing:-.02em;
-    }
-    .section-head p{
-      margin:0;
-      color:var(--muted);
-      line-height:1.8;
-      max-width:66ch;
-    }
-
-    .rules-layout{
-      display:grid;
-      grid-template-columns:1.1fr .9fr;
-      gap:1.4rem;
-      align-items:stretch;
-    }
-
-    .slab{
-      border-radius:30px;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02)),
-        rgba(20,14,29,.72);
-      border:1px solid var(--line);
-      box-shadow:var(--shadow);
-      backdrop-filter:blur(12px);
-      overflow:hidden;
-    }
-
-    .slab-inner{padding:clamp(1.2rem, 2vw, 2rem)}
-
-    .rules-copy h3, .modes h3, .scorebox h3{
-      margin:0 0 1rem;
-      font-family:"Cinzel", serif;
-      font-size:1.4rem;
-      color:var(--gold-2);
-    }
-
-    .split-lines{
-      display:grid;
-      gap:1rem;
-    }
-
-    .rule{
-      display:grid;
-      grid-template-columns:auto 1fr;
-      gap:1rem;
-      align-items:start;
-      padding:1rem 0;
-      border-top:1px solid rgba(255,255,255,.08);
-    }
-    .rule:first-child{border-top:0;padding-top:0}
-    .rule-index{
-      font-family:"Cinzel", serif;
-      font-size:2rem;
-      color:rgba(245,213,119,.9);
-      line-height:1;
-      width:2.2rem;
-    }
-    .rule p{
-      margin:.25rem 0 0;
-      color:var(--muted);
-      line-height:1.7;
-    }
-    .rule strong{
-      font-size:1.02rem;
-      letter-spacing:.01em;
-    }
-
-    .diagram{
-      min-height:100%;
-      padding:1.2rem;
-      display:grid;
-      grid-template-rows:auto 1fr auto;
-      gap:1rem;
-    }
-
-    .rings{
-      position:relative;
-      min-height:420px;
-      border-radius:26px;
-      border:1px solid rgba(255,255,255,.08);
-      background:
-        radial-gradient(circle at center, rgba(217,171,57,.12), transparent 24%),
-        linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.01));
-      overflow:hidden;
-    }
-
-    .rings .ring{
-      position:absolute;
-      left:50%; top:50%;
-      transform:translate(-50%, -50%);
-      border-radius:50%;
-      border:1px solid rgba(245,213,119,.18);
-    }
-    .rings .r1{width:84%; aspect-ratio:1}
-    .rings .r2{width:62%; aspect-ratio:1}
-    .rings .r3{width:38%; aspect-ratio:1}
-
-    .sector{
+    .hazard-overlay{
       position:absolute;
       inset:0;
-      background:
-        conic-gradient(from -9deg,
-          rgba(217,171,57,.08) 0 18deg,
-          transparent 18deg 36deg,
-          rgba(79,18,36,.18) 36deg 54deg,
-          transparent 54deg 72deg,
-          rgba(18,53,44,.18) 72deg 90deg,
-          transparent 90deg 108deg,
-          rgba(217,171,57,.08) 108deg 126deg,
-          transparent 126deg 144deg,
-          rgba(79,18,36,.18) 144deg 162deg,
-          transparent 162deg 180deg,
-          rgba(18,53,44,.18) 180deg 198deg,
-          transparent 198deg 216deg,
-          rgba(217,171,57,.08) 216deg 234deg,
-          transparent 234deg 252deg,
-          rgba(79,18,36,.18) 252deg 270deg,
-          transparent 270deg 288deg,
-          rgba(18,53,44,.18) 288deg 306deg,
-          transparent 306deg 324deg,
-          rgba(217,171,57,.08) 324deg 342deg,
-          transparent 342deg 360deg);
+      border-radius:50%;
+      pointer-events:none;
       opacity:.9;
     }
 
-    .label{
+    .zone-layer{
       position:absolute;
-      padding:.4rem .55rem;
-      font-size:.78rem;
-      border:1px solid rgba(245,213,119,.16);
+      inset:0;
+      z-index:2;
+      pointer-events:none;
+    }
+
+    .zone-label{
+      position:absolute;
+      padding:.36rem .5rem;
       border-radius:999px;
-      background:rgba(17,12,25,.78);
+      background:rgba(14,10,18,.82);
+      border:1px solid rgba(242,216,139,.16);
       color:var(--text);
-      backdrop-filter:blur(10px);
+      font-size:.76rem;
       white-space:nowrap;
+      backdrop-filter:blur(10px);
+      transform:translate(-50%, -50%);
     }
-    .l1{top:8%; left:52%}
-    .l2{top:32%; right:10%}
-    .l3{bottom:22%; left:14%}
-    .l4{top:47%; left:50%; transform:translate(-50%, -50%)}
 
-    .modes-grid{
+    .hit{
+      position:absolute;
+      width:22px;height:22px;
+      border-radius:50%;
+      transform:translate(-50%, -50%);
+      pointer-events:none;
+      z-index:8;
+      box-shadow:0 0 0 2px rgba(255,255,255,.12), 0 0 18px rgba(255,255,255,.18);
+      animation:pop .45s ease both;
+    }
+
+    .hit::after{
+      content:"";
+      position:absolute;
+      inset:-7px;
+      border-radius:50%;
+      border:1px solid rgba(255,255,255,.16);
+      opacity:.65;
+    }
+
+    .hit.team-a{background:linear-gradient(135deg, var(--gold-2), #fff0bf)}
+    .hit.team-b{background:linear-gradient(135deg, #9bd2ff, #5a76ff)}
+    .hit.snitch{background:linear-gradient(135deg, #fff3af, #d7aa41); box-shadow:0 0 0 2px rgba(255,240,184,.22), 0 0 24px rgba(242,216,139,.4)}
+    .hit.bludger{background:linear-gradient(135deg, #d05b4a, #6b1d1b)}
+
+    @keyframes pop{
+      from{opacity:0; transform:translate(-50%,-50%) scale(.4)}
+      to{opacity:1; transform:translate(-50%,-50%) scale(1)}
+    }
+
+    .snitch-target{
+      position:absolute;
+      width:34px;height:34px;
+      border-radius:50%;
+      transform:translate(-50%, -50%);
+      background:radial-gradient(circle at 35% 35%, #fff6c5, #ddb44f 58%, #956711 100%);
+      box-shadow:0 0 0 2px rgba(255,233,174,.22), 0 0 28px rgba(242,216,139,.45);
+      z-index:5;
+      animation:snitchPulse 1.6s ease-in-out infinite;
+    }
+    .snitch-target::before,.snitch-target::after{
+      content:"";
+      position:absolute;
+      top:50%;
+      width:24px;height:10px;
+      transform:translateY(-50%);
+      border-radius:50%;
+      background:linear-gradient(90deg, rgba(255,255,255,.03), rgba(255,255,255,.76), rgba(255,255,255,.03));
+    }
+    .snitch-target::before{
+      left:-18px;
+      clip-path:polygon(100% 50%, 10% 0, 0 50%, 10% 100%);
+      transform:translateY(-50%) rotate(-16deg);
+    }
+    .snitch-target::after{
+      right:-18px;
+      clip-path:polygon(0 50%, 90% 0, 100% 50%, 90% 100%);
+      transform:translateY(-50%) rotate(16deg);
+    }
+
+    @keyframes snitchPulse{
+      0%,100%{transform:translate(-50%, -50%) scale(1)}
+      50%{transform:translate(-50%, -50%) scale(1.08)}
+    }
+
+    .board-legend{
       display:grid;
-      grid-template-columns:repeat(3, minmax(0,1fr));
-      gap:1rem;
+      gap:.8rem;
     }
 
-    .mode{
-      padding:1rem 1rem 1.1rem;
+    .legend-block{
+      padding:1rem;
       border-radius:18px;
       background:rgba(255,255,255,.03);
-      border:1px solid rgba(255,255,255,.07);
-      transition:transform .2s ease, border-color .25s ease, background .25s ease;
+      border:1px solid rgba(255,255,255,.08);
     }
-    .mode:hover{
-      transform:translateY(-4px);
-      border-color:rgba(245,213,119,.22);
-      background:rgba(255,255,255,.05);
-    }
-    .mode strong{
+    .legend-block strong{
       display:block;
       margin-bottom:.35rem;
       color:var(--gold-2);
     }
-    .mode p{
+    .legend-block p{
       margin:0;
       color:var(--muted);
+      font-size:.9rem;
       line-height:1.6;
-      font-size:.92rem;
     }
 
-    .feature-band{
+    .sidebar-stack{
       display:grid;
-      grid-template-columns:repeat(4, minmax(0,1fr));
       gap:1rem;
-      margin-top:1.4rem;
     }
 
-    .feature-band .stripe{
-      padding:1.1rem .95rem;
-      border-top:1px solid rgba(245,213,119,.22);
-      background:linear-gradient(180deg, rgba(255,255,255,.04), transparent);
+    .scoreboard{
+      display:grid;
+      gap:.8rem;
     }
-    .stripe strong{
-      display:block;
-      margin-bottom:.35rem;
+
+    .team-card{
+      padding:1rem;
+      border-radius:20px;
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.08);
+      transition:border-color .25s ease, background .25s ease, transform .2s ease;
+    }
+    .team-card.active{
+      border-color:rgba(242,216,139,.26);
+      background:rgba(255,255,255,.06);
+      transform:translateY(-2px);
+    }
+
+    .team-top{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:.8rem;
+      margin-bottom:.8rem;
+    }
+
+    .house-chip{
+      display:inline-flex;
+      align-items:center;
+      gap:.55rem;
+      padding:.5rem .72rem;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.08);
+      font-size:.82rem;
+      font-weight:800;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+    }
+
+    .house-chip .dot{
+      width:10px;height:10px;border-radius:50%;
+    }
+
+    .team-name{
+      font-weight:800;
       font-size:1rem;
     }
-    .stripe span{
-      color:var(--muted);
-      line-height:1.6;
-      font-size:.92rem;
-    }
 
-    .cta-stage{
-      position:relative;
-      border-radius:34px;
-      padding:clamp(1.3rem, 2vw, 2rem);
-      overflow:hidden;
-      background:
-        radial-gradient(circle at 15% 20%, rgba(217,171,57,.16), transparent 20%),
-        radial-gradient(circle at 85% 80%, rgba(79,18,36,.22), transparent 24%),
-        linear-gradient(135deg, rgba(22,17,31,.92), rgba(18,12,26,.72));
-      border:1px solid rgba(245,213,119,.16);
-      box-shadow:var(--shadow);
-    }
-
-    .cta-stage::before{
-      content:"";
-      position:absolute;
-      inset:auto -4% -40% auto;
-      width:360px;height:360px;
-      border-radius:50%;
-      border:1px solid rgba(245,213,119,.12);
-      box-shadow:0 0 0 40px rgba(245,213,119,.04), 0 0 0 90px rgba(245,213,119,.03);
-      pointer-events:none;
-    }
-
-    .cta-grid{
-      display:grid;
-      grid-template-columns:1.15fr .85fr;
-      gap:2rem;
-      align-items:center;
-    }
-
-    .cta-grid h2{
-      margin:0 0 .8rem;
+    .team-score{
       font-family:"Cinzel", serif;
-      font-size:clamp(2rem, 4vw, 3.8rem);
-      line-height:.98;
-      max-width:11ch;
+      font-size:2.1rem;
+      line-height:1;
+      color:var(--gold-2);
     }
 
-    .cta-grid p{
-      margin:0;
+    .team-meta{
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0,1fr));
+      gap:.5rem;
+    }
+
+    .tiny{
+      padding:.6rem .55rem;
+      border-radius:14px;
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.06);
+    }
+    .tiny span{
+      display:block;
       color:var(--muted);
-      line-height:1.8;
-      max-width:58ch;
+      font-size:.72rem;
+      margin-bottom:.2rem;
+    }
+    .tiny strong{
+      font-size:.88rem;
     }
 
-    .scorebox{
-      padding:1.2rem;
-      border-radius:24px;
-      background:rgba(255,255,255,.04);
-      border:1px solid rgba(255,255,255,.08);
-      backdrop-filter:blur(10px);
+    .house-power{
+      margin-top:.8rem;
+      display:grid;
+      gap:.6rem;
     }
 
-    .score-list{
+    .power-btn{
+      width:100%;
+    }
+
+    .turn-console{
       display:grid;
       gap:.8rem;
     }
-    .score-row{
+
+    .turn-pill{
       display:flex;
       justify-content:space-between;
+      align-items:center;
       gap:1rem;
-      align-items:baseline;
-      padding-bottom:.75rem;
-      border-bottom:1px solid rgba(255,255,255,.08);
+      padding:.95rem 1rem;
+      border-radius:18px;
+      border:1px solid rgba(242,216,139,.16);
+      background:rgba(255,255,255,.04);
     }
-    .score-row:last-child{border-bottom:0;padding-bottom:0}
-    .score-row span{color:var(--muted)}
-    .score-row strong{color:var(--text)}
-
-    footer{
-      padding:2rem 0 3rem;
+    .turn-pill strong{
+      font-size:1rem;
+    }
+    .turn-pill span{
       color:var(--muted);
+      font-size:.88rem;
     }
 
-    .footer-row{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:1rem;
-      padding-top:1.5rem;
-      border-top:1px solid rgba(255,255,255,.08);
+    .throws-track{
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0,1fr));
+      gap:.6rem;
     }
 
-    .footer-row .brandline{
-      display:flex;
-      align-items:center;
-      gap:.8rem;
-      font-size:.95rem;
+    .throw-dot{
+      min-height:54px;
+      border-radius:16px;
+      display:grid;
+      place-items:center;
+      border:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.03);
+      color:var(--muted);
+      font-weight:800;
+    }
+    .throw-dot.used{
+      color:var(--text);
+      background:rgba(255,255,255,.06);
+      border-color:rgba(242,216,139,.18);
     }
 
-    .stagger-1{animation:rise .8s ease .05s both}
-    .stagger-2{animation:rise .8s ease .15s both}
-    .stagger-3{animation:rise .8s ease .25s both}
-    .stagger-4{animation:rise .8s ease .35s both}
-    .stagger-5{animation:rise .8s ease .45s both}
+    .log{
+      max-height:340px;
+      overflow:auto;
+      display:grid;
+      gap:.55rem;
+      padding-right:.2rem;
+    }
+    .log::-webkit-scrollbar{width:8px}
+    .log::-webkit-scrollbar-thumb{
+      background:rgba(255,255,255,.12);
+      border-radius:999px;
+    }
+
+    .log-item{
+      padding:.8rem .9rem;
+      border-radius:16px;
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.06);
+      line-height:1.5;
+      color:var(--muted);
+      animation:rise .35s ease both;
+    }
+    .log-item strong{color:var(--text)}
 
     @keyframes rise{
-      from{opacity:0; transform:translateY(24px)}
+      from{opacity:0; transform:translateY(14px)}
       to{opacity:1; transform:translateY(0)}
     }
 
-    @media (max-width: 1080px){
-      .hero-grid,
-      .section-head,
-      .rules-layout,
-      .cta-grid{
-        grid-template-columns:1fr;
-      }
-      .visual{min-height:560px}
-      .hero h1{max-width:12ch}
+    .modal-backdrop{
+      position:fixed;
+      inset:0;
+      background:rgba(7,5,10,.6);
+      backdrop-filter:blur(10px);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:1rem;
+      z-index:200;
+    }
+    .modal-backdrop.open{display:flex}
+
+    .modal{
+      width:min(680px, 100%);
+      border-radius:28px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02)),
+        rgba(22,16,30,.95);
+      border:1px solid var(--line);
+      box-shadow:var(--shadow);
+      overflow:hidden;
     }
 
-    @media (max-width: 860px){
-      .nav-links{display:none}
-      .hero-meta,
-      .feature-band,
-      .modes-grid{
+    .modal-head, .modal-body, .modal-foot{
+      padding:1rem 1.1rem;
+    }
+    .modal-head{
+      border-bottom:1px solid rgba(255,255,255,.08);
+    }
+    .modal-head h3{
+      margin:0;
+      font-family:"Cinzel", serif;
+      color:var(--gold-2);
+      font-size:1.5rem;
+    }
+    .modal-body p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.8;
+    }
+    .modal-foot{
+      display:flex;
+      justify-content:flex-end;
+      gap:.8rem;
+      border-top:1px solid rgba(255,255,255,.08);
+    }
+
+    .snitch-banner{
+      margin-top:.8rem;
+      padding:.95rem 1rem;
+      border-radius:18px;
+      border:1px solid rgba(242,216,139,.2);
+      background:linear-gradient(135deg, rgba(242,216,139,.08), rgba(255,255,255,.03));
+      color:var(--gold-2);
+      font-weight:800;
+      display:none;
+    }
+    .snitch-banner.show{display:block}
+
+    .helper-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:.7rem;
+    }
+
+    .pill{
+      padding:.5rem .72rem;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.03);
+      color:var(--muted);
+      font-size:.82rem;
+      font-weight:700;
+    }
+
+    @media (max-width: 1180px){
+      .app-grid{
         grid-template-columns:1fr;
       }
-      .panel-float{
-        position:relative;
-        right:auto; bottom:auto;
+      .game-surface,
+      .board-stage,
+      .hero-grid{
+        grid-template-columns:1fr;
+      }
+    }
+
+    @media (max-width: 760px){
+      .status-ribbon{
+        grid-template-columns:repeat(2, minmax(0,1fr));
+      }
+      .topbar-inner{
+        align-items:flex-start;
+        padding:.8rem 0;
+      }
+      .top-actions{
         width:100%;
-        margin:1rem auto 0;
       }
-      .arena{aspect-ratio:1/1.15}
+      .top-actions .btn{
+        flex:1 1 calc(50% - .4rem);
+      }
+      .dartboard-wrap{
+        min-height:460px;
+        padding:.2rem;
+      }
+      .panel{
+        border-radius:22px;
+      }
     }
 
-    @media (max-width: 560px){
-      .wrap{width:min(var(--max), calc(100% - 1.1rem))}
-      .nav{min-height:70px}
-      .brand span{font-size:.9rem}
-      .hero{padding-top:2rem}
-      .hero-actions .btn{width:100%}
-      .meta-block strong{font-size:1.15rem}
-      .visual{min-height:500px}
-      .hoop.h1{left:9%}
-      .hoop.h3{right:8%}
-      .dartboard{width:86%}
-      .footer-row{flex-direction:column; align-items:flex-start}
+    @media (max-width: 520px){
+      .wrap{
+        width:min(var(--max), calc(100% - .8rem));
+      }
+      .top-actions .btn{
+        flex:1 1 100%;
+      }
+      .status-ribbon,
+      .team-meta{
+        grid-template-columns:1fr;
+      }
+      .throws-track{
+        grid-template-columns:repeat(3, 1fr);
+      }
+      .hero-panel h1{
+        max-width:none;
+      }
     }
   </style>
 </head>
 <body>
-  <header class="site-header">
-    <div class="wrap nav">
-      <a class="brand" href="#top" aria-label="Quidditch Darts home">
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <div class="brand">
         <span class="crest" aria-hidden="true"></span>
         <span>Quidditch Darts</span>
-      </a>
-
-      <nav class="nav-links" aria-label="Primary">
-        <a href="#concept">Concept</a>
-        <a href="#rules">Rules</a>
-        <a href="#modes">Modes</a>
-        <a href="#score">Scoring</a>
-      </nav>
-
-      <div class="nav-cta">
-        <a class="btn btn-ghost" href="#rules">See rules</a>
-        <a class="btn btn-primary" href="#score">Play concept</a>
+      </div>
+      <div class="top-actions">
+        <button class="btn btn-ghost" id="newMatchBtn" type="button">New Match</button>
+        <button class="btn btn-primary" id="startBtn" type="button">Start Match</button>
+        <button class="btn btn-danger" id="resetBtn" type="button">Reset Scores</button>
       </div>
     </div>
   </header>
 
-  <main id="top">
-    <section class="hero">
-      <div class="wrap hero-grid">
-        <div>
-          <div class="eyebrow stagger-1">Wizard Sport × Precision Arcade</div>
-          <h1 class="stagger-2">A dart game for <span class="accent">Quidditch</span> nights.</h1>
-          <p class="hero-copy stagger-3">
-            Reimagine the chaos of the wizarding pitch as a fast, competitive dartboard experience. Score through the hoops, avoid foul sectors, and chase the Golden Snitch bonus before your rival closes the match.
-          </p>
-
-          <div class="hero-actions stagger-4">
-            <a class="btn btn-primary" href="#concept">Explore the concept</a>
-            <button class="btn btn-ghost" id="moveSnitchBtn" type="button" aria-label="Move the Golden Snitch">Catch the Snitch</button>
-          </div>
-
-          <div class="hero-meta stagger-5" aria-label="Key details">
-            <div class="meta-block">
-              <strong>2–4</strong>
-              <span>Players or house teams</span>
-            </div>
-            <div class="meta-block">
-              <strong>15 min</strong>
-              <span>Average enchanted round</span>
-            </div>
-            <div class="meta-block">
-              <strong>150 pts</strong>
-              <span>Snitch capture swing</span>
-            </div>
-          </div>
+  <main class="wrap">
+    <div class="app-grid">
+      <aside class="panel reveal">
+        <div class="panel-head">
+          <h2>Match setup</h2>
         </div>
-
-        <div class="visual reveal">
-          <div class="arena" aria-hidden="true">
-            <div class="mist"></div>
-            <div class="hoop h1"></div>
-            <div class="hoop h2"></div>
-            <div class="hoop h3"></div>
-
-            <div class="spell-trail"></div>
-
-            <div class="dartboard">
-              <div class="bull"></div>
+        <div class="panel-body">
+          <div class="setup-stack">
+            <div class="field">
+              <label for="teamAName">Team A name</label>
+              <input id="teamAName" class="input" type="text" value="Scarlet Seekers" maxlength="20" />
+            </div>
+            <div class="field">
+              <label for="teamBName">Team B name</label>
+              <input id="teamBName" class="input" type="text" value="Emerald Serpents" maxlength="20" />
             </div>
 
-            <div class="snitch" id="snitch"></div>
-
-            <div class="panel-float">
-              <h3>Pitch-to-board translation</h3>
-              <p>
-                Three top hoops become high-value targets, the center bull becomes the Quaffle core, and a moving Snitch bonus adds a dramatic finishing mechanic.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="concept">
-      <div class="wrap">
-        <div class="section-head reveal">
-          <h2>Designed like a wizard pub showdown.</h2>
-          <p>
-            This concept blends pub darts with the theatrical rhythm of Quidditch. Instead of copying the sport literally, it distills the fantasy into visible layers: hoops for goal scoring, rotating danger sectors for Bludgers, and one elusive Snitch event that can flip the result in an instant.
-          </p>
-        </div>
-
-        <div class="feature-band">
-          <div class="stripe reveal">
-            <strong>Hoop scoring</strong>
-            <span>Players aim for ring zones mapped to the three Quidditch hoops, each with escalating point values by distance and risk.</span>
-          </div>
-          <div class="stripe reveal">
-            <strong>Bludger penalties</strong>
-            <span>Selected dark sectors act as hazards. Hit them and your current turn loses momentum or triggers a foul effect.</span>
-          </div>
-          <div class="stripe reveal">
-            <strong>Beater defense</strong>
-            <span>Optional team mode allows one player to remove or redirect a penalty using a single defensive throw token.</span>
-          </div>
-          <div class="stripe reveal">
-            <strong>Snitch finish</strong>
-            <span>A randomized moving target appears late-game. Striking it grants a major score burst and may immediately end the match.</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="rules">
-      <div class="wrap">
-        <div class="section-head reveal">
-          <h2>How the magical darts system works.</h2>
-          <p>
-            Keep the structure familiar for pub play, but let the fiction create tension. Every round represents a possession on the pitch. Your darts become Quaffle attacks, tactical blocks, and one desperate Snitch chase.
-          </p>
-        </div>
-
-        <div class="rules-layout">
-          <article class="slab rules-copy reveal">
-            <div class="slab-inner">
-              <h3>Core rules</h3>
-              <div class="split-lines">
-                <div class="rule">
-                  <div class="rule-index">01</div>
-                  <div>
-                    <strong>Open with the Quaffle</strong>
-                    <p>Each player throws three darts per turn. Standard outer board hits score base possession points, while designated hoop rings multiply them.</p>
-                  </div>
-                </div>
-                <div class="rule">
-                  <div class="rule-index">02</div>
-                  <div>
-                    <strong>Hit the hoops</strong>
-                    <p>Small hoop, middle hoop, and wide hoop are worth different values. Consecutive hoop hits in one turn trigger a “passing play” combo bonus.</p>
-                  </div>
-                </div>
-                <div class="rule">
-                  <div class="rule-index">03</div>
-                  <div>
-                    <strong>Avoid the Bludgers</strong>
-                    <p>Predetermined hazard wedges count as Bludger strikes. They can cancel your highest dart, subtract points, or force the next player into a risky throw.</p>
-                  </div>
-                </div>
-                <div class="rule">
-                  <div class="rule-index">04</div>
-                  <div>
-                    <strong>Release the Snitch</strong>
-                    <p>Once a player crosses the score threshold, the Golden Snitch enters play. A successful hit awards 150 points and may end the match depending on mode.</p>
-                  </div>
-                </div>
+            <div class="field">
+              <label>Team A house</label>
+              <div class="house-grid" id="houseAGroup">
+                <label class="house-option active" data-value="gryffindor">
+                  <input type="radio" name="houseA" value="gryffindor" checked />
+                  <span class="house-sigil house-g"></span>
+                  <span class="house-copy"><strong>Gryffindor</strong><span>Brave retry on risky shots</span></span>
+                  <span class="pill">A</span>
+                </label>
+                <label class="house-option" data-value="ravenclaw">
+                  <input type="radio" name="houseA" value="ravenclaw" />
+                  <span class="house-sigil house-r"></span>
+                  <span class="house-copy"><strong>Ravenclaw</strong><span>Precision strategy bonus</span></span>
+                  <span class="pill">A</span>
+                </label>
               </div>
             </div>
-          </article>
 
-          <aside class="slab diagram reveal" aria-label="Game mapping diagram">
-            <h3>Board map</h3>
-            <div class="rings">
-              <div class="sector"></div>
-              <div class="ring r1"></div>
-              <div class="ring r2"></div>
-              <div class="ring r3"></div>
-              <div class="label l1">Top hoops = goal multipliers</div>
-              <div class="label l2">Dark wedges = Bludger hazards</div>
-              <div class="label l3">Outer ring = possession points</div>
-              <div class="label l4">Bull = Quaffle core</div>
-            </div>
-
-            <div class="modes" id="modes">
-              <h3>Game modes</h3>
-              <div class="modes-grid">
-                <div class="mode">
-                  <strong>House Duel</strong>
-                  <p>Classic 1v1. First to target score, unless the Snitch creates a comeback finish.</p>
-                </div>
-                <div class="mode">
-                  <strong>Three Chasers</strong>
-                  <p>Team mode where throws rotate and combo chains stack across players in the same house.</p>
-                </div>
-                <div class="mode">
-                  <strong>Pub Cup</strong>
-                  <p>Knockout bracket mode with shorter rounds, sudden-death Snitch triggers, and heavy crowd energy.</p>
-                </div>
+            <div class="field">
+              <label>Team B house</label>
+              <div class="house-grid" id="houseBGroup">
+                <label class="house-option active" data-value="slytherin">
+                  <input type="radio" name="houseB" value="slytherin" checked />
+                  <span class="house-sigil house-s"></span>
+                  <span class="house-copy"><strong>Slytherin</strong><span>Disrupt the rival’s next best shot</span></span>
+                  <span class="pill">B</span>
+                </label>
+                <label class="house-option" data-value="hufflepuff">
+                  <input type="radio" name="houseB" value="hufflepuff" />
+                  <span class="house-sigil house-h"></span>
+                  <span class="house-copy"><strong>Hufflepuff</strong><span>Consistency combo rewards</span></span>
+                  <span class="pill">B</span>
+                </label>
               </div>
             </div>
-          </aside>
-        </div>
-      </div>
-    </section>
 
-    <section id="score">
-      <div class="wrap">
-        <div class="cta-stage reveal">
-          <div class="cta-grid">
+            <div class="field">
+              <label for="modeSelect">Match mode</label>
+              <select id="modeSelect" class="select">
+                <option value="duel">House Duel</option>
+                <option value="pub">Pub Cup</option>
+                <option value="chasers">Three Chasers</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="targetScore">Target score</label>
+              <select id="targetScore" class="select">
+                <option value="250">250 points</option>
+                <option value="300" selected>300 points</option>
+                <option value="400">400 points</option>
+                <option value="500">500 points</option>
+              </select>
+            </div>
+
+            <div class="mini-note">
+              Click the dartboard to throw. Three throws per turn. Once a team crosses the Snitch threshold, the Golden Snitch appears as a moving target worth 150 points.
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <section class="center-stack">
+        <div class="panel hero-panel reveal">
+          <div class="hero-grid">
             <div>
-              <h2>Scoring with drama, not just arithmetic.</h2>
+              <div class="eyebrow">Playable fantasy darts web app</div>
+              <h1>House Cup on the board.</h1>
               <p>
-                The goal is to feel cinematic. Hoop lanes reward accuracy, central hits reward control, and the Snitch is a strategic pressure mechanic rather than a random gimmick. You can tune it for casual bars, fan conventions, or premium collector sets with illuminated boards.
+                Hit hoop lanes for big goals, dodge Bludger wedges, trigger house powers, and chase the Snitch before your rival steals the finish.
               </p>
-
-              <div class="hero-actions" style="margin-top:1.35rem">
-                <button class="btn btn-primary" id="simulateBtn" type="button">Simulate magic round</button>
-                <a class="btn btn-ghost" href="#top">Back to top</a>
-              </div>
             </div>
 
-            <div class="scorebox">
-              <h3>Suggested score table</h3>
-              <div class="score-list" id="scoreList">
-                <div class="score-row"><span>Outer possession hit</span><strong>10 pts</strong></div>
-                <div class="score-row"><span>Lower hoop lane</span><strong>30 pts</strong></div>
-                <div class="score-row"><span>Center hoop lane</span><strong>50 pts</strong></div>
-                <div class="score-row"><span>High hoop lane</span><strong>70 pts</strong></div>
-                <div class="score-row"><span>Bull / Quaffle control</span><strong>25 pts</strong></div>
-                <div class="score-row"><span>Bludger penalty</span><strong>-20 pts</strong></div>
-                <div class="score-row"><span>Golden Snitch hit</span><strong>150 pts</strong></div>
-              </div>
+            <div class="pitch-visual" aria-hidden="true">
+              <div class="hoop"></div>
+              <div class="hoop"></div>
+              <div class="hoop"></div>
+              <div class="fog"></div>
+              <div class="snitch-orbit"></div>
             </div>
           </div>
         </div>
-      </div>
-    </section>
+
+        <div class="status-ribbon reveal">
+          <div class="panel ribbon-block">
+            <span>Mode</span>
+            <strong id="modeReadout">House Duel</strong>
+          </div>
+          <div class="panel ribbon-block">
+            <span>Target score</span>
+            <strong id="targetReadout">300</strong>
+          </div>
+          <div class="panel ribbon-block">
+            <span>Snitch unlock</span>
+            <strong id="snitchReadout">225</strong>
+          </div>
+          <div class="panel ribbon-block">
+            <span>Current turn</span>
+            <strong id="currentTurnReadout">Not started</strong>
+          </div>
+        </div>
+
+        <div class="panel reveal">
+          <div class="panel-head">
+            <h2>Magical dartboard</h2>
+          </div>
+          <div class="panel-body game-surface">
+            <div class="board-shell">
+              <div class="board-stage">
+                <div class="dartboard-wrap">
+                  <div class="dartboard" id="dartboard" role="button" tabindex="0" aria-label="Interactive dartboard. Click to throw a dart.">
+                    <canvas class="hazard-overlay" id="hazardCanvas" width="620" height="620"></canvas>
+                    <div class="zone-layer">
+                      <div class="zone-label" style="left:22%; top:18%;">30 · Lower Hoop</div>
+                      <div class="zone-label" style="left:50%; top:10%;">70 · High Hoop</div>
+                      <div class="zone-label" style="left:80%; top:22%;">50 · Center Hoop</div>
+                      <div class="zone-label" style="left:50%; top:50%;">25 · Bull</div>
+                    </div>
+                    <div class="snitch-target" id="snitchTarget" hidden aria-hidden="true"></div>
+                  </div>
+                </div>
+
+                <div class="board-legend">
+                  <div class="legend-block">
+                    <strong>Scoring zones</strong>
+                    <p>Outer ring scores 10. Bull scores 25. Top hoop windows score 30, 50, or 70 depending on target.</p>
+                  </div>
+                  <div class="legend-block">
+                    <strong>Bludgers</strong>
+                    <p>Dark magical wedges act as hazards. Hit one and you lose 20 points on that throw.</p>
+                  </div>
+                  <div class="legend-block">
+                    <strong>Snitch mode</strong>
+                    <p>Unlocked at 75% of target score. Hit the moving Snitch for 150 points.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <aside class="sidebar-stack">
+              <div class="scoreboard" id="scoreboard"></div>
+
+              <div class="panel">
+                <div class="panel-head">
+                  <h3>Turn console</h3>
+                </div>
+                <div class="panel-body turn-console">
+                  <div class="turn-pill">
+                    <div>
+                      <strong id="turnTeamName">Awaiting start</strong>
+                      <span id="turnMeta">Select teams and begin</span>
+                    </div>
+                    <span id="throwCounter">0 / 3</span>
+                  </div>
+
+                  <div class="throws-track" id="throwsTrack">
+                    <div class="throw-dot">1</div>
+                    <div class="throw-dot">2</div>
+                    <div class="throw-dot">3</div>
+                  </div>
+
+                  <div class="helper-row">
+                    <span class="pill" id="comboPill">Combo: 0</span>
+                    <span class="pill" id="effectPill">Effect: none</span>
+                  </div>
+
+                  <div class="snitch-banner" id="snitchBanner">
+                    The Golden Snitch is in play.
+                  </div>
+
+                  <button class="btn btn-ghost" id="endTurnBtn" type="button">End turn early</button>
+                </div>
+              </div>
+
+              <div class="panel">
+                <div class="panel-head">
+                  <h3>Match log</h3>
+                </div>
+                <div class="panel-body">
+                  <div class="log" id="log"></div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <aside class="panel reveal">
+        <div class="panel-head">
+          <h2>House rules</h2>
+        </div>
+        <div class="panel-body">
+          <div class="setup-stack">
+            <div class="legend-block">
+              <strong>Gryffindor — Bold Retry</strong>
+              <p>Once per match, if a throw scores 10 or less, upgrade it to a 30-point hoop strike.</p>
+            </div>
+            <div class="legend-block">
+              <strong>Slytherin — Cunning Curse</strong>
+              <p>Once per match, mark the opponent’s next throw. If it would score above 30, reduce it by 20.</p>
+            </div>
+            <div class="legend-block">
+              <strong>Ravenclaw — Strategy Ring</strong>
+              <p>Once per match, your next bull or center-lane precision shot gains +15 points.</p>
+            </div>
+            <div class="legend-block">
+              <strong>Hufflepuff — Steady Chain</strong>
+              <p>Once per match, if you hit three different scoring zones in one turn, gain +25 combo points.</p>
+            </div>
+            <div class="mini-note">
+              Tip: House powers are intentionally lightweight so the game stays readable and competitive.
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
   </main>
 
-  <footer>
-    <div class="wrap footer-row">
-      <div class="brandline">
-        <span class="crest" aria-hidden="true"></span>
-        <span>Quidditch Darts — Concept landing page for a fantasy pub game.</span>
+  <div class="modal-backdrop" id="modal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-head">
+        <h3 id="modalTitle">Match result</h3>
       </div>
-      <span>Inspired by the world of wizard sport. Fan concept only.</span>
+      <div class="modal-body">
+        <p id="modalText"></p>
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn-ghost" id="closeModalBtn" type="button">Close</button>
+        <button class="btn btn-primary" id="playAgainBtn" type="button">Play again</button>
+      </div>
     </div>
-  </footer>
+  </div>
 
   <script>
+    const houseMeta = {
+      gryffindor: {
+        label: 'Gryffindor',
+        color: getComputedStyle(document.documentElement).getPropertyValue('--gryff').trim(),
+        ability: 'Bold Retry',
+        desc: 'Upgrade one weak throw to 30 points.',
+        chip: 'G'
+      },
+      slytherin: {
+        label: 'Slytherin',
+        color: getComputedStyle(document.documentElement).getPropertyValue('--slyth').trim(),
+        ability: 'Cunning Curse',
+        desc: 'Reduce opponent’s next strong throw.',
+        chip: 'S'
+      },
+      ravenclaw: {
+        label: 'Ravenclaw',
+        color: getComputedStyle(document.documentElement).getPropertyValue('--raven').trim(),
+        ability: 'Strategy Ring',
+        desc: 'Next precision hit gains +15.',
+        chip: 'R'
+      },
+      hufflepuff: {
+        label: 'Hufflepuff',
+        color: getComputedStyle(document.documentElement).getPropertyValue('--huff').trim(),
+        ability: 'Steady Chain',
+        desc: 'Three unique zones in one turn gain +25.',
+        chip: 'H'
+      }
+    };
+
+    const app = {
+      targetScore: 300,
+      snitchThreshold: 225,
+      started: false,
+      mode: 'duel',
+      currentTeam: 0,
+      throwsThisTurn: 0,
+      logs: [],
+      snitchActive: false,
+      snitchPos: { x: 310, y: 190 },
+      teams: [
+        { name:'Scarlet Seekers', house:'gryffindor', score:0, throws:0, combos:0, abilityUsed:false, pendingBoost:false, pendingCurse:false, retryReady:false, turnZones:[] },
+        { name:'Emerald Serpents', house:'slytherin', score:0, throws:0, combos:0, abilityUsed:false, pendingBoost:false, pendingCurse:false, retryReady:false, turnZones:[] }
+      ]
+    };
+
+    const els = {
+      startBtn: document.getElementById('startBtn'),
+      resetBtn: document.getElementById('resetBtn'),
+      newMatchBtn: document.getElementById('newMatchBtn'),
+      teamAName: document.getElementById('teamAName'),
+      teamBName: document.getElementById('teamBName'),
+      houseAGroup: document.getElementById('houseAGroup'),
+      houseBGroup: document.getElementById('houseBGroup'),
+      modeSelect: document.getElementById('modeSelect'),
+      targetScore: document.getElementById('targetScore'),
+      modeReadout: document.getElementById('modeReadout'),
+      targetReadout: document.getElementById('targetReadout'),
+      snitchReadout: document.getElementById('snitchReadout'),
+      currentTurnReadout: document.getElementById('currentTurnReadout'),
+      dartboard: document.getElementById('dartboard'),
+      hazardCanvas: document.getElementById('hazardCanvas'),
+      scoreboard: document.getElementById('scoreboard'),
+      turnTeamName: document.getElementById('turnTeamName'),
+      turnMeta: document.getElementById('turnMeta'),
+      throwCounter: document.getElementById('throwCounter'),
+      throwsTrack: document.getElementById('throwsTrack'),
+      comboPill: document.getElementById('comboPill'),
+      effectPill: document.getElementById('effectPill'),
+      log: document.getElementById('log'),
+      endTurnBtn: document.getElementById('endTurnBtn'),
+      snitchTarget: document.getElementById('snitchTarget'),
+      snitchBanner: document.getElementById('snitchBanner'),
+      modal: document.getElementById('modal'),
+      modalText: document.getElementById('modalText'),
+      closeModalBtn: document.getElementById('closeModalBtn'),
+      playAgainBtn: document.getElementById('playAgainBtn')
+    };
+
+    function setupHouseSelectors(container) {
+      container.querySelectorAll('.house-option').forEach(option => {
+        option.addEventListener('click', () => {
+          container.querySelectorAll('.house-option').forEach(o => o.classList.remove('active'));
+          option.classList.add('active');
+          option.querySelector('input').checked = true;
+        });
+      });
+    }
+
+    setupHouseSelectors(els.houseAGroup);
+    setupHouseSelectors(els.houseBGroup);
+
+    function getSelectedHouse(name) {
+      return document.querySelector(`input[name="${name}"]:checked`)?.value || 'gryffindor';
+    }
+
+    function modeLabel(mode) {
+      return ({
+        duel: 'House Duel',
+        pub: 'Pub Cup',
+        chasers: 'Three Chasers'
+      })[mode] || 'House Duel';
+    }
+
+    function syncConfigToState() {
+      app.teams[0].name = (els.teamAName.value.trim() || 'Team A').slice(0,20);
+      app.teams[1].name = (els.teamBName.value.trim() || 'Team B').slice(0,20);
+      app.teams[0].house = getSelectedHouse('houseA');
+      app.teams[1].house = getSelectedHouse('houseB');
+      app.mode = els.modeSelect.value;
+      app.targetScore = Number(els.targetScore.value);
+      app.snitchThreshold = Math.floor(app.targetScore * 0.75);
+
+      els.modeReadout.textContent = modeLabel(app.mode);
+      els.targetReadout.textContent = app.targetScore;
+      els.snitchReadout.textContent = app.snitchThreshold;
+    }
+
+    function freshTeam(team, original) {
+      return {
+        name: original.name,
+        house: original.house,
+        score: 0,
+        throws: 0,
+        combos: 0,
+        abilityUsed: false,
+        pendingBoost: false,
+        pendingCurse: false,
+        retryReady: false,
+        turnZones: []
+      };
+    }
+
+    function resetMatch(full = false) {
+      syncConfigToState();
+
+      app.started = false;
+      app.currentTeam = 0;
+      app.throwsThisTurn = 0;
+      app.snitchActive = false;
+      app.logs = [];
+
+      app.teams = [
+        freshTeam(app.teams[0], app.teams[0]),
+        freshTeam(app.teams[1], app.teams[1])
+      ];
+
+      document.querySelectorAll('.hit').forEach(n => n.remove());
+      els.snitchTarget.hidden = true;
+      els.snitchBanner.classList.remove('show');
+
+      if (full) {
+        addLog('New magical match prepared. Configure houses and press start.');
+      } else {
+        addLog('Scores reset. Ready for a fresh showdown.');
+      }
+
+      updateUI();
+    }
+
+    function addLog(message) {
+      app.logs.unshift(message);
+      app.logs = app.logs.slice(0, 18);
+      els.log.innerHTML = app.logs.map(item => `<div class="log-item">${item}</div>`).join('');
+    }
+
+    function renderScoreboard() {
+      els.scoreboard.innerHTML = app.teams.map((team, index) => {
+        const house = houseMeta[team.house];
+        const isActive = index === app.currentTeam && app.started;
+        return `
+          <div class="team-card ${isActive ? 'active' : ''}">
+            <div class="team-top">
+              <div>
+                <div class="team-name">${team.name}</div>
+                <div class="house-chip">
+                  <span class="dot" style="background:${house.color}"></span>
+                  ${house.label}
+                </div>
+              </div>
+              <div class="team-score">${team.score}</div>
+            </div>
+
+            <div class="team-meta">
+              <div class="tiny"><span>Throws</span><strong>${team.throws}</strong></div>
+              <div class="tiny"><span>Combos</span><strong>${team.combos}</strong></div>
+              <div class="tiny"><span>Power</span><strong>${team.abilityUsed ? 'Used' : 'Ready'}</strong></div>
+            </div>
+
+            <div class="house-power">
+              <button class="btn btn-ghost power-btn" data-use-power="${index}" ${(!app.started || team.abilityUsed || index !== app.currentTeam) ? 'disabled' : ''}>
+                Use ${house.ability}
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      els.scoreboard.querySelectorAll('[data-use-power]').forEach(btn => {
+        btn.addEventListener('click', () => useHousePower(Number(btn.dataset.usePower)));
+      });
+    }
+
+    function updateThrowsTrack() {
+      [...els.throwsTrack.children].forEach((dot, i) => {
+        dot.classList.toggle('used', i < app.throwsThisTurn);
+      });
+    }
+
+    function updateTurnMeta() {
+      const team = app.teams[app.currentTeam];
+      const house = houseMeta[team.house];
+      els.currentTurnReadout.textContent = app.started ? team.name : 'Not started';
+      els.turnTeamName.textContent = app.started ? `${team.name}` : 'Awaiting start';
+
+      let effect = 'none';
+      if (team.pendingBoost) effect = `${house.label} precision boost armed`;
+      if (team.retryReady) effect = 'Gryffindor retry armed';
+      if (app.teams[(app.currentTeam + 1) % 2].pendingCurse) effect = 'Opponent curse waiting';
+
+      els.turnMeta.textContent = app.started ? `${house.label} · ${house.ability}` : 'Select teams and begin';
+      els.throwCounter.textContent = `${app.throwsThisTurn} / 3`;
+      els.comboPill.textContent = `Combo: ${team.turnZones.length}`;
+      els.effectPill.textContent = `Effect: ${effect}`;
+    }
+
+    function updateUI() {
+      renderScoreboard();
+      updateThrowsTrack();
+      updateTurnMeta();
+    }
+
+    function startMatch() {
+      syncConfigToState();
+      app.started = true;
+      app.currentTeam = 0;
+      app.throwsThisTurn = 0;
+      app.snitchActive = false;
+      app.teams.forEach(t => {
+        t.turnZones = [];
+        t.pendingBoost = false;
+        t.pendingCurse = false;
+        t.retryReady = false;
+      });
+      document.querySelectorAll('.hit').forEach(n => n.remove());
+      addLog(`<strong>${app.teams[0].name}</strong> vs <strong>${app.teams[1].name}</strong> begins in <strong>${modeLabel(app.mode)}</strong>.`);
+      updateUI();
+    }
+
+    function drawHazards() {
+      const c = els.hazardCanvas;
+      const ctx = c.getContext('2d');
+      const w = c.width;
+      const h = c.height;
+      const cx = w / 2;
+      const cy = h / 2;
+      const r = w / 2;
+
+      ctx.clearRect(0,0,w,h);
+
+      const hazardAngles = [
+        [20, 38],
+        [142, 162],
+        [258, 278]
+      ];
+
+      hazardAngles.forEach(([start, end]) => {
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.arc(cx, cy, r, (start - 90) * Math.PI / 180, (end - 90) * Math.PI / 180);
+        ctx.closePath();
+        ctx.fillStyle = 'rgba(179,59,46,.16)';
+        ctx.fill();
+      });
+
+      ctx.beginPath();
+      ctx.arc(cx, cy, r - 3, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(255,255,255,.05)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
+
+    function placeSnitch() {
+      const r = Math.random() * 220 + 80;
+      const a = Math.random() * Math.PI * 2;
+      const x = 310 + Math.cos(a) * Math.min(r, 240);
+      const y = 310 + Math.sin(a) * Math.min(r, 240);
+      app.snitchPos = { x, y };
+      els.snitchTarget.style.left = `${x}px`;
+      els.snitchTarget.style.top = `${y}px`;
+    }
+
+    function maybeActivateSnitch(team) {
+      if (!app.snitchActive && team.score >= app.snitchThreshold) {
+        app.snitchActive = true;
+        els.snitchTarget.hidden = false;
+        els.snitchBanner.classList.add('show');
+        placeSnitch();
+        addLog(`<strong>${team.name}</strong> has released the <strong>Golden Snitch</strong>.`);
+      }
+    }
+
+    function getZone(x, y) {
+      const cx = 310;
+      const cy = 310;
+      const dx = x - cx;
+      const dy = y - cy;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      const angle = (Math.atan2(dy, dx) * 180 / Math.PI + 450) % 360;
+
+      if (app.snitchActive) {
+        const sx = app.snitchPos.x;
+        const sy = app.snitchPos.y;
+        const sdx = x - sx;
+        const sdy = y - sy;
+        if (Math.sqrt(sdx * sdx + sdy * sdy) <= 24) {
+          return { name: 'Golden Snitch', points: 150, kind: 'snitch' };
+        }
+      }
+
+      const hazards = [
+        [20, 38],
+        [142, 162],
+        [258, 278]
+      ];
+      if (distance <= 310 && hazards.some(([s,e]) => angle >= s && angle <= e)) {
+        return { name: 'Bludger', points: -20, kind: 'bludger' };
+      }
+
+      const hoopTop = y < 160;
+      if (hoopTop && x > 90 && x < 190 && distance < 285) {
+        return { name: 'Lower Hoop', points: 30, kind: 'hoop-low' };
+      }
+      if (hoopTop && x >= 190 && x <= 420 && y < 128) {
+        return { name: 'High Hoop', points: 70, kind: 'hoop-high' };
+      }
+      if (hoopTop && x > 430 && x < 530 && distance < 285) {
+        return { name: 'Center Hoop', points: 50, kind: 'hoop-mid' };
+      }
+
+      if (distance <= 42) return { name: 'Bull', points: 25, kind: 'bull' };
+      if (distance <= 310) return { name: 'Outer Ring', points: 10, kind: 'outer' };
+      return { name: 'Miss', points: 0, kind: 'miss' };
+    }
+
+    function createHit(x, y, kind) {
+      const hit = document.createElement('div');
+      hit.className = `hit ${kind}`;
+      hit.style.left = `${x}px`;
+      hit.style.top = `${y}px`;
+      els.dartboard.appendChild(hit);
+      setTimeout(() => {
+        hit.style.opacity = '.3';
+      }, 1300);
+    }
+
+    function useHousePower(index) {
+      if (!app.started || index !== app.currentTeam) return;
+      const team = app.teams[index];
+      if (team.abilityUsed) return;
+      const house = team.house;
+
+      team.abilityUsed = true;
+
+      if (house === 'gryffindor') {
+        team.retryReady = true;
+        addLog(`<strong>${team.name}</strong> activates <strong>Bold Retry</strong>. Their next weak shot may become a 30-point hoop strike.`);
+      }
+      if (house === 'slytherin') {
+        app.teams[(index + 1) % 2].pendingCurse = true;
+        addLog(`<strong>${team.name}</strong> casts <strong>Cunning Curse</strong> on the rival’s next strong throw.`);
+      }
+      if (house === 'ravenclaw') {
+        team.pendingBoost = true;
+        addLog(`<strong>${team.name}</strong> prepares <strong>Strategy Ring</strong>. The next bull or center precision shot gets +15.`);
+      }
+      if (house === 'hufflepuff') {
+        team.pendingBoost = 'huffle-chain';
+        addLog(`<strong>${team.name}</strong> invokes <strong>Steady Chain</strong>. Three unique scoring zones this turn gain a +25 combo bonus.`);
+      }
+
+      updateUI();
+    }
+
+    function processThrow(clientX, clientY) {
+      if (!app.started) {
+        addLog('Press <strong>Start Match</strong> to begin.');
+        return;
+      }
+      if (app.throwsThisTurn >= 3) return;
+
+      const rect = els.dartboard.getBoundingClientRect();
+      const scaleX = 620 / rect.width;
+      const scaleY = 620 / rect.height;
+      const x = (clientX - rect.left) * scaleX;
+      const y = (clientY - rect.top) * scaleY;
+
+      const team = app.teams[app.currentTeam];
+      const enemy = app.teams[(app.currentTeam + 1) % 2];
+      const zone = getZone(x, y);
+      let points = zone.points;
+      let message = `<strong>${team.name}</strong> hits <strong>${zone.name}</strong> for <strong>${points}</strong>.`;
+      let hitClass = app.currentTeam === 0 ? 'team-a' : 'team-b';
+
+      if (zone.kind === 'snitch') {
+        hitClass = 'snitch';
+      }
+      if (zone.kind === 'bludger') {
+        hitClass = 'bludger';
+      }
+
+      if (team.house === 'gryffindor' && team.retryReady && points <= 10) {
+        points = 30;
+        team.retryReady = false;
+        message = `<strong>${team.name}</strong> turns a weak shot into a fearless <strong>Gryffindor Retry</strong> for <strong>30</strong>.`;
+      }
+
+      if (team.house === 'ravenclaw' && team.pendingBoost && (zone.kind === 'bull' || zone.kind === 'hoop-mid')) {
+        points += 15;
+        team.pendingBoost = false;
+        message = `<strong>${team.name}</strong> uses <strong>Strategy Ring</strong> on ${zone.name} for <strong>${points}</strong>.`;
+      }
+
+      if (enemy.pendingCurse && points > 30) {
+        points -= 20;
+        enemy.pendingCurse = false;
+        message = `<strong>${team.name}</strong> suffers a <strong>Slytherin Curse</strong>. ${zone.name} is reduced to <strong>${points}</strong>.`;
+      }
+
+      if (zone.kind !== 'miss' && zone.kind !== 'bludger') {
+        if (!team.turnZones.includes(zone.kind)) team.turnZones.push(zone.kind);
+      }
+
+      if (team.house === 'hufflepuff' && team.pendingBoost === 'huffle-chain' && team.turnZones.length >= 3) {
+        points += 25;
+        team.pendingBoost = false;
+        team.combos += 1;
+        message = `<strong>${team.name}</strong> completes a <strong>Hufflepuff Steady Chain</strong> for <strong>${points}</strong>.`;
+      }
+
+      if ((zone.kind === 'hoop-low' || zone.kind === 'hoop-mid' || zone.kind === 'hoop-high') && app.throwsThisTurn > 0) {
+        const prevCount = team.turnZones.filter(z => z.startsWith('hoop')).length;
+        if (prevCount >= 2) {
+          points += 10;
+          team.combos += 1;
+          message += ` <strong>Passing play combo +10.</strong>`;
+        }
+      }
+
+      team.score += points;
+      team.throws += 1;
+      app.throwsThisTurn += 1;
+
+      createHit(x, y, hitClass);
+      addLog(message);
+
+      if (zone.kind === 'snitch') {
+        maybeFinish(team, true);
+      } else {
+        maybeActivateSnitch(team);
+        maybeFinish(team, false);
+      }
+
+      if (app.snitchActive) placeSnitch();
+
+      if (app.throwsThisTurn >= 3 && app.started) {
+        setTimeout(endTurn, 250);
+      }
+
+      updateUI();
+    }
+
+    function maybeFinish(team, bySnitch) {
+      if (team.score >= app.targetScore || bySnitch) {
+        app.started = false;
+        els.snitchTarget.hidden = true;
+        els.snitchBanner.classList.remove('show');
+        const reason = bySnitch
+          ? `${team.name} captures the Golden Snitch and wins the match with ${team.score} points.`
+          : `${team.name} reaches ${team.score} points and wins the match.`;
+        els.modalText.textContent = reason;
+        els.modal.classList.add('open');
+        addLog(`<strong>${team.name}</strong> wins the match.`);
+      }
+    }
+
+    function endTurn() {
+      if (!app.started) return;
+      app.throwsThisTurn = 0;
+      app.teams[app.currentTeam].turnZones = [];
+      app.currentTeam = (app.currentTeam + 1) % 2;
+      addLog(`Turn passes to <strong>${app.teams[app.currentTeam].name}</strong>.`);
+      updateUI();
+    }
+
+    els.dartboard.addEventListener('click', (e) => processThrow(e.clientX, e.clientY));
+    els.dartboard.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        const rect = els.dartboard.getBoundingClientRect();
+        processThrow(rect.left + rect.width / 2, rect.top + rect.height / 2);
+      }
+    });
+
+    els.startBtn.addEventListener('click', startMatch);
+    els.resetBtn.addEventListener('click', () => resetMatch(false));
+    els.newMatchBtn.addEventListener('click', () => resetMatch(true));
+    els.endTurnBtn.addEventListener('click', endTurn);
+
+    els.modeSelect.addEventListener('change', syncConfigToState);
+    els.targetScore.addEventListener('change', syncConfigToState);
+    els.teamAName.addEventListener('input', syncConfigToState);
+    els.teamBName.addEventListener('input', syncConfigToState);
+    document.querySelectorAll('input[name="houseA"], input[name="houseB"]').forEach(input => {
+      input.addEventListener('change', syncConfigToState);
+    });
+
+    els.closeModalBtn.addEventListener('click', () => els.modal.classList.remove('open'));
+    els.playAgainBtn.addEventListener('click', () => {
+      els.modal.classList.remove('open');
+      resetMatch(true);
+    });
+
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
-        if(entry.isIntersecting){
-          entry.target.classList.add('visible');
-        }
+        if (entry.isIntersecting) entry.target.classList.add('visible');
       });
-    }, { threshold: 0.16 });
+    }, { threshold: .14 });
 
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-    const arena = document.querySelector('.arena');
-    const snitch = document.getElementById('snitch');
-    const moveSnitchBtn = document.getElementById('moveSnitchBtn');
-    const simulateBtn = document.getElementById('simulateBtn');
-    const scoreList = document.getElementById('scoreList');
-
-    function moveSnitch() {
-      const x = Math.random() * 68 + 16;
-      const y = Math.random() * 52 + 12;
-      arena.style.setProperty('--snitchX', x + '%');
-      arena.style.setProperty('--snitchY', y + '%');
-      snitch.animate([
-        { transform: 'translate(-50%, -50%) scale(.8)', opacity: .7 },
-        { transform: 'translate(-50%, -50%) scale(1.18)', opacity: 1, offset: .55 },
-        { transform: 'translate(-50%, -50%) scale(1)', opacity: 1 }
-      ], { duration: 480, easing: 'cubic-bezier(.2,.8,.2,1)' });
-    }
-
-    moveSnitchBtn.addEventListener('click', moveSnitch);
-    snitch.addEventListener('click', moveSnitch);
-
-    const events = [
-      ['Outer possession hit', '10 pts'],
-      ['Lower hoop lane', '30 pts'],
-      ['Center hoop lane', '50 pts'],
-      ['High hoop lane', '70 pts'],
-      ['Bull / Quaffle control', '25 pts'],
-      ['Bludger penalty', '-20 pts'],
-      ['Golden Snitch hit', '150 pts']
-    ];
-
-    simulateBtn.addEventListener('click', () => {
-      const picks = [];
-      for(let i = 0; i < 3; i++){
-        picks.push(events[Math.floor(Math.random() * events.length)]);
-      }
-
-      scoreList.innerHTML = picks.map((item, index) => `
-        <div class="score-row" style="animation: rise .55s ease ${index * 0.08}s both">
-          <span>${item[0]}</span>
-          <strong>${item[1]}</strong>
-        </div>
-      `).join('');
-
-      moveSnitch();
-    });
-
-    moveSnitch();
+    syncConfigToState();
+    drawHazards();
+    resetMatch(true);
   </script>
 </body>
 </html>
