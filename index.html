@@ -165,6 +165,7 @@
         </small>
       </div>
       <div class="top-actions">
+        <button class="btn btn-ghost" id="rulesBtn" type="button">Rules</button>
         <button class="btn btn-ghost" id="newMatchBtn" type="button">New Match</button>
         <button class="btn btn-primary" id="startBtn" type="button">Start Match</button>
         <button class="btn btn-danger" id="resetBtn" type="button">Reset Scores</button>
@@ -417,6 +418,7 @@
     </div>
   </main>
 
+  <!-- Game Over / General Modal -->
   <div class="modal-backdrop" id="modal">
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
       <div class="modal-head">
@@ -428,6 +430,31 @@
       <div class="modal-foot">
         <button class="btn btn-ghost" id="closeModalBtn" type="button">Close</button>
         <button class="btn btn-primary" id="playAgainBtn" type="button">Play again</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dedicated Rules Modal -->
+  <div class="modal-backdrop" id="rulesModal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="rulesModalTitle">
+      <div class="modal-head">
+        <h3 id="rulesModalTitle">Quidditch Darts Rulebook</h3>
+      </div>
+      <div class="modal-body" style="display:grid; gap:.8rem; max-height:60vh; overflow-y:auto;">
+        <p><strong>1. Basic Gameplay:</strong> Teams take turns throwing 3 darts per round at the magical dartboard. Click anywhere on the board to register your throw.</p>
+        <p><strong>2. Scoring Zones:</strong><br>
+           • Outer Ring: 10 pts<br>
+           • Bullseye: 25 pts<br>
+           • Lower Hoop: 30 pts<br>
+           • Center Hoop: 50 pts<br>
+           • High Hoop: 70 pts
+        </p>
+        <p><strong>3. Hazards (Bludgers):</strong> Three dark red wedges act as Bludgers. Landing on them results in a -20 penalty unless mitigated by a house power or shield.</p>
+        <p><strong>4. The Golden Snitch:</strong> When any team reaches 75% of the target score, the Golden Snitch is released onto the board. Hitting the floating Snitch directly awards 150 points and triggers an instant match victory.</p>
+        <p><strong>5. House Powers:</strong> Each house has one unique, once-per-match ability (such as Gryffindor's Bold Retry or Moonstone's Lunar Aim) available on your team card during your turn.</p>
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn-primary" id="closeRulesBtn" type="button">Got it</button>
       </div>
     </div>
   </div>
@@ -483,6 +510,7 @@
       startBtn: document.getElementById('startBtn'),
       resetBtn: document.getElementById('resetBtn'),
       newMatchBtn: document.getElementById('newMatchBtn'),
+      rulesBtn: document.getElementById('rulesBtn'),
       teamAName: document.getElementById('teamAName'),
       teamBName: document.getElementById('teamBName'),
       houseAGroup: document.getElementById('houseAGroup'),
@@ -510,6 +538,8 @@
       modalText: document.getElementById('modalText'),
       closeModalBtn: document.getElementById('closeModalBtn'),
       playAgainBtn: document.getElementById('playAgainBtn'),
+      rulesModal: document.getElementById('rulesModal'),
+      closeRulesBtn: document.getElementById('closeRulesBtn'),
       moonMarker: document.getElementById('moonMarker')
     };
 
@@ -1019,6 +1049,8 @@
     els.startBtn.addEventListener('click', startMatch);
     els.resetBtn.addEventListener('click', () => resetMatch(false));
     els.newMatchBtn.addEventListener('click', () => resetMatch(true));
+    els.rulesBtn.addEventListener('click', () => els.rulesModal.classList.add('open'));
+    els.closeRulesBtn.addEventListener('click', () => els.rulesModal.classList.remove('open'));
     els.endTurnBtn.addEventListener('click', endTurn);
     els.modeSelect.addEventListener('change', syncConfigToState);
     els.targetScore.addEventListener('change', syncConfigToState);
