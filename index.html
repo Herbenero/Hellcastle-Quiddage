@@ -9,166 +9,419 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800&family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
     <style>
-        :root{--bg:#0b0910; --bg2:#15101b; --panel:rgba(23,17,30,.84); --panel-soft:rgba(255,255,255,.04); --line:rgba(255,233,193,.14); --text:#f7f1e7; --muted:#cabca3; --gold:#d7aa41; --gold2:#f2d88b; --danger:#b74635; --ok:#65b886; --shadow:0 24px 80px rgba(0,0,0,.45); --gryff:#8f1f2a; --slyth:#113c2d; --raven:#1d2f62; --huff:#8e6c1f; --moon:#8b7cff; --ember:#cf5c2f; --max:1440px;}
-        *{box-sizing:border-box}
-        html,body{height:100%}
-        html{scroll-behavior:smooth}
-        body{margin:0; color:var(--text); font-family:"Manrope", sans-serif; background: radial-gradient(circle at 15% 10%, rgba(215,170,65,.08), transparent 18%), radial-gradient(circle at 84% 16%, rgba(143,31,42,.12), transparent 18%), radial-gradient(circle at 50% 100%, rgba(29,47,98,.18), transparent 28%), linear-gradient(180deg, #0b0910 0%, #120d18 44%, #0b0910 100%); overflow-x:hidden;}
-        body::before{content:""; position:fixed; inset:0; pointer-events:none; opacity:.18; background-image: linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px); background-size:26px 26px; mask-image:radial-gradient(circle at center, black 42%, transparent 100%);}
-        button,input,select{font:inherit}
-        a{text-decoration:none;color:inherit}
-        .wrap{width:min(var(--max), calc(100% - 1.2rem)); margin-inline:auto;}
-        .reveal{opacity:0; transform:translateY(18px); transition:opacity .8s ease, transform .8s ease;}
-        .reveal.visible{opacity:1; transform:none;}
-        .topbar{position:sticky; top:0; z-index:100; background:linear-gradient(180deg, rgba(10,8,14,.94), rgba(10,8,14,.65)); backdrop-filter:blur(14px) saturate(140%); border-bottom:1px solid var(--line);}
-        .topbar-inner{min-height:78px; display:flex; align-items:center; justify-content:space-between; gap:1rem;}
-        .brand{display:flex; align-items:center; gap:.85rem; text-transform:uppercase; letter-spacing:.12em; font-weight:800;}
-        .crest{width:42px; aspect-ratio:1; border-radius:50%; position:relative; background:radial-gradient(circle at 35% 35%, #f9efba, #d7aa41 58%, #6f4a12 100%); box-shadow:0 0 0 2px rgba(255,231,173,.24), 0 10px 30px rgba(215,170,65,.28); flex:none;}
-        .crest::before,.crest::after{content:""; position:absolute; top:50%; width:18px;height:5px; border-radius:999px; background:linear-gradient(90deg, transparent, #edd58a 30%, #a97717 100%);}
-        .crest::before{left:-12px; transform:translateY(-50%) rotate(-18deg)}
-        .crest::after{right:-12px; transform:translateY(-50%) rotate(18deg)}
-        .brand span{font-family:"Cinzel", serif; color:var(--gold2); font-size:1rem;}
-        .top-actions{display:flex; align-items:center; gap:.8rem; flex-wrap:wrap;}
-        .btn{appearance:none; border:0; border-radius:999px; min-height:46px; padding:.85rem 1.1rem; display:inline-flex; align-items:center; justify-content:center; gap:.55rem; cursor:pointer; font-weight:800; transition:transform .18s ease, box-shadow .25s ease, background .25s ease, border-color .25s ease, opacity .25s ease;}
-        .btn:hover{transform:translateY(-2px)}
-        .btn:active{transform:translateY(0) scale(.985)}
-        .btn:disabled{opacity:.45; cursor:not-allowed; transform:none}
-        .btn-primary{color:#2b1a05; background:linear-gradient(135deg, var(--gold2), var(--gold)); box-shadow:0 12px 36px rgba(215,170,65,.25);}
-        .btn-ghost{color:var(--text); background:rgba(255,255,255,.04); border:1px solid var(--line); backdrop-filter:blur(10px);}
-        .btn-danger{color:#fff4ef; background:linear-gradient(135deg, #cb5647, #8f281f); box-shadow:0 12px 36px rgba(183,70,53,.22);}
-        main{padding:1rem 0 2rem}
-        .app-grid{display:grid; grid-template-columns:340px minmax(0, 1fr) 360px; gap:1rem; align-items:start;}
-        .panel{border-radius:28px; background: linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.02)), var(--panel); border:1px solid var(--line); box-shadow:var(--shadow); backdrop-filter:blur(14px); overflow:hidden;}
-        .panel-head{padding:1rem 1rem .25rem;}
-        .panel-head h2,.panel-head h3{margin:0; font-family:"Cinzel", serif; letter-spacing:-.02em;}
-        .panel-body{padding:1rem}
-        .setup-stack{display:grid; gap:1rem;}
-        .field{display:grid; gap:.45rem;}
-        .field label{color:var(--muted); font-size:.92rem; font-weight:700; letter-spacing:.02em;}
-        .input,.select{width:100%; min-height:50px; border-radius:16px; border:1px solid rgba(255,255,255,.08); background:rgba(255,255,255,.04); color:var(--text); padding:.85rem .95rem; outline:none; transition:border-color .2s ease, background .2s ease, box-shadow .2s ease;}
-        .input:focus,.select:focus{border-color:rgba(242,216,139,.4); box-shadow:0 0 0 4px rgba(242,216,139,.08); background:rgba(255,255,255,.06);}
-        .house-grid{display:grid; gap:.65rem;}
-        .house-option{position:relative; display:grid; grid-template-columns:auto 1fr auto; gap:.8rem; align-items:center; padding:.95rem; border-radius:18px; border:1px solid rgba(255,255,255,.08); background:rgba(255,255,255,.03); cursor:pointer; transition:transform .2s ease, border-color .25s ease, background .25s ease;}
-        .house-option:hover{transform:translateY(-2px); border-color:rgba(242,216,139,.2); background:rgba(255,255,255,.05);}
-        .house-option.active{border-color:rgba(242,216,139,.34); box-shadow:inset 0 0 0 1px rgba(242,216,139,.16); background:rgba(255,255,255,.065);}
-        .house-option input{position:absolute; opacity:0; pointer-events:none;}
-        .house-sigil{width:18px;height:18px;border-radius:50%; box-shadow:0 0 0 1px rgba(255,255,255,.16); flex:none;}
-        .g{background:var(--gryff)} .s{background:var(--slyth)} .r{background:var(--raven)} .h{background:var(--huff)} .m{background:var(--moon)} .e{background:var(--ember)}
-        .house-copy strong{display:block; margin-bottom:.12rem;}
-        .house-copy span{color:var(--muted); font-size:.84rem; line-height:1.35;}
-        .mini-note{padding:.9rem .95rem; border-radius:16px; background:rgba(255,255,255,.03); border:1px dashed rgba(255,255,255,.12); color:var(--muted); line-height:1.6; font-size:.9rem;}
-        .center-stack{display:grid; gap:1rem;}
-        .hero-panel{position:relative; min-height:200px; padding:1.1rem; overflow:hidden;}
-        .hero-grid{display:grid; grid-template-columns:1.2fr .8fr; gap:1rem; align-items:center;}
-        .eyebrow{display:inline-flex; align-items:center; gap:.5rem; padding:.5rem .78rem; border-radius:999px; border:1px solid rgba(242,216,139,.16); color:var(--gold2); background:rgba(255,255,255,.03); font-size:.78rem; font-weight:800; text-transform:uppercase; letter-spacing:.14em;}
-        .hero-panel h1{margin:.8rem 0 .7rem; font-family:"Cinzel", serif; font-size:clamp(2.1rem, 4vw, 4rem); line-height:.95; max-width:10ch;}
-        .hero-panel p{margin:0; max-width:58ch; color:var(--muted); line-height:1.7;}
-        .pitch-visual{position:relative; min-height:220px; border-radius:24px; border:1px solid rgba(255,255,255,.08); background: radial-gradient(circle at 50% 20%, rgba(255,255,255,.07), transparent 20%), linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.01)); overflow:hidden; isolation:isolate;}
-        .pitch-visual .hoop{position:absolute; top:16%; width:84px;height:84px; border-radius:50%; border:6px solid rgba(242,216,139,.82); box-shadow:0 0 24px rgba(215,170,65,.18);}
-        .pitch-visual .hoop::after{content:""; position:absolute; left:50%; bottom:-90px; transform:translateX(-50%); width:6px;height:90px; border-radius:999px; background:linear-gradient(180deg, rgba(242,216,139,.7), rgba(242,216,139,.12));}
-        .pitch-visual .hoop:nth-child(1){left:10%; width:70px;height:70px}
-        .pitch-visual .hoop:nth-child(2){left:39%; top:8%; width:96px;height:96px}
-        .pitch-visual .hoop:nth-child(3){right:10%; width:76px;height:76px}
-        .fog{position:absolute; inset:auto -10% -8% -10%; height:38%; background: radial-gradient(circle at 30% 50%, rgba(215,170,65,.16), transparent 24%), radial-gradient(circle at 70% 50%, rgba(255,255,255,.08), transparent 22%), linear-gradient(180deg, transparent, rgba(0,0,0,.28)); filter:blur(10px);}
-        .snitch-orbit{position:absolute; left:50%; top:54%; width:28px;height:28px; border-radius:50%; transform:translate(-50%, -50%); background:radial-gradient(circle at 35% 35%, #fff6cb, #ddb44f 60%, #956711 100%); box-shadow:0 0 0 2px rgba(255,230,160,.16), 0 0 22px rgba(242,216,139,.3); animation:snitchGlide 7s linear infinite;}
-        .snitch-orbit::before,.snitch-orbit::after{content:""; position:absolute; top:50%; width:22px;height:10px; transform:translateY(-50%); border-radius:50%; background:linear-gradient(90deg, rgba(255,255,255,.02), rgba(255,255,255,.72), rgba(255,255,255,.02));}
-        .snitch-orbit::before{left:-18px; clip-path:polygon(100% 50%, 10% 0, 0 50%, 10% 100%); transform:translateY(-50%) rotate(-12deg);}
-        .snitch-orbit::after{right:-18px; clip-path:polygon(0 50%, 90% 0, 100% 50%, 90% 100%); transform:translateY(-50%) rotate(12deg);}
-        @keyframes snitchGlide{0%{left:16%; top:28%} 25%{left:74%; top:22%} 50%{left:66%; top:70%} 75%{left:24%; top:62%} 100%{left:16%; top:28%}}
-        .status-ribbon{display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:.8rem;}
-        .ribbon-block{padding:1rem; border-top:1px solid rgba(242,216,139,.18); background:linear-gradient(180deg, rgba(255,255,255,.04), transparent);}
-        .ribbon-block span{display:block; color:var(--muted); font-size:.84rem; margin-bottom:.28rem;}
-        .ribbon-block strong{font-size:1.15rem;}
-        .game-surface{display:grid; grid-template-columns:minmax(0, 1fr) 310px; gap:1rem; align-items:start;}
-        .board-shell{padding:1rem}
-        .board-stage{display:grid; grid-template-columns:1fr 230px; gap:1rem; align-items:center;}
-        .dartboard-wrap{position:relative; display:grid; place-items:center; min-height:660px; padding:1rem;}
-        .dartboard{position:relative; width:min(100%, 630px); aspect-ratio:1; border-radius:50%; background: radial-gradient(circle, #211723 0 8.5%, #c4a04b 8.5% 11.5%, #491621 11.5% 23%, #e5d4aa 23% 25.2%, #173928 25.2% 40%, #9e7c2f 40% 42.2%, #3f1321 42.2% 58%, #e5d4aa 58% 60.2%, #113427 60.2% 76%, #9e7c2f 76% 78%, #35101b 78% 100%); box-shadow: 0 0 0 14px rgba(255,255,255,.04), 0 0 0 15px rgba(242,216,139,.14), 0 25px 70px rgba(0,0,0,.42), inset 0 10px 20px rgba(255,255,255,.05); overflow:hidden; isolation:isolate;}
-        .dartboard::before{content:""; position:absolute; inset:0; background:repeating-conic-gradient(from -9deg, rgba(255,255,255,.08) 0 4deg, transparent 4deg 18deg); mix-blend-mode:screen; opacity:.48;}
-        .hazard-overlay{position:absolute; inset:0; border-radius:50%; pointer-events:none; opacity:.92;}
-        .zone-layer{position:absolute; inset:0; z-index:2; pointer-events:none;}
-        .zone-label{position:absolute; padding:.36rem .52rem; border-radius:999px; background:rgba(14,10,18,.84); border:1px solid rgba(242,216,139,.16); color:var(--text); font-size:.76rem; white-space:nowrap; backdrop-filter:blur(10px); transform:translate(-50%, -50%);}
-        .hit{position:absolute; width:22px;height:22px; border-radius:50%; transform:translate(-50%, -50%); pointer-events:none; z-index:8; box-shadow:0 0 0 2px rgba(255,255,255,.12), 0 0 18px rgba(255,255,255,.18); animation:pop .45s ease both;}
-        .hit::after{content:""; position:absolute; inset:-7px; border-radius:50%; border:1px solid rgba(255,255,255,.16); opacity:.65;}
-        .hit.team-a{background:linear-gradient(135deg, var(--gold2), #fff0bf)}
-        .hit.team-b{background:linear-gradient(135deg, #9bd2ff, #5a76ff)}
-        .hit.snitch{background:linear-gradient(135deg, #fff3af, #d7aa41); box-shadow:0 0 0 2px rgba(255,240,184,.22), 0 0 24px rgba(242,216,139,.4)}
-        .hit.bludger{background:linear-gradient(135deg, #d05b4a, #6b1d1b)}
-        .hit.moon{background:linear-gradient(135deg, #c5bcff, #7b69ff)}
-        .hit.ember{background:linear-gradient(135deg, #ffb080, #cf5c2f)}
-        @keyframes pop{from{opacity:0; transform:translate(-50%,-50%) scale(.4)} to{opacity:1; transform:translate(-50%,-50%) scale(1)}}
-        .snitch-target{position:absolute; width:34px;height:34px; border-radius:50%; transform:translate(-50%, -50%); background:radial-gradient(circle at 35% 35%, #fff6c5, #ddb44f 58%, #956711 100%); box-shadow:0 0 0 2px rgba(255,233,174,.22), 0 0 28px rgba(242,216,139,.45); z-index:5; animation:snitchPulse 1.6s ease-in-out infinite; cursor:pointer;}
-        .snitch-target::before,.snitch-target::after{content:""; position:absolute; top:50%; width:24px;height:10px; transform:translateY(-50%); border-radius:50%; background:linear-gradient(90deg, rgba(255,255,255,.03), rgba(255,255,255,.76), rgba(255,255,255,.03));}
-        .snitch-target::before{left:-18px; clip-path:polygon(100% 50%, 10% 0, 0 50%, 10% 100%); transform:translateY(-50%) rotate(-16deg);}
-        .snitch-target::after{right:-18px; clip-path:polygon(0 50%, 90% 0, 100% 50%, 90% 100%); transform:translateY(-50%) rotate(16deg);}
-        @keyframes snitchPulse{0%,100%{transform:translate(-50%, -50%) scale(1)} 50%{transform:translate(-50%, -50%) scale(1.08)}}
-        .target-marker{position:absolute; width:64px;height:64px; border-radius:50%; transform:translate(-50%, -50%); border:2px dashed rgba(197,188,255,.7); box-shadow:0 0 0 10px rgba(197,188,255,.06); z-index:4; pointer-events:none; animation:markerPulse 1.4s ease-in-out infinite;}
-        @keyframes markerPulse{0%,100%{transform:translate(-50%, -50%) scale(1)} 50%{transform:translate(-50%, -50%) scale(1.06)}}
-        .board-legend{display:grid; gap:.8rem;}
-        .legend-block{padding:1rem; border-radius:18px; background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.08);}
-        .legend-block strong{display:block; margin-bottom:.35rem; color:var(--gold2);}
-        .legend-block p{margin:0; color:var(--muted); font-size:.9rem; line-height:1.6;}
-        .sidebar-stack{display:grid; gap:1rem;}
-        .scoreboard{display:grid; gap:.8rem;}
-        .team-card{padding:1rem; border-radius:20px; background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.08); transition:border-color .25s ease, background .25s ease, transform .2s ease;}
-        .team-card.active{border-color:rgba(242,216,139,.26); background:rgba(255,255,255,.06); transform:translateY(-2px);}
-        .team-top{display:flex; justify-content:space-between; align-items:center; gap:.8rem; margin-bottom:.8rem;}
-        .house-chip{display:inline-flex; align-items:center; gap:.55rem; padding:.5rem .72rem; border-radius:999px; border:1px solid rgba(255,255,255,.08); font-size:.82rem; font-weight:800; letter-spacing:.06em; text-transform:uppercase;}
-        .house-chip .dot{width:10px;height:10px;border-radius:50%;}
-        .team-name{font-weight:800; font-size:1rem;}
-        .team-score{font-family:"Cinzel", serif; font-size:2.1rem; line-height:1; color:var(--gold2);}
-        .team-meta{display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:.5rem;}
-        .tiny{padding:.6rem .55rem; border-radius:14px; background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.06);}
-        .tiny span{display:block; color:var(--muted); font-size:.72rem; margin-bottom:.2rem;}
-        .tiny strong{font-size:.88rem;}
-        .house-power{margin-top:.8rem; display:grid; gap:.6rem;}
-        .power-btn{width:100%}
-        .turn-console{display:grid; gap:.8rem;}
-        .turn-pill{display:flex; justify-content:space-between; align-items:center; gap:1rem; padding:.95rem 1rem; border-radius:18px; border:1px solid rgba(242,216,139,.16); background:rgba(255,255,255,.04);}
-        .turn-pill strong{font-size:1rem}
-        .turn-pill span{color:var(--muted); font-size:.88rem}
-        .throws-track{display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:.6rem;}
-        .throw-dot{min-height:54px; border-radius:16px; display:grid; place-items:center; border:1px solid rgba(255,255,255,.08); background:rgba(255,255,255,.03); color:var(--muted); font-weight:800;}
-        .throw-dot.used{color:var(--text); background:rgba(255,255,255,.06); border-color:rgba(242,216,139,.18);}
+        :root {
+            --bg: #0b0910;
+            --bg2: #15101b;
+            --panel: rgba(23,17,30,.84);
+            --panel-soft: rgba(255,255,255,.04);
+            --line: rgba(255,233,193,.14);
+            --text: #f7f1e7;
+            --muted: #cabca3;
+            --gold: #d7aa41;
+            --gold2: #f2d88b;
+            --danger: #b74635;
+            --ok: #65b886;
+            --shadow: 0 24px 80px rgba(0,0,0,.45);
+            --gryff: #8f1f2a;
+            --slyth: #113c2d;
+            --raven: #1d2f62;
+            --huff: #8e6c1f;
+            --moon: #8b7cff;
+            --ember: #cf5c2f;
+            --max: 1440px;
+        }
+        * { box-sizing: border-box; }
+        html, body { height: 100%; }
+        html { scroll-behavior: smooth; }
+        body {
+            margin: 0;
+            color: var(--text);
+            font-family: "Manrope", sans-serif;
+            background: radial-gradient(circle at 15% 10%, rgba(215,170,65,.08), transparent 18%), 
+                        radial-gradient(circle at 84% 16%, rgba(143,31,42,.12), transparent 18%), 
+                        radial-gradient(circle at 50% 100%, rgba(29,47,98,.18), transparent 28%), 
+                        linear-gradient(180deg, #0b0910 0%, #120d18 44%, #0b0910 100%);
+            overflow-x: hidden;
+        }
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            opacity: .18;
+            background-image: linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px), 
+                              linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+            background-size: 26px 26px;
+            mask-image: radial-gradient(circle at center, black 42%, transparent 100%);
+        }
+        button, input, select { font: inherit; }
+        a { text-decoration: none; color: inherit; }
+        .wrap { width: min(var(--max), calc(100% - 1.2rem)); margin-inline: auto; }
         
-        /* Physical Scoring Keypad */
-        .scoring-keypad{display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:.6rem; margin-top:.5rem;}
-        .keypad-btn{padding:.75rem .5rem; border-radius:14px; background:rgba(255,255,255,.05); border:1px solid var(--line); color:var(--text); font-weight:700; font-size:.88rem; cursor:pointer; text-align:center; transition:background .2s, transform .1s;}
-        .keypad-btn:hover{background:rgba(215,170,65,.15); border-color:var(--gold);}
-        .keypad-btn:active{transform:scale(.97)}
-        .keypad-btn.snitch-btn{grid-column: span 2; background:linear-gradient(135deg, rgba(215,170,65,.2), rgba(215,170,65,.05)); border-color:var(--gold); color:var(--gold2);}
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: linear-gradient(180deg, rgba(10,8,14,.94), rgba(10,8,14,.65));
+            backdrop-filter: blur(14px) saturate(140%);
+            border-bottom: 1px solid var(--line);
+        }
+        .topbar-inner {
+            min-height: 78px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: .85rem;
+            text-transform: uppercase;
+            letter-spacing: .12em;
+            font-weight: 800;
+        }
+        .crest {
+            width: 42px;
+            aspect-ratio: 1;
+            border-radius: 50%;
+            position: relative;
+            background: radial-gradient(circle at 35% 35%, #f9efba, #d7aa41 58%, #6f4a12 100%);
+            box-shadow: 0 0 0 2px rgba(255,231,173,.24), 0 10px 30px rgba(215,170,65,.28);
+            flex: none;
+        }
+        .crest::before, .crest::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            width: 18px;
+            height: 5px;
+            border-radius: 999px;
+            background: linear-gradient(90deg, transparent, #edd58a 30%, #a97717 100%);
+        }
+        .crest::before { left: -12px; transform: translateY(-50%) rotate(-18deg); }
+        .crest::after { right: -12px; transform: translateY(-50%) rotate(18deg); }
+        .brand span { font-family: "Cinzel", serif; color: var(--gold2); font-size: 1rem; }
+        
+        .top-actions { display: flex; align-items: center; gap: .8rem; flex-wrap: wrap; }
+        .btn {
+            appearance: none;
+            border: 0;
+            border-radius: 999px;
+            min-height: 46px;
+            padding: .85rem 1.1rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: .55rem;
+            cursor: pointer;
+            font-weight: 800;
+            transition: transform .18s ease, box-shadow .25s ease, background .25s ease, border-color .25s ease, opacity .25s ease;
+        }
+        .btn:hover { transform: translateY(-2px); }
+        .btn:active { transform: translateY(0) scale(.985); }
+        .btn:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+        .btn-primary {
+            color: #2b1a05;
+            background: linear-gradient(135deg, var(--gold2), var(--gold));
+            box-shadow: 0 12px 36px rgba(215,170,65,.25);
+        }
+        .btn-ghost {
+            color: var(--text);
+            background: rgba(255,255,255,.04);
+            border: 1px solid var(--line);
+            backdrop-filter: blur(10px);
+        }
+        .btn-danger {
+            color: #fff4ef;
+            background: linear-gradient(135deg, #cb5647, #8f281f);
+            box-shadow: 0 12px 36px rgba(183,70,53,.22);
+        }
 
-        .helper-row{display:flex; flex-wrap:wrap; gap:.7rem; margin-top:.5rem;}
-        .pill{padding:.5rem .72rem; border-radius:999px; border:1px solid rgba(255,255,255,.08); background:rgba(255,255,255,.03); color:var(--muted); font-size:.82rem; font-weight:700;}
-        .snitch-banner{margin-top:.1rem; padding:.95rem 1rem; border-radius:18px; border:1px solid rgba(242,216,139,.2); background:linear-gradient(135deg, rgba(242,216,139,.08), rgba(255,255,255,.03)); color:var(--gold2); font-weight:800; display:none;}
-        .snitch-banner.show{display:block}
-        .log{max-height:340px; overflow:auto; display:grid; gap:.55rem; padding-right:.2rem;}
-        .log::-webkit-scrollbar{width:8px}
-        .log::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12); border-radius:999px;}
-        .log-item{padding:.8rem .9rem; border-radius:16px; background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.06); line-height:1.5; color:var(--muted); animation:rise .35s ease both;}
-        .log-item strong{color:var(--text)}
-        @keyframes rise{from{opacity:0; transform:translateY(14px)} to{opacity:1; transform:none}}
-        .rules-list{display:grid; gap:.8rem;}
-        .modal-backdrop{position:fixed; inset:0; background:rgba(7,5,10,.6); backdrop-filter:blur(10px); display:none; align-items:center; justify-content:center; padding:1rem; z-index:220;}
-        .modal-backdrop.open{display:flex}
-        .modal{width:min(700px, 100%); border-radius:28px; background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02)), rgba(22,16,30,.95); border:1px solid var(--line); box-shadow:var(--shadow); overflow:hidden;}
-        .modal-head,.modal-body,.modal-foot{padding:1rem 1.1rem}
-        .modal-head{border-bottom:1px solid rgba(255,255,255,.08)}
-        .modal-head h3{margin:0; font-family:"Cinzel", serif; color:var(--gold2); font-size:1.5rem;}
-        .modal-body p{margin:0; color:var(--muted); line-height:1.8;}
-        .modal-foot{display:flex; justify-content:flex-end; gap:.8rem; border-top:1px solid rgba(255,255,255,.08);}
-        @media (max-width: 1220px){.app-grid{grid-template-columns:1fr;} .game-surface, .board-stage, .hero-grid{grid-template-columns:1fr;}}
-        @media (max-width: 780px){.status-ribbon{grid-template-columns:repeat(2, minmax(0,1fr));} .topbar-inner{align-items:flex-start; padding:.8rem 0;} .top-actions{width:100%;} .top-actions .btn{flex:1 1 calc(50% - .4rem);} .dartboard-wrap{min-height:460px; padding:.25rem;} .panel{border-radius:22px}}
-        @media (max-width: 520px){.wrap{width:min(var(--max), calc(100% - .8rem));} .top-actions .btn{flex:1 1 100%;} .status-ribbon,.team-meta{grid-template-columns:1fr;} .hero-panel h1{max-width:none}}
+        main { padding: 1rem 0 2rem; }
+        .app-grid { display: grid; grid-template-columns: 340px minmax(0, 1fr) 360px; gap: 1rem; align-items: start; }
+        
+        .panel {
+            border-radius: 28px;
+            background: linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.02)), var(--panel);
+            border: 1px solid var(--line);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(14px);
+            overflow: hidden;
+        }
+        .panel-head { padding: 1rem 1rem .25rem; }
+        .panel-head h2, .panel-head h3 { margin: 0; font-family: "Cinzel", serif; letter-spacing: -.02em; }
+        .panel-body { padding: 1rem; }
+        
+        .setup-stack { display: grid; gap: 1rem; }
+        .field { display: grid; gap: .45rem; }
+        .field label { color: var(--muted); font-size: .92rem; font-weight: 700; letter-spacing: .02em; }
+        .input, .select {
+            width: 100%;
+            min-height: 50px;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,.08);
+            background: rgba(255,255,255,.04);
+            color: var(--text);
+            padding: .85rem .95rem;
+            outline: none;
+            transition: border-color .2s ease, background .2s ease, box-shadow .2s ease;
+        }
+        .input:focus, .select:focus {
+            border-color: rgba(242,216,139,.4);
+            box-shadow: 0 0 0 4px rgba(242,216,139,.08);
+            background: rgba(255,255,255,.06);
+        }
+        
+        .house-grid { display: grid; gap: .65rem; }
+        .house-option {
+            position: relative;
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: .8rem;
+            align-items: center;
+            padding: .95rem;
+            border-radius: 18px;
+            border: 1px solid rgba(255,255,255,.08);
+            background: rgba(255,255,255,.03);
+            cursor: pointer;
+            transition: transform .2s ease, border-color .25s ease, background .25s ease;
+        }
+        .house-option:hover { transform: translateY(-2px); border-color: rgba(242,216,139,.2); background: rgba(255,255,255,.05); }
+        .house-option.active { border-color: rgba(242,216,139,.34); box-shadow: inset 0 0 0 1px rgba(242,216,139,.16); background: rgba(255,255,255,.065); }
+        .house-option input { position: absolute; opacity: 0; pointer-events: none; }
+        .house-sigil { width: 18px; height: 18px; border-radius: 50%; box-shadow: 0 0 0 1px rgba(255,255,255,.16); flex: none; }
+        .g { background: var(--gryff); }
+        .s { background: var(--slyth); }
+        .r { background: var(--raven); }
+        .h { background: var(--huff); }
+        .m { background: var(--moon); }
+        .e { background: var(--ember); }
+        .house-copy strong { display: block; margin-bottom: .12rem; }
+        .house-copy span { color: var(--muted); font-size: .84rem; line-height: 1.35; }
+        
+        .mini-note {
+            padding: .9rem .95rem;
+            border-radius: 16px;
+            background: rgba(255,255,255,.03);
+            border: 1px dashed rgba(255,255,255,.12);
+            color: var(--muted);
+            line-height: 1.6;
+            font-size: .9rem;
+        }
+        
+        .center-stack { display: grid; gap: 1rem; }
+        .hero-panel { position: relative; min-height: 200px; padding: 1.1rem; overflow: hidden; }
+        .hero-grid { display: grid; grid-template-columns: 1.2fr .8fr; gap: 1rem; align-items: center; }
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: .5rem;
+            padding: .5rem .78rem;
+            border-radius: 999px;
+            border: 1px solid rgba(242,216,139,.16);
+            color: var(--gold2);
+            background: rgba(255,255,255,.03);
+            font-size: .78rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .14em;
+        }
+        .hero-panel h1 { margin: .8rem 0 .7rem; font-family: "Cinzel", serif; font-size: clamp(2.1rem, 4vw, 4rem); line-height: .95; max-width: 10ch; }
+        .hero-panel p { margin: 0; max-width: 58ch; color: var(--muted); line-height: 1.7; }
+        
+        .status-ribbon { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: .8rem; }
+        .ribbon-block { padding: 1rem; border-top: 1px solid rgba(242,216,139,.18); background: linear-gradient(180deg, rgba(255,255,255,.04), transparent); }
+        .ribbon-block span { display: block; color: var(--muted); font-size: .84rem; margin-bottom: .28rem; }
+        .ribbon-block strong { font-size: 1.15rem; }
+        
+        .game-surface { display: grid; grid-template-columns: minmax(0, 1fr) 310px; gap: 1rem; align-items: start; }
+        .board-shell { padding: 1rem; }
+        .board-stage { display: grid; grid-template-columns: 1fr 230px; gap: 1rem; align-items: center; }
+        .dartboard-wrap { position: relative; display: grid; place-items:center; min-height: 660px; padding: 1rem; }
+        
+        .dartboard {
+            position: relative;
+            width: min(100%, 630px);
+            aspect-ratio: 1;
+            border-radius: 50%;
+            background: radial-gradient(circle, #211723 0 8.5%, #c4a04b 8.5% 11.5%, #491621 11.5% 23%, #e5d4aa 23% 25.2%, #173928 25.2% 40%, #9e7c2f 40% 42.2%, #3f1321 42.2% 58%, #e5d4aa 58% 60.2%, #113427 60.2% 76%, #9e7c2f 76% 78%, #35101b 78% 100%);
+            box-shadow: 0 0 0 14px rgba(255,255,255,.04), 0 0 0 15px rgba(242,216,139,.14), 0 25px 70px rgba(0,0,0,.42), inset 0 10px 20px rgba(255,255,255,.05);
+            overflow: hidden;
+            isolation: isolate;
+        }
+        .dartboard::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: repeating-conic-gradient(from -9deg, rgba(255,255,255,.08) 0 4deg, transparent 4deg 18deg);
+            mix-blend-mode: screen;
+            opacity: .48;
+        }
+        
+        .hazard-overlay { position: absolute; inset: 0; border-radius: 50%; pointer-events: none; opacity: .92; }
+        .zone-layer { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+        .zone-label {
+            position: absolute;
+            padding: .36rem .52rem;
+            border-radius: 999px;
+            background: rgba(14,10,18,.88);
+            border: 1px solid rgba(242,216,139,.3);
+            color: var(--text);
+            font-size: .76rem;
+            font-weight: 700;
+            white-space: nowrap;
+            backdrop-filter: blur(10px);
+            transform: translate(-50%, -50%);
+            box-shadow: 0 4px 12px rgba(0,0,0,.5);
+        }
+        
+        .hit {
+            position: absolute;
+            width: 22px; height: 22px;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 8;
+            box-shadow: 0 0 0 2px rgba(255,255,255,.12), 0 0 18px rgba(255,255,255,.18);
+            animation: pop .45s ease both;
+        }
+        @keyframes pop {
+            from { opacity: 0; transform: translate(-50%,-50%) scale(.4); }
+            to { opacity: 1; transform: translate(-50%,-50%) scale(1); }
+        }
+        .hit.team-a { background: linear-gradient(135deg, var(--gold2), #fff0bf); }
+        .hit.team-b { background: linear-gradient(135deg, #9bd2ff, #5a76ff); }
+        .hit.snitch { background: linear-gradient(135deg, #fff3af, #d7aa41); }
+        .hit.bludger { background: linear-gradient(135deg, #d05b4a, #6b1d1b); }
+        
+        .snitch-target {
+            position: absolute;
+            width: 34px; height: 34px;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            background: radial-gradient(circle at 35% 35%, #fff6c5, #ddb44f 58%, #956711 100%);
+            box-shadow: 0 0 0 2px rgba(255,233,174,.22), 0 0 28px rgba(242,216,139,.45);
+            z-index: 5;
+            animation: snitchPulse 1.6s ease-in-out infinite;
+            cursor: pointer;
+        }
+        @keyframes snitchPulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.08); }
+        }
+
+        .board-legend { display: grid; gap: .8rem; }
+        .legend-block { padding: 1rem; border-radius: 18px; background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.08); }
+        .legend-block strong { display: block; margin-bottom: .35rem; color: var(--gold2); }
+        .legend-block p { margin: 0; color: var(--muted); font-size: .9rem; line-height: 1.6; }
+        
+        .sidebar-stack { display: grid; gap: 1rem; }
+        .scoreboard { display: grid; gap: .8rem; }
+        .team-card {
+            padding: 1rem;
+            border-radius: 20px;
+            background: rgba(255,255,255,.03);
+            border: 1px solid rgba(255,255,255,.08);
+            transition: border-color .25s ease, background .25s ease, transform .2s ease;
+        }
+        .team-card.active { border-color: rgba(242,216,139,.26); background: rgba(255,255,255,.06); transform: translateY(-2px); }
+        .team-top { display: flex; justify-content: space-between; align-items: center; gap: .8rem; margin-bottom: .8rem; }
+        .house-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: .55rem;
+            padding: .5rem .72rem;
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,.08);
+            font-size: .82rem;
+            font-weight: 800;
+            letter-spacing: .06em;
+            text-transform: uppercase;
+        }
+        .house-chip .dot { width: 10px; height: 10px; border-radius: 50%; }
+        .team-name { font-weight: 800; font-size: 1rem; }
+        .team-score { font-family: "Cinzel", serif; font-size: 2.1rem; line-height: 1; color: var(--gold2); }
+        .team-meta { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: .5rem; }
+        .tiny { padding: .6rem .55rem; border-radius: 14px; background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.06); }
+        .tiny span { display: block; color: var(--muted); font-size: .72rem; margin-bottom: .2rem; }
+        .tiny strong { font-size: .88rem; }
+        .house-power { margin-top: .8rem; display: grid; gap: .6rem; }
+        .power-btn { width: 100%; }
+        
+        .turn-console { display: grid; gap: .8rem; }
+        .turn-pill {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            padding: .95rem 1rem;
+            border-radius: 18px;
+            border: 1px solid rgba(242,216,139,.16);
+            background: rgba(255,255,255,.04);
+        }
+        .throws-track { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: .6rem; }
+        .throw-dot {
+            min-height: 54px;
+            border-radius: 16px;
+            display: grid;
+            place-items: center;
+            border: 1px solid rgba(255,255,255,.08);
+            background: rgba(255,255,255,.03);
+            color: var(--muted);
+            font-weight: 800;
+        }
+        .throw-dot.used { color: var(--text); background: rgba(255,255,255,.06); border-color: rgba(242,216,139,.18); }
+        
+        .scoring-keypad { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: .6rem; margin-top: .5rem; }
+        .keypad-btn {
+            padding: .75rem .5rem;
+            border-radius: 14px;
+            background: rgba(255,255,255,.05);
+            border: 1px solid var(--line);
+            color: var(--text);
+            font-weight: 700;
+            font-size: .88rem;
+            cursor: pointer;
+            text-align: center;
+            transition: background .2s, transform .1s;
+        }
+        .keypad-btn:hover { background: rgba(215,170,65,.15); border-color: var(--gold); }
+        .keypad-btn:active { transform: scale(.97); }
+        .keypad-btn.snitch-btn { grid-column: span 2; background: linear-gradient(135deg, rgba(215,170,65,.2), rgba(215,170,65,.05)); border-color: var(--gold); color: var(--gold2); }
+        
+        .helper-row { display: flex; flex-wrap: wrap; gap: .7rem; margin-top: .5rem; }
+        .pill { padding: .5rem .72rem; border-radius: 999px; border: 1px solid rgba(255,255,255,.08); background: rgba(255,255,255,.03); color: var(--muted); font-size: .82rem; font-weight: 700; }
+        .snitch-banner { margin-top: .1rem; padding: .95rem 1rem; border-radius: 18px; border: 1px solid rgba(242,216,139,.2); background: linear-gradient(135deg, rgba(242,216,139,.08), rgba(255,255,255,.03)); color: var(--gold2); font-weight: 800; display: none; }
+        .snitch-banner.show { display: block; }
+        
+        .log { max-height: 340px; overflow: auto; display: grid; gap: .55rem; padding-right: .2rem; }
+        .log-item { padding: .8rem .9rem; border-radius: 16px; background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.06); line-height: 1.5; color: var(--muted); }
+        .log-item strong { color: var(--text); }
+        
+        .modal-backdrop { position: fixed; inset: 0; background: rgba(7,5,10,.6); backdrop-filter: blur(10px); display: none; align-items: center; justify-content: center; padding: 1rem; z-index: 220; }
+        .modal-backdrop.open { display: flex; }
+        .modal { width: min(700px, 100%); border-radius: 28px; background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02)), rgba(22,16,30,.95); border: 1px solid var(--line); box-shadow: var(--shadow); overflow: hidden; }
+        .modal-head, .modal-body, .modal-foot { padding: 1rem 1.1rem; }
+        .modal-head { border-bottom: 1px solid rgba(255,255,255,.08); }
+        .modal-head h3 { margin: 0; font-family: "Cinzel", serif; color: var(--gold2); font-size: 1.5rem; }
+        .modal-body p { margin: 0; color: var(--muted); line-height: 1.8; }
+        .modal-foot { display: flex; justify-content: flex-end; gap: .8rem; border-top: 1px solid rgba(255,255,255,.08); }
+
+        @media (max-width: 1220px) {
+            .app-grid { grid-template-columns: 1fr; }
+            .game-surface, .board-stage, .hero-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
+
     <header class="topbar">
         <div class="wrap topbar-inner">
             <div class="brand">
                 <span class="crest" aria-hidden="true"></span>
                 <span>Quidditch Darts</span>
-                <small style="display:block; font-size:.72rem; color:var(--muted); letter-spacing:.08em; text-transform:none;"> Inspired by Hellcastle </small>
+                <small style="display:block; font-size:.72rem; color:var(--muted); letter-spacing:.08em; text-transform:none;">Inspired by Hellcastle</small>
             </div>
             <div class="top-actions">
                 <button class="btn btn-ghost" id="rulesBtn" type="button">Rules</button>
@@ -178,12 +431,12 @@
             </div>
         </div>
     </header>
+
     <main class="wrap">
         <div class="app-grid">
-            <aside class="panel reveal">
-                <div class="panel-head">
-                    <h2>Match setup</h2>
-                </div>
+            <!-- Setup Sidebar -->
+            <aside class="panel">
+                <div class="panel-head"><h2>Match setup</h2></div>
                 <div class="panel-body">
                     <div class="setup-stack">
                         <div class="field">
@@ -201,19 +454,11 @@
                                     <input type="radio" name="houseA" value="gryffindor" checked />
                                     <span class="house-sigil g"></span>
                                     <span class="house-copy"><strong>Gryffindor</strong><span>Upgrade one weak throw into a brave strike.</span></span>
-                                    <span class="pill">A</span>
                                 </label>
                                 <label class="house-option">
                                     <input type="radio" name="houseA" value="ravenclaw" />
                                     <span class="house-sigil r"></span>
                                     <span class="house-copy"><strong>Ravenclaw</strong><span>Precision planning boosts one smart shot.</span></span>
-                                    <span class="pill">A</span>
-                                </label>
-                                <label class="house-option">
-                                    <input type="radio" name="houseA" value="moonstone" />
-                                    <span class="house-sigil m"></span>
-                                    <span class="house-copy"><strong>Moonstone</strong><span>Call a zone and double it if you land true.</span></span>
-                                    <span class="pill">A</span>
                                 </label>
                             </div>
                         </div>
@@ -224,29 +469,8 @@
                                     <input type="radio" name="houseB" value="slytherin" checked />
                                     <span class="house-sigil s"></span>
                                     <span class="house-copy"><strong>Slytherin</strong><span>Curse the rival’s next powerful scoring shot.</span></span>
-                                    <span class="pill">B</span>
-                                </label>
-                                <label class="house-option">
-                                    <input type="radio" name="houseB" value="hufflepuff" />
-                                    <span class="house-sigil h"></span>
-                                    <span class="house-copy"><strong>Hufflepuff</strong><span>Gain bonus value from steady multi-zone turns.</span></span>
-                                    <span class="pill">B</span>
-                                </label>
-                                <label class="house-option">
-                                    <input type="radio" name="houseB" value="emberwing" />
-                                    <span class="house-sigil e"></span>
-                                    <span class="house-copy"><strong>Emberwing</strong><span>Ignite momentum and ignore one Bludger.</span></span>
-                                    <span class="pill">B</span>
                                 </label>
                             </div>
-                        </div>
-                        <div class="field">
-                            <label for="modeSelect">Match mode</label>
-                            <select id="modeSelect" class="select">
-                                <option value="duel">House Duel</option>
-                                <option value="pub">Pub Cup</option>
-                                <option value="chasers">Three Chasers</option>
-                            </select>
                         </div>
                         <div class="field">
                             <label for="targetScore">Target score</label>
@@ -258,97 +482,72 @@
                             </select>
                         </div>
                         <div class="mini-note">
-                            Throw your physical darts at the board, then use the scoring keypad below to log each throw. At 75% target score, the Golden Snitch unlocks!
+                            Throw physical darts at the board, then use the scoring keypad to log each hit. Reaching 75% unlocks the Golden Snitch!
                         </div>
                     </div>
                 </div>
             </aside>
+
+            <!-- Center Content: Dartboard Tracker -->
             <section class="center-stack">
-                <div class="panel hero-panel reveal">
+                <div class="panel hero-panel">
                     <div class="hero-grid">
                         <div>
                             <div class="eyebrow">Six-house magical darts</div>
                             <h1>Board sport for the House Cup.</h1>
-                            <p> Score through the hoops, dodge Bludger wedges, trigger your house’s power, and chase the Snitch before your rival turns the tide. </p>
-                        </div>
-                        <div class="pitch-visual" aria-hidden="true">
-                            <div class="hoop"></div>
-                            <div class="hoop"></div>
-                            <div class="hoop"></div>
-                            <div class="fog"></div>
-                            <div class="snitch-orbit"></div>
+                            <p>Score through the hoops, dodge Bludgers, and chase the Snitch before your rival turns the tide.</p>
                         </div>
                     </div>
                 </div>
-                <div class="status-ribbon reveal">
-                    <div class="panel ribbon-block">
-                        <span>Mode</span>
-                        <strong id="modeReadout">House Duel</strong>
-                    </div>
-                    <div class="panel ribbon-block">
-                        <span>Target score</span>
-                        <strong id="targetReadout">300</strong>
-                    </div>
-                    <div class="panel ribbon-block">
-                        <span>Snitch unlock</span>
-                        <strong id="snitchReadout">225</strong>
-                    </div>
-                    <div class="panel ribbon-block">
-                        <span>Current turn</span>
-                        <strong id="currentTurnReadout">Not started</strong>
-                    </div>
+
+                <div class="status-ribbon">
+                    <div class="panel ribbon-block"><span>Target score</span><strong id="targetReadout">300</strong></div>
+                    <div class="panel ribbon-block"><span>Snitch unlock</span><strong id="snitchReadout">225</strong></div>
+                    <div class="panel ribbon-block"><span>Current turn</span><strong id="currentTurnReadout">Not started</strong></div>
                 </div>
-                <div class="panel reveal">
-                    <div class="panel-head">
-                        <h2>Magical dartboard tracker</h2>
-                    </div>
+
+                <div class="panel">
+                    <div class="panel-head"><h2>Magical dartboard tracker with scoring zones</h2></div>
                     <div class="panel-body game-surface">
                         <div class="board-shell">
                             <div class="board-stage">
                                 <div class="dartboard-wrap">
-                                    <div class="dartboard" id="dartboard" aria-label="Visual magical dartboard tracking hits.">
+                                    <div class="dartboard" id="dartboard" aria-label="Dartboard tracking hits">
                                         <canvas class="hazard-overlay" id="hazardCanvas" width="630" height="630" style="pointer-events: none;"></canvas>
                                         <div class="zone-layer">
-                                            <div class="zone-label" style="left:21%; top:18%;">30 · Lower Hoop</div>
-                                            <div class="zone-label" style="left:50%; top:9.5%;">70 · High Hoop</div>
-                                            <div class="zone-label" style="left:80%; top:22%;">50 · Center Hoop</div>
-                                            <div class="zone-label" style="left:50%; top:50%;">25 · Bull</div>
+                                            <div class="zone-label" style="left:20%; top:18%;">Lower Hoop (30)</div>
+                                            <div class="zone-label" style="left:50%; top:9%;">High Hoop (70)</div>
+                                            <div class="zone-label" style="left:80%; top:22%;">Center Hoop (50)</div>
+                                            <div class="zone-label" style="left:50%; top:50%;">Bullseye (25)</div>
+                                            <div class="zone-label" style="left:50%; top:86%;">Outer Ring (10)</div>
+                                            <div class="zone-label" style="left:22%; top:70%; color:var(--danger);">Bludger (-20)</div>
                                         </div>
                                         <div class="snitch-target" id="snitchTarget" hidden title="Click here if Snitch is caught on physical board!"></div>
-                                        <div class="target-marker" id="moonMarker" hidden aria-hidden="true"></div>
                                     </div>
                                 </div>
                                 <div class="board-legend">
                                     <div class="legend-block">
-                                        <strong>Core scoring</strong>
-                                        <p>Outer ring is 10. Bull is 25. The three upper hoop windows score 30, 50, and 70.</p>
+                                        <strong>Scoring Breakdown</strong>
+                                        <p>• Outer Ring: 10 pts<br>• Bullseye: 25 pts<br>• Lower Hoop: 30 pts<br>• Center Hoop: 50 pts<br>• High Hoop: 70 pts</p>
                                     </div>
                                     <div class="legend-block">
-                                        <strong>Bludgers</strong>
-                                        <p>Three cursed wedges deal a -20 penalty when struck, unless a house power prevents it.</p>
-                                    </div>
-                                    <div class="legend-block">
-                                        <strong>Snitch capture</strong>
-                                        <p>Once active, hit the Snitch button on the keypad or click it to capture for 150 points and win.</p>
-                                    </div>
-                                    <div class="legend-block">
-                                        <strong>House powers</strong>
-                                        <p>Each house gets one once-per-match ability. Some also create small combo or follow-up effects.</p>
+                                        <strong>Hazards & Snitch</strong>
+                                        <p>Bludger wedges deduct 20 points. Catching the Golden Snitch awards 150 points and wins the match.</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Sidebar Control Console -->
                         <aside class="sidebar-stack">
                             <div class="scoreboard" id="scoreboard"></div>
                             <div class="panel">
-                                <div class="panel-head">
-                                    <h3>Turn console</h3>
-                                </div>
+                                <div class="panel-head"><h3>Turn console</h3></div>
                                 <div class="panel-body turn-console">
                                     <div class="turn-pill">
                                         <div>
                                             <strong id="turnTeamName">Awaiting start</strong>
-                                            <span id="turnMeta">Select houses and begin</span>
+                                            <span id="turnMeta" style="font-size:0.85rem; color:var(--muted); display:block;">Select houses and begin</span>
                                         </div>
                                         <span id="throwCounter">0 / 3</span>
                                     </div>
@@ -357,8 +556,6 @@
                                         <div class="throw-dot">2</div>
                                         <div class="throw-dot">3</div>
                                     </div>
-                                    
-                                    <!-- Physical Scoring Keypad Input -->
                                     <div class="field" style="margin-top:.4rem;">
                                         <label>Log physical throw:</label>
                                         <div class="scoring-keypad">
@@ -372,19 +569,15 @@
                                             <button class="keypad-btn snitch-btn" type="button" id="snitchKeyBtn" data-zone="snitch" style="display:none;">Catch Golden Snitch (150)</button>
                                         </div>
                                     </div>
-
                                     <div class="helper-row">
                                         <span class="pill" id="comboPill">Combo: 0</span>
-                                        <span class="pill" id="effectPill">Effect: none</span>
                                     </div>
-                                    <div class="snitch-banner" id="snitchBanner">The Golden Snitch is in play.</div>
+                                    <div class="snitch-banner" id="snitchBanner">The Golden Snitch is in play!</div>
                                     <button class="btn btn-ghost" id="endTurnBtn" type="button" style="width:100%; margin-top:.4rem;">End turn early</button>
                                 </div>
                             </div>
                             <div class="panel">
-                                <div class="panel-head">
-                                    <h3>Match log</h3>
-                                </div>
+                                <div class="panel-head"><h3>Match log</h3></div>
                                 <div class="panel-body">
                                     <div class="log" id="log"></div>
                                 </div>
@@ -393,54 +586,14 @@
                     </div>
                 </div>
             </section>
-            <aside class="panel reveal">
-                <div class="panel-head">
-                    <h2>House rules</h2>
-                </div>
-                <div class="panel-body">
-                    <div class="rules-list">
-                        <div class="legend-block">
-                            <strong>Gryffindor — Bold Retry</strong>
-                            <p>Once per match, upgrade one weak throw worth 10 or less into a 30-point strike.</p>
-                        </div>
-                        <div class="legend-block">
-                            <strong>Slytherin — Cunning Curse</strong>
-                            <p>Once per match, reduce the rival’s next shot above 30 points by 20.</p>
-                        </div>
-                        <div class="legend-block">
-                            <strong>Ravenclaw — Strategy Ring</strong>
-                            <p>Once per match, your next bull or center-hoop precision shot gains +15.</p>
-                        </div>
-                        <div class="legend-block">
-                            <strong>Hufflepuff — Steady Chain</strong>
-                            <p>Once per match, hitting three different scoring zones in one turn grants +25.</p>
-                        </div>
-                        <div class="legend-block">
-                            <strong>Moonstone — Lunar Aim</strong>
-                            <p>Once per match, call a target zone. If your next throw lands there, its score is doubled.</p>
-                        </div>
-                        <div class="legend-block">
-                            <strong>Emberwing — Flame Surge</strong>
-                            <p>Once per match, your next high-value hit empowers the following dart by +10. Emberwing also ignores one Bludger penalty each match.</p>
-                        </div>
-                        <div class="mini-note">
-                            Houses are balanced as tactical nudges rather than automatic wins. They amplify timing, pressure, and precision.
-                        </div>
-                    </div>
-                </div>
-            </aside>
         </div>
     </main>
-    
-    <!-- Match Result Modal -->
+
+    <!-- Result Modal -->
     <div class="modal-backdrop" id="modal">
-        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-            <div class="modal-head">
-                <h3 id="modalTitle">Match result</h3>
-            </div>
-            <div class="modal-body">
-                <p id="modalText"></p>
-            </div>
+        <div class="modal" role="dialog">
+            <div class="modal-head"><h3 id="modalTitle">Match result</h3></div>
+            <div class="modal-body"><p id="modalText"></p></div>
             <div class="modal-foot">
                 <button class="btn btn-ghost" id="closeModalBtn" type="button">Close</button>
                 <button class="btn btn-primary" id="playAgainBtn" type="button">Play again</button>
@@ -448,54 +601,40 @@
         </div>
     </div>
 
-    <!-- Dedicated Rules Modal -->
+    <!-- Rules Modal -->
     <div class="modal-backdrop" id="rulesModal">
-        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="rulesModalTitle">
-            <div class="modal-head">
-                <h3 id="rulesModalTitle">Quidditch Darts Rulebook</h3>
+        <div class="modal" role="dialog">
+            <div class="modal-head"><h3>Quidditch Darts Rulebook</h3></div>
+            <div class="modal-body" style="display:grid; gap:.8rem;">
+                <p><strong>1. Basic Gameplay:</strong> Throw 3 physical darts per turn, then use the keypad to log hits.</p>
+                <p><strong>2. Scoring Zones:</strong> High Hoop (70), Center Hoop (50), Lower Hoop (30), Bullseye (25), and Outer Ring (10).</p>
+                <p><strong>3. Hazards:</strong> Bludger wedges deduct 20 points.</p>
             </div>
-            <div class="modal-body" style="display:grid; gap:.8rem; max-height:60vh; overflow-y:auto;">
-                <p><strong>1. Basic Gameplay:</strong> Throw 3 physical darts per turn at your dartboard. Use the on-screen keypad to log each physical hit into the app.</p>
-                <p><strong>2. Scoring Zones:</strong><br> • Outer Ring: 10 pts<br> • Bullseye: 25 pts<br> • Lower Hoop: 30 pts<br> • Center Hoop: 50 pts<br> • High Hoop: 70 pts </p>
-                <p><strong>3. Hazards (Bludgers):</strong> Landing on a Bludger wedge results in a -20 penalty unless mitigated by a house power or shield.</p>
-                <p><strong>4. The Golden Snitch:</strong> When any team reaches 75% of target score, the Golden Snitch unlocks. Tap the Snitch button on the keypad or visual board when caught for 150 points and an instant victory.</p>
-                <p><strong>5. House Powers:</strong> Each house has one unique, once-per-match ability available on your team card during your turn.</p>
-            </div>
-            <div class="modal-foot">
-                <button class="btn btn-primary" id="closeRulesBtn" type="button">Got it</button>
-            </div>
+            <div class="modal-foot"><button class="btn btn-primary" id="closeRulesBtn" type="button">Got it</button></div>
         </div>
     </div>
 
     <script>
         const houseMeta = {
-            gryffindor: {label: 'Gryffindor', color: getComputedStyle(document.documentElement).getPropertyValue('--gryff').trim(), ability: 'Bold Retry', desc: 'Upgrade one weak throw to 30.', chip: 'G'},
-            slytherin: {label: 'Slytherin', color: getComputedStyle(document.documentElement).getPropertyValue('--slyth').trim(), ability: 'Cunning Curse', desc: 'Reduce rival’s next strong shot.', chip: 'S'},
-            ravenclaw: {label: 'Ravenclaw', color: getComputedStyle(document.documentElement).getPropertyValue('--raven').trim(), ability: 'Strategy Ring', desc: 'Next precision hit gains +15.', chip: 'R'},
-            hufflepuff: {label: 'Hufflepuff', color: getComputedStyle(document.documentElement).getPropertyValue('--huff').trim(), ability: 'Steady Chain', desc: 'Three unique zones gain +25.', chip: 'H'},
-            moonstone: {label: 'Moonstone', color: getComputedStyle(document.documentElement).getPropertyValue('--moon').trim(), ability: 'Lunar Aim', desc: 'Choose a zone and double it on hit.', chip: 'M'},
-            emberwing: {label: 'Emberwing', color: getComputedStyle(document.documentElement).getPropertyValue('--ember').trim(), ability: 'Flame Surge', desc: 'Prime a high hit, next dart gets +10.', chip: 'E'}
+            gryffindor: {label: 'Gryffindor', color: '#8f1f2a', ability: 'Bold Retry'},
+            slytherin: {label: 'Slytherin', color: '#113c2d', ability: 'Cunning Curse'},
+            ravenclaw: {label: 'Ravenclaw', color: '#1d2f62', ability: 'Strategy Ring'}
         };
 
         const app = {
             targetScore: 300,
             snitchThreshold: 225,
             started: false,
-            mode: 'duel',
             currentTeam: 0,
             throwsThisTurn: 0,
             logs: [],
             snitchActive: false,
             snitchPos: { x: 315, y: 190 },
             teams: [
-                createTeam('Scarlet Seekers', 'gryffindor'),
-                createTeam('Moonfire Flyers', 'slytherin')
+                {name: 'Scarlet Seekers', house: 'gryffindor', score: 0, throws: 0, combos: 0, abilityUsed: false},
+                {name: 'Moonfire Flyers', house: 'slytherin', score: 0, throws: 0, combos: 0, abilityUsed: false}
             ]
         };
-
-        function createTeam(name, house) {
-            return {name, house, score: 0, throws: 0, combos: 0, abilityUsed: false, pendingBoost: false, pendingCurse: false, retryReady: false, turnZones: [], lunarAimTarget: null, emberSurgeArmed: false, emberNextBonus: false, emberShield: false, moonExtraTurnReady: false};
-        }
 
         const els = {
             startBtn: document.getElementById('startBtn'),
@@ -504,11 +643,7 @@
             rulesBtn: document.getElementById('rulesBtn'),
             teamAName: document.getElementById('teamAName'),
             teamBName: document.getElementById('teamBName'),
-            houseAGroup: document.getElementById('houseAGroup'),
-            houseBGroup: document.getElementById('houseBGroup'),
-            modeSelect: document.getElementById('modeSelect'),
             targetScore: document.getElementById('targetScore'),
-            modeReadout: document.getElementById('modeReadout'),
             targetReadout: document.getElementById('targetReadout'),
             snitchReadout: document.getElementById('snitchReadout'),
             currentTurnReadout: document.getElementById('currentTurnReadout'),
@@ -519,7 +654,6 @@
             throwCounter: document.getElementById('throwCounter'),
             throwsTrack: document.getElementById('throwsTrack'),
             comboPill: document.getElementById('comboPill'),
-            effectPill: document.getElementById('effectPill'),
             log: document.getElementById('log'),
             endTurnBtn: document.getElementById('endTurnBtn'),
             snitchTarget: document.getElementById('snitchTarget'),
@@ -531,73 +665,21 @@
             playAgainBtn: document.getElementById('playAgainBtn'),
             rulesModal: document.getElementById('rulesModal'),
             closeRulesBtn: document.getElementById('closeRulesBtn'),
-            moonMarker: document.getElementById('moonMarker'),
             dartboard: document.getElementById('dartboard')
         };
 
-        function setupHouseSelectors(container) {
-            container.querySelectorAll('.house-option').forEach(option => {
-                option.addEventListener('click', () => {
-                    container.querySelectorAll('.house-option').forEach(o => o.classList.remove('active'));
-                    option.classList.add('active');
-                    option.querySelector('input').checked = true;
-                    syncConfigToState();
-                });
-            });
-        }
-        setupHouseSelectors(els.houseAGroup);
-        setupHouseSelectors(els.houseBGroup);
-
-        function getSelectedHouse(name) {
-            return document.querySelector(`input[name="${name}"]:checked`)?.value || 'gryffindor';
-        }
-
-        function modeLabel(mode) {
-            return ({duel: 'House Duel', pub: 'Pub Cup', chasers: 'Three Chasers'})[mode] || 'House Duel';
-        }
-
         function syncConfigToState() {
-            const nameA = (els.teamAName.value.trim() || 'Team A').slice(0, 22);
-            const nameB = (els.teamBName.value.trim() || 'Team B').slice(0, 22);
-            app.teams[0].name = nameA;
-            app.teams[1].name = nameB;
-            app.teams[0].house = getSelectedHouse('houseA');
-            app.teams[1].house = getSelectedHouse('houseB');
-            app.mode = els.modeSelect.value;
+            app.teams[0].name = (els.teamAName.value.trim() || 'Team A').slice(0, 22);
+            app.teams[1].name = (els.teamBName.value.trim() || 'Team B').slice(0, 22);
             app.targetScore = Number(els.targetScore.value);
             app.snitchThreshold = Math.floor(app.targetScore * 0.75);
-            els.modeReadout.textContent = modeLabel(app.mode);
             els.targetReadout.textContent = app.targetScore;
             els.snitchReadout.textContent = app.snitchThreshold;
             updateUI();
         }
 
-        function resetTeamState(team) {
-            team.score = 0;
-            team.throws = 0;
-            team.combos = 0;
-            team.abilityUsed = false;
-            team.pendingBoost = false;
-            team.pendingCurse = false;
-            team.retryReady = false;
-            team.turnZones = [];
-            team.lunarAimTarget = null;
-            team.emberSurgeArmed = false;
-            team.emberNextBonus = false;
-            team.emberShield = false;
-            team.moonExtraTurnReady = false;
-        }
-
-        function clearBoardEffects() {
-            document.querySelectorAll('.hit').forEach(n => n.remove());
-            els.snitchTarget.hidden = true;
-            els.snitchKeyBtn.style.display = 'none';
-            els.moonMarker.hidden = true;
-            els.snitchBanner.classList.remove('show');
-        }
-
-        function addLog(message) {
-            app.logs.unshift(message);
+        function addLog(msg) {
+            app.logs.unshift(msg);
             app.logs = app.logs.slice(0, 20);
             els.log.innerHTML = app.logs.map(item => `<div class="log-item">${item}</div>`).join('');
         }
@@ -609,13 +691,12 @@
             app.throwsThisTurn = 0;
             app.snitchActive = false;
             app.logs = [];
-            app.teams.forEach(resetTeamState);
-            clearBoardEffects();
-            if (fresh) {
-                addLog('New magical match prepared. Configure your houses and press start.');
-            } else {
-                addLog('Scores reset. The pitch awaits another duel.');
-            }
+            app.teams.forEach(t => { t.score = 0; t.throws = 0; t.combos = 0; t.abilityUsed = false; });
+            document.querySelectorAll('.hit').forEach(n => n.remove());
+            els.snitchTarget.hidden = true;
+            els.snitchKeyBtn.style.display = 'none';
+            els.snitchBanner.classList.remove('show');
+            if (fresh) addLog('New match prepared. Configure your teams and press start.');
             updateUI();
         }
 
@@ -628,10 +709,7 @@
                         <div class="team-top">
                             <div>
                                 <div class="team-name">${team.name}</div>
-                                <div class="house-chip">
-                                    <span class="dot" style="background:${house.color}"></span>
-                                    ${house.label}
-                                </div>
+                                <div class="house-chip"><span class="dot" style="background:${house.color}"></span>${house.label}</div>
                             </div>
                             <div class="team-score">${team.score}</div>
                         </div>
@@ -640,54 +718,20 @@
                             <div class="tiny"><span>Combos</span><strong>${team.combos}</strong></div>
                             <div class="tiny"><span>Power</span><strong>${team.abilityUsed ? 'Used' : 'Ready'}</strong></div>
                         </div>
-                        <div class="house-power">
-                            <button class="btn btn-ghost power-btn" data-power="${index}" ${(!app.started || team.abilityUsed || index !== app.currentTeam) ? 'disabled' : ''}>
-                                Use ${house.ability}
-                            </button>
-                        </div>
                     </div>
                 `;
             }).join('');
-            els.scoreboard.querySelectorAll('[data-power]').forEach(btn => {
-                btn.addEventListener('click', () => useHousePower(Number(btn.dataset.power)));
-            });
-        }
-
-        function updateThrowsTrack() {
-            [...els.throwsTrack.children].forEach((dot, i) => {
-                dot.classList.toggle('used', i < app.throwsThisTurn);
-            });
-        }
-
-        function getCurrentEffectText(team) {
-            const effects = [];
-            if (team.retryReady) effects.push('Gryffindor retry armed');
-            if (team.pendingBoost === true) effects.push('Ravenclaw precision armed');
-            if (team.pendingBoost === 'huffle-chain') effects.push('Hufflepuff chain armed');
-            if (team.lunarAimTarget) effects.push(`Moonstone aim: ${team.lunarAimTarget}`);
-            if (team.emberSurgeArmed) effects.push('Emberwing surge armed');
-            if (team.emberNextBonus) effects.push('Emberwing +10 next dart');
-            if (team.emberShield) effects.push('Emberwing shield ready');
-            const enemy = app.teams[(app.currentTeam + 1) % 2];
-            if (enemy.pendingCurse) effects.push('Opponent curse waiting');
-            return effects.length ? effects.join(' · ') : 'none';
-        }
-
-        function updateTurnMeta() {
-            const team = app.teams[app.currentTeam];
-            const house = houseMeta[team.house];
-            els.currentTurnReadout.textContent = app.started ? team.name : 'Not started';
-            els.turnTeamName.textContent = app.started ? team.name : 'Awaiting start';
-            els.turnMeta.textContent = app.started ? `${house.label} · ${house.ability}` : 'Select houses and begin';
-            els.throwCounter.textContent = `${app.throwsThisTurn} / 3`;
-            els.comboPill.textContent = `Combo: ${team.turnZones.length}`;
-            els.effectPill.textContent = `Effect: ${getCurrentEffectText(team)}`;
         }
 
         function updateUI() {
             renderScoreboard();
-            updateThrowsTrack();
-            updateTurnMeta();
+            [...els.throwsTrack.children].forEach((dot, i) => {
+                dot.classList.toggle('used', i < app.throwsThisTurn);
+            });
+            const team = app.teams[app.currentTeam];
+            els.currentTurnReadout.textContent = app.started ? team.name : 'Not started';
+            els.turnTeamName.textContent = app.started ? team.name : 'Awaiting start';
+            els.throwCounter.textContent = `${app.throwsThisTurn} / 3`;
         }
 
         function startMatch() {
@@ -695,67 +739,21 @@
             app.started = true;
             app.currentTeam = 0;
             app.throwsThisTurn = 0;
-            app.snitchActive = false;
-            clearBoardEffects();
-            app.teams.forEach(team => {
-                team.turnZones = [];
-                team.pendingCurse = false;
-                team.pendingBoost = false;
-                team.retryReady = false;
-                team.lunarAimTarget = null;
-                team.emberSurgeArmed = false;
-                team.emberNextBonus = false;
-                team.emberShield = false;
-                team.moonExtraTurnReady = false;
-            });
-            addLog(`<strong>${app.teams[0].name}</strong> vs <strong>${app.teams[1].name}</strong> begins in <strong>${modeLabel(app.mode)}</strong>.`);
+            addLog(`Match begins between <strong>${app.teams[0].name}</strong> and <strong>${app.teams[1].name}</strong>.`);
             updateUI();
         }
 
         function drawHazards() {
-            const c = els.hazardCanvas;
-            const ctx = c.getContext('2d');
-            const w = c.width;
-            const h = c.height;
-            const cx = w / 2;
-            const cy = h / 2;
-            const r = w / 2;
-            ctx.clearRect(0, 0, w, h);
-            const hazardAngles = [[20, 38], [142, 162], [258, 278]];
-            hazardAngles.forEach(([start, end]) => {
+            const ctx = els.hazardCanvas.getContext('2d');
+            ctx.clearRect(0, 0, 630, 630);
+            [[20, 38], [142, 162], [258, 278]].forEach(([start, end]) => {
                 ctx.beginPath();
-                ctx.moveTo(cx, cy);
-                ctx.arc(cx, cy, r, (start - 90) * Math.PI / 180, (end - 90) * Math.PI / 180);
+                ctx.moveTo(315, 315);
+                ctx.arc(315, 315, 315, (start - 90) * Math.PI / 180, (end - 90) * Math.PI / 180);
                 ctx.closePath();
-                ctx.fillStyle = 'rgba(183,70,53,.16)';
+                ctx.fillStyle = 'rgba(183,70,53,.18)';
                 ctx.fill();
             });
-            ctx.beginPath();
-            ctx.arc(cx, cy, r - 3, 0, Math.PI * 2);
-            ctx.strokeStyle = 'rgba(255,255,255,.05)';
-            ctx.lineWidth = 1;
-            ctx.stroke();
-        }
-
-        function placeSnitch() {
-            const r = Math.random() * 220 + 80;
-            const a = Math.random() * Math.PI * 2;
-            const x = 315 + Math.cos(a) * Math.min(r, 240);
-            const y = 315 + Math.sin(a) * Math.min(r, 240);
-            app.snitchPos = { x, y };
-            els.snitchTarget.style.left = `${x}px`;
-            els.snitchTarget.style.top = `${y}px`;
-        }
-
-        function maybeActivateSnitch(team) {
-            if (!app.snitchActive && team.score >= app.snitchThreshold) {
-                app.snitchActive = true;
-                els.snitchTarget.hidden = false;
-                els.snitchKeyBtn.style.display = 'block';
-                els.snitchBanner.classList.add('show');
-                placeSnitch();
-                addLog(`<strong>${team.name}</strong> has released the <strong>Golden Snitch</strong>.`);
-            }
         }
 
         function getZoneDetails(zoneKey) {
@@ -763,227 +761,61 @@
                 case 'hoop-high': return { name: 'High Hoop', points: 70, kind: 'hoop-high', coords: {x:315, y:88} };
                 case 'hoop-mid': return { name: 'Center Hoop', points: 50, kind: 'hoop-mid', coords: {x:492, y:126} };
                 case 'hoop-low': return { name: 'Lower Hoop', points: 30, kind: 'hoop-low', coords: {x:140, y:118} };
-                case 'bull': return { name: 'Bull', points: 25, kind: 'bull', coords: {x:315, y:315} };
+                case 'bull': return { name: 'Bullseye', points: 25, kind: 'bull', coords: {x:315, y:315} };
                 case 'outer': return { name: 'Outer Ring', points: 10, kind: 'outer', coords: {x:315, y:540} };
                 case 'bludger': return { name: 'Bludger', points: -20, kind: 'bludger', coords: {x:200, y:200} };
-                case 'miss': return { name: 'Miss', points: 0, kind: 'miss', coords: {x:580, y:580} };
                 case 'snitch': return { name: 'Golden Snitch', points: 150, kind: 'snitch', coords: app.snitchPos };
                 default: return { name: 'Miss', points: 0, kind: 'miss', coords: {x:315, y:315} };
             }
         }
 
-        function createHit(x, y, variant) {
-            const hit = document.createElement('div');
-            hit.className = `hit ${variant}`;
-            hit.style.left = `${x}px`;
-            hit.style.top = `${y}px`;
-            els.dartboard.appendChild(hit);
-            setTimeout(() => hit.style.opacity = '.3', 1300);
-        }
-
-        function showMoonMarker(zoneKind) {
-            const map = {
-                'outer': { x: 315, y: 540 },
-                'bull': { x: 315, y: 315 },
-                'hoop-low': { x: 140, y: 118 },
-                'hoop-high': { x: 315, y: 88 },
-                'hoop-mid': { x: 492, y: 126 }
-            };
-            const pos = map[zoneKind];
-            if (!pos) return;
-            els.moonMarker.hidden = false;
-            els.moonMarker.style.left = `${pos.x}px`;
-            els.moonMarker.style.top = `${pos.y}px`;
-        }
-
-        function useHousePower(index) {
-            if (!app.started || index !== app.currentTeam) return;
-            const team = app.teams[index];
-            if (team.abilityUsed) return;
-            team.abilityUsed = true;
-            switch (team.house) {
-                case 'gryffindor':
-                    team.retryReady = true;
-                    addLog(`<strong>${team.name}</strong> activates <strong>Bold Retry</strong>. Their next weak shot can become a 30-point strike.`);
-                    break;
-                case 'slytherin':
-                    app.teams[(index + 1) % 2].pendingCurse = true;
-                    addLog(`<strong>${team.name}</strong> casts <strong>Cunning Curse</strong> on the rival’s next strong shot.`);
-                    break;
-                case 'ravenclaw':
-                    team.pendingBoost = true;
-                    addLog(`<strong>${team.name}</strong> prepares <strong>Strategy Ring</strong>. Their next bull or center-hoop hit gains +15.`);
-                    break;
-                case 'hufflepuff':
-                    team.pendingBoost = 'huffle-chain';
-                    addLog(`<strong>${team.name}</strong> invokes <strong>Steady Chain</strong>. Hit three unique zones this turn for +25.`);
-                    break;
-                case 'moonstone': {
-                    const pick = prompt('Moonstone Lunar Aim: choose a zone — outer, bull, hoop-low, hoop-high, hoop-mid', 'bull');
-                    const valid = ['outer', 'bull', 'hoop-low', 'hoop-high', 'hoop-mid'];
-                    const chosen = (pick || '').trim().toLowerCase();
-                    if (!valid.includes(chosen)) {
-                        team.abilityUsed = false;
-                        addLog(`<strong>${team.name}</strong> hesitates. <strong>Lunar Aim</strong> was not set.`);
-                        break;
-                    }
-                    team.lunarAimTarget = chosen;
-                    showMoonMarker(chosen);
-                    addLog(`<strong>${team.name}</strong> calls <strong>${chosen}</strong> with <strong>Lunar Aim</strong>. Land it next throw to double the score.`);
-                    break;
-                }
-                case 'emberwing':
-                    team.emberSurgeArmed = true;
-                    team.emberShield = true;
-                    addLog(`<strong>${team.name}</strong> ignites <strong>Flame Surge</strong>. Their next high-value hit primes +10 on the following dart and one Bludger can be ignored.`);
-                    break;
-            }
-            updateUI();
-        }
-
-        function maybeFinish(team, bySnitch) {
-            if (team.score >= app.targetScore || bySnitch) {
-                app.started = false;
-                els.snitchTarget.hidden = true;
-                els.snitchKeyBtn.style.display = 'none';
-                els.snitchBanner.classList.remove('show');
-                els.moonMarker.hidden = true;
-                const text = bySnitch ? `${team.name} captures the Golden Snitch and wins with ${team.score} points.` : `${team.name} reaches ${team.score} points and wins the match.`;
-                els.modalText.textContent = text;
-                els.modal.classList.add('open');
-                addLog(`<strong>${team.name}</strong> wins the match.`);
-            }
-        }
-
         function recordThrow(zoneKey) {
-            if (!app.started) {
-                addLog('Press <strong>Start Match</strong> to begin.');
-                return;
-            }
-            if (app.throwsThisTurn >= 3) return;
-
+            if (!app.started || app.throwsThisTurn >= 3) return;
             const zone = getZoneDetails(zoneKey);
             const team = app.teams[app.currentTeam];
-            const enemy = app.teams[(app.currentTeam + 1) % 2];
-            let points = zone.points;
-            let message = `<strong>${team.name}</strong> hits <strong>${zone.name}</strong> for <strong>${points}</strong>.`;
-            let hitClass = app.currentTeam === 0 ? 'team-a' : 'team-b';
-            if (zone.kind === 'snitch') hitClass = 'snitch';
-            if (zone.kind === 'bludger') hitClass = 'bludger';
-            if (team.house === 'moonstone') hitClass = zone.kind === 'miss' ? hitClass : 'moon';
-            if (team.house === 'emberwing') hitClass = zone.kind === 'miss' ? hitClass : 'ember';
-
-            if (team.house === 'emberwing' && zone.kind === 'bludger' && team.emberShield) {
-                points = 0;
-                team.emberShield = false;
-                message = `<strong>${team.name}</strong> burns through a <strong>Bludger</strong> using <strong>Ash Trail</strong>. No penalty taken.`;
-            }
-            if (team.house === 'gryffindor' && team.retryReady && points <= 10 && zone.kind !== 'miss') {
-                points = 30;
-                team.retryReady = false;
-                message = `<strong>${team.name}</strong> transforms a weak shot with <strong>Bold Retry</strong> into <strong>30</strong>.`;
-            }
-            if (team.house === 'ravenclaw' && team.pendingBoost && (zone.kind === 'bull' || zone.kind === 'hoop-mid')) {
-                points += 15;
-                team.pendingBoost = false;
-                message = `<strong>${team.name}</strong> uses <strong>Strategy Ring</strong> on ${zone.name} for <strong>${points}</strong>.`;
-            }
-            if (enemy.pendingCurse && points > 30) {
-                points -= 20;
-                enemy.pendingCurse = false;
-                message = `<strong>${team.name}</strong> is caught by a <strong>Slytherin Curse</strong>. ${zone.name} falls to <strong>${points}</strong>.`;
-            }
-            if (team.house === 'moonstone' && team.lunarAimTarget) {
-                if (zone.kind === team.lunarAimTarget) {
-                    points *= 2;
-                    message = `<strong>${team.name}</strong> lands <strong>Lunar Aim</strong> on ${zone.name}. Score doubled to <strong>${points}</strong>.`;
-                } else {
-                    message = `<strong>${team.name}</strong> misses their called <strong>Lunar Aim</strong> and scores <strong>${points}</strong> on ${zone.name}.`;
-                }
-                team.lunarAimTarget = null;
-                els.moonMarker.hidden = true;
-            }
-            if (team.house === 'emberwing' && team.emberSurgeArmed && points >= 50) {
-                team.emberSurgeArmed = false;
-                team.emberNextBonus = true;
-                message += ` <strong>Flame Surge ignites the next dart.</strong>`;
-            } else if (team.house === 'emberwing' && team.emberNextBonus && zone.kind !== 'miss') {
-                points += 10;
-                team.emberNextBonus = false;
-                message = `<strong>${team.name}</strong> unleashes <strong>Flame Surge</strong> for <strong>${points}</strong> on ${zone.name}.`;
-            }
-            if (zone.kind !== 'miss' && zone.kind !== 'bludger') {
-                if (!team.turnZones.includes(zone.kind)) team.turnZones.push(zone.kind);
-            }
-            if (team.house === 'hufflepuff' && team.pendingBoost === 'huffle-chain' && team.turnZones.length >= 3) {
-                points += 25;
-                team.pendingBoost = false;
-                team.combos += 1;
-                message = `<strong>${team.name}</strong> completes a <strong>Hufflepuff Steady Chain</strong> for <strong>${points}</strong>.`;
-            }
-            if ((zone.kind === 'hoop-low' || zone.kind === 'hoop-mid' || zone.kind === 'hoop-high') && app.throwsThisTurn > 0) {
-                const hoopHits = team.turnZones.filter(z => z.startsWith('hoop')).length;
-                if (hoopHits >= 2) {
-                    points += 10;
-                    team.combos += 1;
-                    message += ` <strong>Passing play combo +10.</strong>`;
-                }
-            }
-            if (team.house === 'moonstone' && zone.kind === 'bull') {
-                const bullHitsThisTurn = (team._bullHitsThisTurn || 0) + 1;
-                team._bullHitsThisTurn = bullHitsThisTurn;
-                if (bullHitsThisTurn >= 2 && !team.moonExtraTurnReady) {
-                    team.moonExtraTurnReady = true;
-                    addLog(`<strong>${team.name}</strong> triggers <strong>Silver Echo</strong>. They earn an extra turn after this one.`);
-                }
-            }
-
-            team.score += points;
+            
+            team.score += zone.points;
             team.throws += 1;
             app.throwsThisTurn += 1;
-            createHit(zone.coords.x, zone.coords.y, hitClass);
-            addLog(message);
 
-            if (zone.kind === 'snitch') {
-                maybeFinish(team, true);
-            } else {
-                maybeActivateSnitch(team);
-                maybeFinish(team, false);
+            const hit = document.createElement('div');
+            hit.className = `hit ${app.currentTeam === 0 ? 'team-a' : 'team-b'}`;
+            if (zone.kind === 'snitch') hit.className = 'hit snitch';
+            if (zone.kind === 'bludger') hit.className = 'hit bludger';
+            hit.style.left = `${zone.coords.x}px`;
+            hit.style.top = `${zone.coords.y}px`;
+            els.dartboard.appendChild(hit);
+
+            addLog(`<strong>${team.name}</strong> hits <strong>${zone.name}</strong> for <strong>${zone.points}</strong> pts.`);
+
+            if (team.score >= app.targetScore || zone.kind === 'snitch') {
+                app.started = false;
+                els.modalText.textContent = `${team.name} wins the match with ${team.score} points!`;
+                els.modal.classList.add('open');
+            } else if (!app.snitchActive && team.score >= app.snitchThreshold) {
+                app.snitchActive = true;
+                els.snitchTarget.hidden = false;
+                els.snitchKeyBtn.style.display = 'block';
+                els.snitchBanner.classList.add('show');
+                addLog(`The <strong>Golden Snitch</strong> has been released!`);
             }
-            if (app.snitchActive && app.started) placeSnitch();
-            if (app.throwsThisTurn >= 3 && app.started) {
-                setTimeout(endTurn, 260);
+
+            if (app.throwsThisTurn >= 3) {
+                setTimeout(endTurn, 250);
             }
             updateUI();
         }
 
         function endTurn() {
             if (!app.started) return;
-            const current = app.teams[app.currentTeam];
-            const getsExtraTurn = current.moonExtraTurnReady;
-            current.turnZones = [];
-            current._bullHitsThisTurn = 0;
-            current.moonExtraTurnReady = false;
             app.throwsThisTurn = 0;
-            if (getsExtraTurn) {
-                addLog(`<strong>${current.name}</strong> keeps the turn thanks to <strong>Silver Echo</strong>.`);
-            } else {
-                app.currentTeam = (app.currentTeam + 1) % 2;
-                addLog(`Turn passes to <strong>${app.teams[app.currentTeam].name}</strong>.`);
-            }
+            app.currentTeam = (app.currentTeam + 1) % 2;
+            addLog(`Turn passes to <strong>${app.teams[app.currentTeam].name}</strong>.`);
             updateUI();
         }
 
-        // Keypad button listeners
         document.querySelectorAll('.scoring-keypad .keypad-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                recordThrow(btn.dataset.zone);
-            });
-        });
-
-        // Clicking the visual snitch also lets you log catching it
-        els.snitchTarget.addEventListener('click', () => {
-            recordThrow('snitch');
+            btn.addEventListener('click', () => recordThrow(btn.dataset.zone));
         });
 
         els.startBtn.addEventListener('click', startMatch);
@@ -992,25 +824,8 @@
         els.rulesBtn.addEventListener('click', () => els.rulesModal.classList.add('open'));
         els.closeRulesBtn.addEventListener('click', () => els.rulesModal.classList.remove('open'));
         els.endTurnBtn.addEventListener('click', endTurn);
-        els.modeSelect.addEventListener('change', syncConfigToState);
-        els.targetScore.addEventListener('change', syncConfigToState);
-        els.teamAName.addEventListener('input', syncConfigToState);
-        els.teamBName.addEventListener('input', syncConfigToState);
-        document.querySelectorAll('input[name="houseA"], input[name="houseB"]').forEach(input => {
-            input.addEventListener('change', syncConfigToState);
-        });
         els.closeModalBtn.addEventListener('click', () => els.modal.classList.remove('open'));
-        els.playAgainBtn.addEventListener('click', () => {
-            els.modal.classList.remove('open');
-            resetMatch(true);
-        });
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) entry.target.classList.add('visible');
-            });
-        }, { threshold: .14 });
-        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        els.playAgainBtn.addEventListener('click', () => { els.modal.classList.remove('open'); resetMatch(true); });
 
         drawHazards();
         syncConfigToState();
