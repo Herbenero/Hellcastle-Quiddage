@@ -1,986 +1,1060 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quidditch Darts — House Cup Web App</title>
-    <meta name="description" content="A playable fantasy darts web app inspired by Quidditch, featuring Standard and Quad board modes, six magical houses, special abilities, and live tracking." />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800&family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg: #0b0910;
-            --bg2: #15101b;
-            --panel: rgba(23,17,30,.88);
-            --panel-soft: rgba(255,255,255,.04);
-            --line: rgba(255,233,193,.14);
-            --text: #f7f1e7;
-            --muted: #cabca3;
-            --gold: #d7aa41;
-            --gold2: #f2d88b;
-            --danger: #b74635;
-            --ok: #65b886;
-            --shadow: 0 24px 80px rgba(0,0,0,.45);
-            --gryff: #8f1f2a;
-            --slyth: #113c2d;
-            --raven: #1d2f62;
-            --huff: #8e6c1f;
-            --moon: #8b7cff;
-            --ember: #cf5c2f;
-            --max: 1520px;
-        }
-        * { box-sizing: border-box; }
-        html, body { height: 100%; }
-        html { scroll-behavior: smooth; }
-        body {
-            margin: 0;
-            color: var(--text);
-            font-family: "Manrope", sans-serif;
-            background: radial-gradient(circle at 15% 10%, rgba(215,170,65,.08), transparent 18%), 
-                        radial-gradient(circle at 84% 16%, rgba(143,31,42,.12), transparent 18%), 
-                        radial-gradient(circle at 50% 100%, rgba(29,47,98,.18), transparent 28%), 
-                        linear-gradient(180deg, #0b0910 0%, #120d18 44%, #0b0910 100%);
-            overflow-x: hidden;
-        }
-        body::before {
-            content: "";
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
-            opacity: .18;
-            background-image: linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px), 
-                              linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
-            background-size: 26px 26px;
-            mask-image: radial-gradient(circle at center, black 42%, transparent 100%);
-        }
-        button, input, select { font: inherit; }
-        a { text-decoration: none; color: inherit; }
-        .wrap { width: min(var(--max), calc(100% - 1.5rem)); margin-inline: auto; }
-        
-        .topbar {
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            background: linear-gradient(180deg, rgba(10,8,14,.94), rgba(10,8,14,.65));
-            backdrop-filter: blur(14px) saturate(140%);
-            border-bottom: 1px solid var(--line);
-        }
-        .topbar-inner {
-            min-height: 78px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 1rem;
-        }
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: .85rem;
-            text-transform: uppercase;
-            letter-spacing: .12em;
-            font-weight: 800;
-        }
-        .crest {
-            width: 42px;
-            aspect-ratio: 1;
-            border-radius: 50%;
-            position: relative;
-            background: radial-gradient(circle at 35% 35%, #f9efba, #d7aa41 58%, #6f4a12 100%);
-            box-shadow: 0 0 0 2px rgba(255,231,173,.24), 0 10px 30px rgba(215,170,65,.28);
-            flex: none;
-        }
-        .crest::before, .crest::after {
-            content: "";
-            position: absolute;
-            top: 50%;
-            width: 18px;
-            height: 5px;
-            border-radius: 999px;
-            background: linear-gradient(90deg, transparent, #edd58a 30%, #a97717 100%);
-        }
-        .crest::before { left: -12px; transform: translateY(-50%) rotate(-18deg); }
-        .crest::after { right: -12px; transform: translateY(-50%) rotate(18deg); }
-        .brand span { font-family: "Cinzel", serif; color: var(--gold2); font-size: 1rem; }
-        
-        .top-actions { display: flex; align-items: center; gap: .8rem; flex-wrap: wrap; }
-        .btn {
-            appearance: none;
-            border: 0;
-            border-radius: 999px;
-            min-height: 46px;
-            padding: .85rem 1.2rem;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: .55rem;
-            cursor: pointer;
-            font-weight: 800;
-            transition: transform .18s ease, box-shadow .25s ease, background .25s ease, border-color .25s ease, opacity .25s ease;
-        }
-        .btn:hover { transform: translateY(-2px); }
-        .btn:active { transform: translateY(0) scale(.985); }
-        .btn:disabled { opacity: .45; cursor: not-allowed; transform: none; }
-        .btn-primary {
-            color: #2b1a05;
-            background: linear-gradient(135deg, var(--gold2), var(--gold));
-            box-shadow: 0 12px 36px rgba(215,170,65,.25);
-        }
-        .btn-ghost {
-            color: var(--text);
-            background: rgba(255,255,255,.04);
-            border: 1px solid var(--line);
-            backdrop-filter: blur(10px);
-        }
-        .btn-danger {
-            color: #fff4ef;
-            background: linear-gradient(135deg, #cb5647, #8f281f);
-            box-shadow: 0 12px 36px rgba(183,70,53,.22);
-        }
-
-        main { padding: 1.2rem 0 2.5rem; }
-        
-        .app-grid {
-            display: grid;
-            grid-template-columns: 380px minmax(0, 1fr);
-            gap: 1.5rem;
-            align-items: start;
-            transition: all .4s ease;
-        }
-        .app-grid.match-active {
-            grid-template-columns: minmax(0, 1.2fr) 440px;
-        }
-        
-        .panel {
-            border-radius: 28px;
-            background: linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.02)), var(--panel);
-            border: 1px solid var(--line);
-            box-shadow: var(--shadow);
-            backdrop-filter: blur(14px);
-            overflow: hidden;
-            transition: opacity .3s ease, transform .3s ease;
-        }
-        .panel-head { padding: 1.1rem 1.2rem .3rem; }
-        .panel-head h2, .panel-head h3 { margin: 0; font-family: "Cinzel", serif; letter-spacing: -.02em; }
-        .panel-body { padding: 1.2rem; }
-        
-        .setup-stack { display: grid; gap: 1rem; }
-        .field { display: grid; gap: .45rem; }
-        .field label { color: var(--muted); font-size: .92rem; font-weight: 700; letter-spacing: .02em; }
-        .input, .select {
-            width: 100%;
-            min-height: 50px;
-            border-radius: 16px;
-            border: 1px solid rgba(255,255,255,.08);
-            background: rgba(255,255,255,.04);
-            color: var(--text);
-            padding: .85rem .95rem;
-            outline: none;
-            transition: border-color .2s ease, background .2s ease, box-shadow .2s ease;
-        }
-        .input:focus, .select:focus {
-            border-color: rgba(242,216,139,.4);
-            box-shadow: 0 0 0 4px rgba(242,216,139,.08);
-            background: rgba(255,255,255,.06);
-        }
-        
-        .house-scroll { max-height: 220px; overflow-y: auto; display: grid; gap: .65rem; padding-right: .3rem; }
-        .house-option {
-            position: relative;
-            display: grid;
-            grid-template-columns: auto 1fr auto;
-            gap: .8rem;
-            align-items: center;
-            padding: .85rem;
-            border-radius: 18px;
-            border: 1px solid rgba(255,255,255,.08);
-            background: rgba(255,255,255,.03);
-            cursor: pointer;
-            transition: transform .2s ease, border-color .25s ease, background .25s ease;
-        }
-        .house-option:hover { transform: translateY(-2px); border-color: rgba(242,216,139,.2); background: rgba(255,255,255,.05); }
-        .house-option.active { border-color: rgba(242,216,139,.34); box-shadow: inset 0 0 0 1px rgba(242,216,139,.16); background: rgba(255,255,255,.065); }
-        .house-option input { position: absolute; opacity: 0; pointer-events: none; }
-        .house-sigil { width: 18px; height: 18px; border-radius: 50%; box-shadow: 0 0 0 1px rgba(255,255,255,.16); flex: none; }
-        .g { background: var(--gryff); }
-        .s { background: var(--slyth); }
-        .r { background: var(--raven); }
-        .h { background: var(--huff); }
-        .m { background: var(--moon); }
-        .e { background: var(--ember); }
-        .house-copy strong { display: block; margin-bottom: .12rem; font-size: .9rem; }
-        .house-copy span { color: var(--muted); font-size: .8rem; line-height: 1.35; display: block; }
-        
-        .mini-note {
-            padding: .9rem .95rem;
-            border-radius: 16px;
-            background: rgba(255,255,255,.03);
-            border: 1px dashed rgba(255,255,255,.12);
-            color: var(--muted);
-            line-height: 1.6;
-            font-size: .9rem;
-        }
-        
-        .center-stack { display: grid; gap: 1.2rem; }
-        .hero-panel { position: relative; min-height: 200px; padding: 1.5rem; overflow: hidden; transition: all .4s ease; }
-        .hero-panel.hidden { display: none; }
-        .eyebrow {
-            display: inline-flex;
-            align-items: center;
-            gap: .5rem;
-            padding: .5rem .78rem;
-            border-radius: 999px;
-            border: 1px solid rgba(242,216,139,.16);
-            color: var(--gold2);
-            background: rgba(255,255,255,.03);
-            font-size: .78rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: .14em;
-        }
-        .hero-panel h1 { margin: .8rem 0 .7rem; font-family: "Cinzel", serif; font-size: clamp(2.2rem, 4vw, 3.8rem); line-height: .98; }
-        .hero-panel p { margin: 0; max-width: 58ch; color: var(--muted); line-height: 1.7; }
-        
-        .status-ribbon { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 1rem; }
-        .ribbon-block { padding: 1.1rem; border-top: 1px solid rgba(242,216,139,.18); background: linear-gradient(180deg, rgba(255,255,255,.04), transparent); }
-        .ribbon-block span { display: block; color: var(--muted); font-size: .84rem; margin-bottom: .28rem; }
-        .ribbon-block strong { font-size: 1.2rem; }
-        
-        .board-card { padding: 1.5rem; display: grid; place-items: center; }
-        .dartboard-wrap {
-            position: relative;
-            display: grid;
-            place-items: center;
-            width: 100%;
-            max-width: 720px;
-            aspect-ratio: 1;
-            padding: 1.5rem;
-        }
-        
-        .dartboard {
-            position: relative;
-            width: 100%;
-            aspect-ratio: 1;
-            border-radius: 50%;
-            background: radial-gradient(circle, #211723 0 8.5%, #c4a04b 8.5% 11.5%, #491621 11.5% 23%, #e5d4aa 23% 25.2%, #173928 25.2% 40%, #9e7c2f 40% 42.2%, #3f1321 42.2% 58%, #e5d4aa 58% 60.2%, #113427 60.2% 76%, #9e7c2f 76% 78%, #35101b 78% 100%);
-            box-shadow: 0 0 0 16px rgba(255,255,255,.04), 0 0 0 18px rgba(242,216,139,.16), 0 30px 80px rgba(0,0,0,.5), inset 0 12px 24px rgba(255,255,255,.06);
-            overflow: hidden;
-            isolation: isolate;
-        }
-        .dartboard.quad-board {
-            background: radial-gradient(circle, #120d18 0 7%, #6f4a12 7% 10%, #8f1f2a 10% 20%, #f2d88b 20% 22%, #113c2d 22% 35%, #d7aa41 35% 37%, #1d2f62 37% 50%, #f2d88b 50% 52%, #491621 52% 66%, #d7aa41 66% 68%, #211723 68% 100%);
-        }
-        .dartboard::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: repeating-conic-gradient(from -9deg, rgba(255,255,255,.08) 0 4deg, transparent 4deg 18deg);
-            mix-blend-mode: screen;
-            opacity: .48;
-        }
-        
-        .hazard-overlay { position: absolute; inset: 0; border-radius: 50%; pointer-events: none; opacity: .92; }
-        .zone-layer { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
-        .zone-number {
-            position: absolute;
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            background: rgba(14,10,18,.92);
-            border: 1px solid var(--gold);
-            color: var(--gold2);
-            font-size: .75rem;
-            font-weight: 800;
-            display: grid;
-            place-items: center;
-            transform: translate(-50%, -50%);
-            box-shadow: 0 4px 10px rgba(0,0,0,.5);
-        }
-        .zone-label {
-            position: absolute;
-            padding: .45rem .75rem;
-            border-radius: 999px;
-            background: rgba(14,10,18,.92);
-            border: 1px solid rgba(242,216,139,.35);
-            color: var(--text);
-            font-size: .85rem;
-            font-weight: 800;
-            white-space: nowrap;
-            backdrop-filter: blur(10px);
-            transform: translate(-50%, -50%);
-            box-shadow: 0 6px 16px rgba(0,0,0,.6);
-        }
-        
-        .hit {
-            position: absolute;
-            width: 26px; height: 26px;
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            pointer-events: none;
-            z-index: 8;
-            box-shadow: 0 0 0 2px rgba(255,255,255,.16), 0 0 22px rgba(255,255,255,.24);
-            animation: pop .45s ease both;
-        }
-        @keyframes pop {
-            from { opacity: 0; transform: translate(-50%,-50%) scale(.4); }
-            to { opacity: 1; transform: translate(-50%,-50%) scale(1); }
-        }
-        .hit.team-a { background: linear-gradient(135deg, var(--gold2), #fff0bf); }
-        .hit.team-b { background: linear-gradient(135deg, #9bd2ff, #5a76ff); }
-        .hit.snitch { background: linear-gradient(135deg, #fff3af, #d7aa41); }
-        .hit.bludger { background: linear-gradient(135deg, #d05b4a, #6b1d1b); }
-        
-        .snitch-target {
-            position: absolute;
-            width: 40px; height: 40px;
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            background: radial-gradient(circle at 35% 35%, #fff6c5, #ddb44f 58%, #956711 100%);
-            box-shadow: 0 0 0 2px rgba(255,233,174,.25), 0 0 35px rgba(242,216,139,.55);
-            z-index: 5;
-            animation: snitchPulse 1.6s ease-in-out infinite;
-            cursor: pointer;
-        }
-        @keyframes snitchPulse {
-            0%, 100% { transform: translate(-50%, -50%) scale(1); }
-            50% { transform: translate(-50%, -50%) scale(1.1); }
-        }
-
-        .sidebar-stack { display: grid; gap: 1.2rem; }
-        
-        .scoreboard { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: .8rem; }
-        .team-card {
-            padding: 1.1rem;
-            border-radius: 20px;
-            background: rgba(255,255,255,.03);
-            border: 1px solid rgba(255,255,255,.08);
-            transition: border-color .25s ease, background .25s ease, transform .2s ease;
-        }
-        .team-card.active { border-color: rgba(242,216,139,.32); background: rgba(255,255,255,.07); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(215,170,65,.1); }
-        .team-top { display: flex; flex-direction: column; gap: .6rem; margin-bottom: .8rem; }
-        .house-chip {
-            display: inline-flex;
-            align-items: center;
-            gap: .55rem;
-            padding: .35rem .65rem;
-            border-radius: 999px;
-            border: 1px solid rgba(255,255,255,.08);
-            font-size: .75rem;
-            font-weight: 800;
-            letter-spacing: .06em;
-            text-transform: uppercase;
-            width: fit-content;
-        }
-        .house-chip .dot { width: 8px; height: 8px; border-radius: 50%; }
-        .team-name { font-weight: 800; font-size: 1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .team-score { font-family: "Cinzel", serif; font-size: 2.3rem; line-height: 1; color: var(--gold2); }
-        .team-meta { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: .4rem; }
-        .tiny { padding: .5rem; border-radius: 12px; background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.06); }
-        .tiny span { display: block; color: var(--muted); font-size: .7rem; margin-bottom: .15rem; }
-        .tiny strong { font-size: .85rem; }
-        
-        .turn-console { display: grid; gap: .9rem; }
-        .turn-pill {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 1rem;
-            padding: 1rem 1.1rem;
-            border-radius: 18px;
-            border: 1px solid rgba(242,216,139,.18);
-            background: rgba(255,255,255,.04);
-        }
-        .throws-track { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: .6rem; }
-        .throw-dot {
-            min-height: 52px;
-            border-radius: 16px;
-            display: grid;
-            place-items: center;
-            border: 1px solid rgba(255,255,255,.08);
-            background: rgba(255,255,255,.03);
-            color: var(--muted);
-            font-weight: 800;
-        }
-        .throw-dot.used { color: var(--text); background: rgba(255,255,255,.06); border-color: rgba(242,216,139,.18); }
-        
-        .scoring-keypad { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: .6rem; margin-top: .4rem; }
-        .keypad-btn {
-            padding: .8rem .6rem;
-            border-radius: 14px;
-            background: rgba(255,255,255,.05);
-            border: 1px solid var(--line);
-            color: var(--text);
-            font-weight: 700;
-            font-size: .85rem;
-            cursor: pointer;
-            text-align: center;
-            transition: background .2s, transform .1s;
-        }
-        .keypad-btn small { display: block; font-size: .73rem; color: var(--muted); margin-top: .15rem; font-weight: 500; }
-        .keypad-btn:hover { background: rgba(215,170,65,.15); border-color: var(--gold); }
-        .keypad-btn:active { transform: scale(.97); }
-        .keypad-btn.snitch-btn { grid-column: span 2; background: linear-gradient(135deg, rgba(215,170,65,.2), rgba(215,170,65,.05)); border-color: var(--gold); color: var(--gold2); }
-        
-        .helper-row { display: flex; flex-wrap: wrap; gap: .7rem; margin-top: .4rem; }
-        .pill { padding: .5rem .75rem; border-radius: 999px; border: 1px solid rgba(255,255,255,.08); background: rgba(255,255,255,.03); color: var(--muted); font-size: .82rem; font-weight: 700; }
-        .snitch-banner { margin-top: .1rem; padding: 1rem; border-radius: 18px; border: 1px solid rgba(242,216,139,.22); background: linear-gradient(135deg, rgba(242,216,139,.09), rgba(255,255,255,.03)); color: var(--gold2); font-weight: 800; display: none; text-align: center; }
-        .snitch-banner.show { display: block; }
-        
-        .log-panel { margin-top: 1.5rem; transition: opacity .3s ease; }
-        .log-panel.hidden { display: none; }
-        .log { max-height: 180px; overflow: auto; display: grid; gap: .55rem; padding-right: .3rem; }
-        .log-item { padding: .8rem 1rem; border-radius: 16px; background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.06); line-height: 1.5; color: var(--muted); font-size: .92rem; }
-        .log-item strong { color: var(--text); }
-        
-        .modal-backdrop { position: fixed; inset: 0; background: rgba(7,5,10,.65); backdrop-filter: blur(10px); display: none; align-items: center; justify-content: center; padding: 1rem; z-index: 220; }
-        .modal-backdrop.open { display: flex; }
-        .modal { width: min(700px, 100%); border-radius: 28px; background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02)), rgba(22,16,30,.95); border: 1px solid var(--line); box-shadow: var(--shadow); overflow: hidden; }
-        .modal-head, .modal-body, .modal-foot { padding: 1.2rem 1.4rem; }
-        .modal-head { border-bottom: 1px solid rgba(255,255,255,.08); }
-        .modal-head h3 { margin: 0; font-family: "Cinzel", serif; color: var(--gold2); font-size: 1.5rem; }
-        .modal-body p { margin: 0; color: var(--muted); line-height: 1.8; }
-        .modal-foot { display: flex; justify-content: flex-end; gap: .8rem; border-top: 1px solid rgba(255,255,255,.08); }
-
-        @media (max-width: 1200px) {
-            .app-grid, .app-grid.match-active { grid-template-columns: 1fr; }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quidditch Darts — House Cup Web App</title>
+<meta name="description" content="A playable fantasy darts web app inspired by Quidditch, featuring Standard and Quad board modes, six magical houses, special abilities, and live tracking." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800&family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0b0910;
+  --bg2: #15101b;
+  --panel: rgba(23,17,30,.88);
+  --panel-soft: rgba(255,255,255,.04);
+  --line: rgba(255,233,193,.14);
+  --text: #f7f1e7;
+  --muted: #cabca3;
+  --gold: #d7aa41;
+  --gold2: #f2d88b;
+  --danger: #b74635;
+  --ok: #65b886;
+  --shadow: 0 24px 80px rgba(0,0,0,.45);
+  --gryff: #8f1f2a;
+  --slyth: #113c2d;
+  --raven: #1d2f62;
+  --huff: #8e6c1f;
+  --moon: #8b7cff;
+  --ember: #cf5c2f;
+  --max: 1520px;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  color: var(--text);
+  font-family: "Manrope", sans-serif;
+  background: radial-gradient(circle at 15% 10%, rgba(215,170,65,.08), transparent 18%),
+              radial-gradient(circle at 84% 16%, rgba(143,31,42,.12), transparent 18%),
+              radial-gradient(circle at 50% 100%, rgba(29,47,98,.18), transparent 28%),
+              linear-gradient(180deg, #0b0910 0%, #120d18 44%, #0b0910 100%);
+  overflow-x: hidden;
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: .18;
+  background-image: linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+  background-size: 26px 26px;
+  mask-image: radial-gradient(circle at center, black 42%, transparent 100%);
+}
+button, input, select { font: inherit; }
+a { text-decoration: none; color: inherit; }
+.wrap { width: min(var(--max), calc(100% - 1.5rem)); margin-inline: auto; }
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: linear-gradient(180deg, rgba(10,8,14,.94), rgba(10,8,14,.65));
+  backdrop-filter: blur(14px) saturate(140%);
+  border-bottom: 1px solid var(--line);
+}
+.topbar-inner {
+  min-height: 78px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: .85rem;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  font-weight: 800;
+}
+.crest {
+  width: 42px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  position: relative;
+  background: radial-gradient(circle at 35% 35%, #f9efba, #d7aa41 58%, #6f4a12 100%);
+  box-shadow: 0 0 0 2px rgba(255,231,173,.24), 0 10px 30px rgba(215,170,65,.28);
+  flex: none;
+}
+.crest::before, .crest::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 18px;
+  height: 5px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, #edd58a 30%, #a97717 100%);
+}
+.crest::before { left: -12px; transform: translateY(-50%) rotate(-18deg); }
+.crest::after { right: -12px; transform: translateY(-50%) rotate(18deg); }
+.brand span { font-family: "Cinzel", serif; color: var(--gold2); font-size: 1rem; }
+.top-actions { display: flex; align-items: center; gap: .8rem; flex-wrap: wrap; }
+.btn {
+  appearance: none;
+  border: 0;
+  border-radius: 999px;
+  min-height: 46px;
+  padding: .85rem 1.2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .55rem;
+  cursor: pointer;
+  font-weight: 800;
+  transition: transform .18s ease, box-shadow .25s ease, background .25s ease, border-color .25s ease, opacity .25s ease;
+}
+.btn:hover { transform: translateY(-2px); }
+.btn:active { transform: translateY(0) scale(.985); }
+.btn:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+.btn-primary {
+  color: #2b1a05;
+  background: linear-gradient(135deg, var(--gold2), var(--gold));
+  box-shadow: 0 12px 36px rgba(215,170,65,.25);
+}
+.btn-ghost {
+  color: var(--text);
+  background: rgba(255,255,255,.04);
+  border: 1px solid var(--line);
+  backdrop-filter: blur(10px);
+}
+.btn-danger {
+  color: #fff4ef;
+  background: linear-gradient(135deg, #cb5647, #8f281f);
+  box-shadow: 0 12px 36px rgba(183,70,53,.22);
+}
+main { padding: 1.2rem 0 2.5rem; }
+.app-grid {
+  display: grid;
+  grid-template-columns: 380px minmax(0, 1fr);
+  gap: 1.5rem;
+  align-items: start;
+  transition: all .4s ease;
+}
+.app-grid.match-active { grid-template-columns: minmax(0, 1.2fr) 440px; }
+.panel {
+  border-radius: 28px;
+  background: linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.02)), var(--panel);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(14px);
+  overflow: hidden;
+  transition: opacity .3s ease, transform .3s ease;
+}
+.panel-head { padding: 1.1rem 1.2rem .3rem; }
+.panel-head h2, .panel-head h3 { margin: 0; font-family: "Cinzel", serif; letter-spacing: -.02em; }
+.panel-body { padding: 1.2rem; }
+.setup-stack { display: grid; gap: 1rem; }
+.field { display: grid; gap: .45rem; }
+.field label { color: var(--muted); font-size: .92rem; font-weight: 700; letter-spacing: .02em; }
+.input, .select {
+  width: 100%;
+  min-height: 50px;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,.08);
+  background: rgba(255,255,255,.04);
+  color: var(--text);
+  padding: .85rem .95rem;
+  outline: none;
+  transition: border-color .2s ease, background .2s ease, box-shadow .2s ease;
+}
+.input:focus, .select:focus {
+  border-color: rgba(242,216,139,.4);
+  box-shadow: 0 0 0 4px rgba(242,216,139,.08);
+  background: rgba(255,255,255,.06);
+}
+.house-scroll {
+  max-height: 220px;
+  overflow-y: auto;
+  display: grid;
+  gap: .65rem;
+  padding-right: .3rem;
+}
+.house-option {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: .8rem;
+  align-items: center;
+  padding: .85rem;
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,.08);
+  background: rgba(255,255,255,.03);
+  cursor: pointer;
+  transition: transform .2s ease, border-color .25s ease, background .25s ease;
+}
+.house-option:hover {
+  transform: translateY(-2px);
+  border-color: rgba(242,216,139,.2);
+  background: rgba(255,255,255,.05);
+}
+.house-option.active {
+  border-color: rgba(242,216,139,.34);
+  box-shadow: inset 0 0 0 1px rgba(242,216,139,.16);
+  background: rgba(255,255,255,.065);
+}
+.house-option input { position: absolute; opacity: 0; pointer-events: none; }
+.house-sigil { width: 18px; height: 18px; border-radius: 50%; box-shadow: 0 0 0 1px rgba(255,255,255,.16); flex: none; }
+.g { background: var(--gryff); }
+.s { background: var(--slyth); }
+.r { background: var(--raven); }
+.h { background: var(--huff); }
+.m { background: var(--moon); }
+.e { background: var(--ember); }
+.house-copy strong { display: block; margin-bottom: .12rem; font-size: .9rem; }
+.house-copy span { color: var(--muted); font-size: .8rem; line-height: 1.35; display: block; }
+.mini-note {
+  padding: .9rem .95rem;
+  border-radius: 16px;
+  background: rgba(255,255,255,.03);
+  border: 1px dashed rgba(255,255,255,.12);
+  color: var(--muted);
+  line-height: 1.6;
+  font-size: .9rem;
+}
+.center-stack { display: grid; gap: 1.2rem; }
+.hero-panel { position: relative; min-height: 200px; padding: 1.5rem; overflow: hidden; transition: all .4s ease; }
+.hero-panel.hidden { display: none; }
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .5rem .78rem;
+  border-radius: 999px;
+  border: 1px solid rgba(242,216,139,.16);
+  color: var(--gold2);
+  background: rgba(255,255,255,.03);
+  font-size: .78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .14em;
+}
+.hero-panel h1 {
+  margin: .8rem 0 .7rem;
+  font-family: "Cinzel", serif;
+  font-size: clamp(2.2rem, 4vw, 3.8rem);
+  line-height: .98;
+}
+.hero-panel p { margin: 0; max-width: 58ch; color: var(--muted); line-height: 1.7; }
+.status-ribbon {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0,1fr));
+  gap: 1rem;
+}
+.ribbon-block {
+  padding: 1.1rem;
+  border-top: 1px solid rgba(242,216,139,.18);
+  background: linear-gradient(180deg, rgba(255,255,255,.04), transparent);
+}
+.ribbon-block span { display: block; color: var(--muted); font-size: .84rem; margin-bottom: .28rem; }
+.ribbon-block strong { font-size: 1.2rem; }
+.board-card { padding: 1.5rem; display: grid; place-items: center; }
+.dartboard-wrap {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  max-width: 720px;
+  aspect-ratio: 1;
+  padding: 1.5rem;
+}
+.dartboard {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, #211723 0 8.5%, #c4a04b 8.5% 11.5%, #491621 11.5% 23%, #e5d4aa 23% 25.2%, #173928 25.2% 40%, #9e7c2f 40% 42.2%, #3f1321 42.2% 58%, #e5d4aa 58% 60.2%, #113427 60.2% 76%, #9e7c2f 76% 78%, #35101b 78% 100%);
+  box-shadow: 0 0 0 16px rgba(255,255,255,.04), 0 0 0 18px rgba(242,216,139,.16), 0 30px 80px rgba(0,0,0,.5), inset 0 12px 24px rgba(255,255,255,.06);
+  overflow: hidden;
+  isolation: isolate;
+}
+.dartboard.quad-board {
+  background: radial-gradient(circle, #120d18 0 7%, #6f4a12 7% 10%, #8f1f2a 10% 20%, #f2d88b 20% 22%, #113c2d 22% 35%, #d7aa41 35% 37%, #1d2f62 37% 50%, #f2d88b 50% 52%, #491621 52% 66%, #d7aa41 66% 68%, #211723 68% 100%);
+}
+.dartboard::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-conic-gradient(from -9deg, rgba(255,255,255,.08) 0 4deg, transparent 4deg 18deg);
+  mix-blend-mode: screen;
+  opacity: .48;
+}
+.hazard-overlay { position: absolute; inset: 0; border-radius: 50%; pointer-events: none; opacity: .92; }
+.zone-layer { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+.zone-number {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(14,10,18,.92);
+  border: 1px solid var(--gold);
+  color: var(--gold2);
+  font-size: .75rem;
+  font-weight: 800;
+  display: grid;
+  place-items: center;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 4px 10px rgba(0,0,0,.5);
+}
+.zone-label {
+  position: absolute;
+  padding: .45rem .75rem;
+  border-radius: 999px;
+  background: rgba(14,10,18,.92);
+  border: 1px solid rgba(242,216,139,.35);
+  color: var(--text);
+  font-size: .85rem;
+  font-weight: 800;
+  white-space: nowrap;
+  backdrop-filter: blur(10px);
+  transform: translate(-50%, -50%);
+  box-shadow: 0 6px 16px rgba(0,0,0,.6);
+}
+.hit {
+  position: absolute;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 8;
+  box-shadow: 0 0 0 2px rgba(255,255,255,.16), 0 0 22px rgba(255,255,255,.24);
+  animation: pop .45s ease both;
+}
+@keyframes pop {
+  from { opacity: 0; transform: translate(-50%,-50%) scale(.4); }
+  to { opacity: 1; transform: translate(-50%,-50%) scale(1); }
+}
+.hit.team-a { background: linear-gradient(135deg, var(--gold2), #fff0bf); }
+.hit.team-b { background: linear-gradient(135deg, #9bd2ff, #5a76ff); }
+.hit.snitch { background: linear-gradient(135deg, #fff3af, #d7aa41); }
+.hit.bludger { background: linear-gradient(135deg, #d05b4a, #6b1d1b); }
+.snitch-target {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle at 35% 35%, #fff6c5, #ddb44f 58%, #956711 100%);
+  box-shadow: 0 0 0 2px rgba(255,233,174,.25), 0 0 35px rgba(242,216,139,.55);
+  z-index: 5;
+  animation: snitchPulse 1.6s ease-in-out infinite;
+  cursor: pointer;
+}
+@keyframes snitchPulse {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); }
+  50% { transform: translate(-50%, -50%) scale(1.1); }
+}
+.sidebar-stack { display: grid; gap: 1.2rem; }
+.scoreboard { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: .8rem; }
+.team-card {
+  padding: 1.1rem;
+  border-radius: 20px;
+  background: rgba(255,255,255,.03);
+  border: 1px solid rgba(255,255,255,.08);
+  transition: border-color .25s ease, background .25s ease, transform .2s ease;
+}
+.team-card.active {
+  border-color: rgba(242,216,139,.32);
+  background: rgba(255,255,255,.07);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(215,170,65,.1);
+}
+.team-top { display: flex; flex-direction: column; gap: .6rem; margin-bottom: .8rem; }
+.house-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: .55rem;
+  padding: .35rem .65rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.08);
+  font-size: .75rem;
+  font-weight: 800;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  width: fit-content;
+}
+.house-chip .dot { width: 8px; height: 8px; border-radius: 50%; }
+.team-name { font-weight: 800; font-size: 1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.team-score { font-family: "Cinzel", serif; font-size: 2.3rem; line-height: 1; color: var(--gold2); }
+.team-meta { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: .4rem; }
+.tiny { padding: .5rem; border-radius: 12px; background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.06); }
+.tiny span { display: block; color: var(--muted); font-size: .7rem; margin-bottom: .15rem; }
+.tiny strong { font-size: .85rem; }
+.turn-console { display: grid; gap: .9rem; }
+.turn-pill {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.1rem;
+  border-radius: 18px;
+  border: 1px solid rgba(242,216,139,.18);
+  background: rgba(255,255,255,.04);
+}
+.throws-track { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: .6rem; }
+.throw-dot {
+  min-height: 52px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255,255,255,.08);
+  background: rgba(255,255,255,.03);
+  color: var(--muted);
+  font-weight: 800;
+}
+.throw-dot.used { color: var(--text); background: rgba(255,255,255,.06); border-color: rgba(242,216,139,.18); }
+.scoring-keypad { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: .6rem; margin-top: .4rem; }
+.keypad-btn {
+  padding: .8rem .6rem;
+  border-radius: 14px;
+  background: rgba(255,255,255,.05);
+  border: 1px solid var(--line);
+  color: var(--text);
+  font-weight: 700;
+  font-size: .85rem;
+  cursor: pointer;
+  text-align: center;
+  transition: background .2s, transform .1s;
+}
+.keypad-btn small { display: block; font-size: .73rem; color: var(--muted); margin-top: .15rem; font-weight: 500; }
+.keypad-btn:hover { background: rgba(215,170,65,.15); border-color: var(--gold); }
+.keypad-btn:active { transform: scale(.97); }
+.keypad-btn.snitch-btn {
+  grid-column: span 2;
+  background: linear-gradient(135deg, rgba(215,170,65,.2), rgba(215,170,65,.05));
+  border-color: var(--gold);
+  color: var(--gold2);
+}
+.helper-row { display: flex; flex-wrap: wrap; gap: .7rem; margin-top: .4rem; }
+.pill {
+  padding: .5rem .75rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.08);
+  background: rgba(255,255,255,.03);
+  color: var(--muted);
+  font-size: .82rem;
+  font-weight: 700;
+}
+.snitch-banner {
+  margin-top: .1rem;
+  padding: 1rem;
+  border-radius: 18px;
+  border: 1px solid rgba(242,216,139,.22);
+  background: linear-gradient(135deg, rgba(242,216,139,.09), rgba(255,255,255,.03));
+  color: var(--gold2);
+  font-weight: 800;
+  display: none;
+  text-align: center;
+}
+.snitch-banner.show { display: block; }
+.log-panel { margin-top: 1.5rem; transition: opacity .3s ease; }
+.log-panel.hidden { display: none; }
+.log { max-height: 180px; overflow: auto; display: grid; gap: .55rem; padding-right: .3rem; }
+.log-item {
+  padding: .8rem 1rem;
+  border-radius: 16px;
+  background: rgba(255,255,255,.03);
+  border: 1px solid rgba(255,255,255,.06);
+  line-height: 1.5;
+  color: var(--muted);
+  font-size: .92rem;
+}
+.log-item strong { color: var(--text); }
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(7,5,10,.65);
+  backdrop-filter: blur(10px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  z-index: 220;
+}
+.modal-backdrop.open { display: flex; }
+.modal {
+  width: min(700px, 100%);
+  border-radius: 28px;
+  background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02)), rgba(22,16,30,.95);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.modal-head, .modal-body, .modal-foot { padding: 1.2rem 1.4rem; }
+.modal-head { border-bottom: 1px solid rgba(255,255,255,.08); }
+.modal-head h3 { margin: 0; font-family: "Cinzel", serif; color: var(--gold2); font-size: 1.5rem; }
+.modal-body p { margin: 0; color: var(--muted); line-height: 1.8; }
+.modal-foot { display: flex; justify-content: flex-end; gap: .8rem; border-top: 1px solid rgba(255,255,255,.08); }
+@media (max-width: 1200px) {
+  .app-grid, .app-grid.match-active { grid-template-columns: 1fr; }
+}
+</style>
 </head>
 <body>
-
-    <header class="topbar">
-        <div class="wrap topbar-inner">
-            <div class="brand">
-                <span class="crest" aria-hidden="true"></span>
-                <span>Quidditch Darts</span>
-                <small style="display:block; font-size:.72rem; color:var(--muted); letter-spacing:.08em; text-transform:none;">Inspired by Hellcastle</small>
-            </div>
-            <div class="top-actions">
-                <button class="btn btn-ghost" id="rulesBtn" type="button">Rules</button>
-                <button class="btn btn-ghost" id="newMatchBtn" type="button">New Match</button>
-                <button class="btn btn-primary" id="startBtn" type="button">Start Match</button>
-                <button class="btn btn-danger" id="resetBtn" type="button">Reset Scores</button>
-            </div>
-        </div>
-    </header>
-
-    <main class="wrap">
-        <div class="app-grid" id="appGrid">
-            <!-- Setup Sidebar -->
-            <aside class="panel" id="setupPanel">
-                <div class="panel-head"><h2>Match setup</h2></div>
-                <div class="panel-body">
-                    <div class="setup-stack">
-                        <div class="field">
-                            <label for="teamAName">Team A name</label>
-                            <input id="teamAName" class="input" type="text" value="Scarlet Seekers" maxlength="22" />
-                        </div>
-                        <div class="field">
-                            <label for="teamBName">Team B name</label>
-                            <input id="teamBName" class="input" type="text" value="Moonfire Flyers" maxlength="22" />
-                        </div>
-                        <div class="field">
-                            <label for="boardType">Board layout</label>
-                            <select id="boardType" class="select">
-                                <option value="standard" selected>Standard Board</option>
-                                <option value="quad">Quad Board (4x Multiplier Variant)</option>
-                            </select>
-                        </div>
-                        <div class="field">
-                            <label>Team A house</label>
-                            <div class="house-scroll" id="houseAGroup">
-                                <label class="house-option active">
-                                    <input type="radio" name="houseA" value="gryffindor" checked />
-                                    <span class="house-sigil g"></span>
-                                    <span class="house-copy"><strong>Gryffindor</strong><span>Brave strike upgrade.</span></span>
-                                </label>
-                                <label class="house-option">
-                                    <input type="radio" name="houseA" value="ravenclaw" />
-                                    <span class="house-sigil r"></span>
-                                    <span class="house-copy"><strong>Ravenclaw</strong><span>Precision planning boost.</span></span>
-                                </label>
-                                <label class="house-option">
-                                    <input type="radio" name="houseA" value="hufflepuff" />
-                                    <span class="house-sigil h"></span>
-                                    <span class="house-copy"><strong>Hufflepuff</strong><span>Steady defense shield.</span></span>
-                                </label>
-                                <label class="house-option">
-                                    <input type="radio" name="houseA" value="slytherin" />
-                                    <span class="house-sigil s"></span>
-                                    <span class="house-copy"><strong>Slytherin</strong><span>Cunning curse strike.</span></span>
-                                </label>
-                                <label class="house-option">
-                                    <input type="radio" name="houseA" value="moon" />
-                                    <span class="house-sigil m"></span>
-                                    <span class="house-copy"><strong>Moon</strong><span>Lunar aura burst.</span></span>
-                                </label>
-                                <label class="house-option">
-                                    <input type="radio" name="houseA" value="ember" />
-                                    <span class="house-sigil e"></span>
-                                    <span class="house-copy"><strong>Ember</strong><span>Blazing double strike.</span></span>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="field">
-                            <label>Team B house</label>
-                            <div class="house-scroll" id="houseBGroup">
-                                <label class="house-option">
-                                    <input type="radio" name="houseB" value="gryffindor" />
-                                    <span class="house-sigil g"></span>
-                                    <span class="house-copy"><strong>Gryffindor</strong><span>Brave strike upgrade.</span></span>
-                                </label>
-                                <label class="house-option">
-                                    <input type="radio" name="houseB" value="ravenclaw" />
-                                    <span class="house-sigil r"></span>
-                                    <span class="house-copy"><strong>Ravenclaw</strong><span>Precision planning boost.</span></span>
-                                </label>
-                                <label class="house-option">
-                                    <input type="radio" name="houseB" value="hufflepuff" />
-                                    <span class="house-sigil h"></span>
-                                    <span class="house-copy"><strong>Hufflepuff</strong><span>Steady defense shield.</span></span>
-                                </label>
-                                <label class="house-option active">
-                                    <input type="radio" name="houseB" value="slytherin" checked />
-                                    <span class="house-sigil s"></span>
-                                    <span class="house-copy"><strong>Slytherin</strong><span>Cunning curse strike.</span></span>
-                                </label>
-                                <label class="house-option">
-                                    <input type="radio" name="houseB" value="moon" />
-                                    <span class="house-sigil m"></span>
-                                    <span class="house-copy"><strong>Moon</strong><span>Lunar aura burst.</span></span>
-                                </label>
-                                <label class="house-option">
-                                    <input type="radio" name="houseB" value="ember" />
-                                    <span class="house-sigil e"></span>
-                                    <span class="house-copy"><strong>Ember</strong><span>Blazing double strike.</span></span>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="field">
-                            <label for="targetScore">Target score</label>
-                            <select id="targetScore" class="select">
-                                <option value="250">250 points</option>
-                                <option value="300" selected>300 points</option>
-                                <option value="400">400 points</option>
-                                <option value="500">500 points</option>
-                            </select>
-                        </div>
-                        <div class="mini-note">
-                            Throw physical darts at the board, then use the scoring keypad to log each hit. Reaching 75% unlocks the Golden Snitch!
-                        </div>
-                    </div>
-                </div>
-            </aside>
-
-            <!-- Main Play Area: Dartboard & Status -->
-            <section class="center-stack">
-                <div class="panel hero-panel" id="heroPanel">
-                    <div class="eyebrow">Six-house magical darts</div>
-                    <h1>Board sport for the House Cup.</h1>
-                    <p>Score through the hoops, dodge Bludgers, and chase the Snitch before your rival turns the tide.</p>
-                </div>
-
-                <div class="status-ribbon">
-                    <div class="panel ribbon-block"><span>Target score</span><strong id="targetReadout">300</strong></div>
-                    <div class="panel ribbon-block"><span>Snitch unlock</span><strong id="snitchReadout">225</strong></div>
-                    <div class="panel-block panel" style="padding:1.1rem; border-top:1px solid rgba(242,216,139,.18); background:linear-gradient(180deg, rgba(255,255,255,.04), transparent);"><span>Current turn</span><strong id="currentTurnReadout">Not started</strong></div>
-                </div>
-
-                <!-- High-Vis Large Dartboard Display with Numbered Target Zones -->
-                <div class="panel board-card">
-                    <div class="dartboard-wrap">
-                        <div class="dartboard" id="dartboard" aria-label="Dartboard tracking hits">
-                            <canvas class="hazard-overlay" id="hazardCanvas" width="720" height="720" style="pointer-events: none;"></canvas>
-                            <div class="zone-layer" id="zoneLayer">
-                                <div class="zone-number" style="left:50%; top:10%;">20</div>
-                                <div class="zone-number" style="left:72%; top:18%;">1</div>
-                                <div class="zone-number" style="left:88%; top:38%;">18</div>
-                                <div class="zone-number" style="left:88%; top:62%;">4</div>
-                                <div class="zone-number" style="left:72%; top:82%;">13</div>
-                                <div class="zone-number" style="left:50%; top:90%;">6</div>
-                                <div class="zone-number" style="left:28%; top:82%;">10</div>
-                                <div class="zone-number" style="left:12%; top:62%;">15</div>
-                                <div class="zone-number" style="left:12%; top:38%;">2</div>
-                                <div class="zone-number" style="left:28%; top:18%;">17</div>
-                                
-                                <div class="zone-label" style="left:50%; top:24%;">High Hoop</div>
-                                <div class="zone-label" style="left:68%; top:45%;">Center Hoop</div>
-                                <div class="zone-label" style="left:32%; top:45%;">Lower Hoop</div>
-                                <div class="zone-label" style="left:50%; top:50%;">Bull</div>
-                                <div class="zone-label" style="left:50%; top:78%;">Outer Ring</div>
-                                <div class="zone-label" style="left:22%; top:72%; color:var(--danger);">Bludger</div>
-                            </div>
-                            <div class="snitch-target" id="snitchTarget" hidden title="Click here if Snitch is caught on physical board!"></div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Right Control Console (Hidden during setup) -->
-            <aside class="sidebar-stack hidden" id="consoleSidebar">
-                <!-- Teams Side by Side -->
-                <div class="scoreboard" id="scoreboard"></div>
-                
-                <div class="panel">
-                    <div class="panel-head"><h3>Turn console</h3></div>
-                    <div class="panel-body turn-console">
-                        <div class="turn-pill">
-                            <div>
-                                <strong id="turnTeamName">Awaiting start</strong>
-                                <span id="turnMeta" style="font-size:0.85rem; color:var(--muted); display:block;">Select houses and begin</span>
-                            </div>
-                            <span id="throwCounter">0 / 3</span>
-                        </div>
-                        <div class="throws-track" id="throwsTrack">
-                            <div class="throw-dot">1</div>
-                            <div class="throw-dot">2</div>
-                            <div class="throw-dot">3</div>
-                        </div>
-                        <div class="field" style="margin-top:.4rem;">
-                            <label>Log physical throw:</label>
-                            <div class="scoring-keypad">
-                                <button class="keypad-btn" type="button" data-zone="hoop-high" id="btnHigh">High Hoop <small>Seg 20 (70 pts)</small></button>
-                                <button class="keypad-btn" type="button" data-zone="hoop-mid" id="btnMid">Center Hoop <small>Seg 18 (50 pts)</small></button>
-                                <button class="keypad-btn" type="button" data-zone="hoop-low" id="btnLow">Lower Hoop <small>Seg 2 (30 pts)</small></button>
-                                <button class="keypad-btn" type="button" data-zone="bull" id="btnBull">Bullseye <small>Center (25 pts)</small></button>
-                                <button class="keypad-btn" type="button" data-zone="outer" id="btnOuter">Outer Ring <small>Seg 6 (10 pts)</small></button>
-                                <button class="keypad-btn" type="button" data-zone="bludger" style="color:var(--danger)" id="btnBludger">Bludger <small>Seg 15 (-20 pts)</small></button>
-                                <button class="keypad-btn" type="button" data-zone="miss">Miss <small>Off target (0 pts)</small></button>
-                                <button class="keypad-btn snitch-btn" type="button" id="snitchKeyBtn" data-zone="snitch" style="display:none;">Catch Golden Snitch <small>Snitch Target (150 pts)</small></button>
-                            </div>
-                        </div>
-                        <div class="helper-row">
-                            <span class="pill" id="comboPill">Combo: 0</span>
-                            <span class="pill" id="modePill">Mode: Standard</span>
-                        </div>
-                        <div class="snitch-banner" id="snitchBanner">The Golden Snitch is in play!</div>
-                        <button class="btn btn-ghost" id="endTurnBtn" type="button" style="width:100%; margin-top:.4rem;">End turn early</button>
-                    </div>
-                </div>
-            </aside>
-        </div>
-
-        <!-- Match Log at the Bottom (Hidden during setup) -->
-        <div class="panel log-panel hidden" id="logPanel">
-            <div class="panel-head"><h3>Match log</h3></div>
-            <div class="panel-body">
-                <div class="log" id="log"></div>
-            </div>
-        </div>
-    </main>
-
-    <!-- Result Modal -->
-    <div class="modal-backdrop" id="modal">
-        <div class="modal" role="dialog">
-            <div class="modal-head"><h3 id="modalTitle">Match result</h3></div>
-            <div class="modal-body"><p id="modalText"></p></div>
-            <div class="modal-foot">
-                <button class="btn btn-ghost" id="closeModalBtn" type="button">Close</button>
-                <button class="btn btn-primary" id="playAgainBtn" type="button">Play again</button>
-            </div>
-        </div>
+<header class="topbar">
+  <div class="wrap topbar-inner">
+    <div class="brand">
+      <span class="crest" aria-hidden="true"></span>
+      <span>Quidditch Darts</span>
+      <small style="display:block; font-size:.72rem; color:var(--muted); letter-spacing:.08em; text-transform:none;">Inspired by Hellcastle</small>
     </div>
-
-    <!-- Rules Modal -->
-    <div class="modal-backdrop" id="rulesModal">
-        <div class="modal" role="dialog">
-            <div class="modal-head"><h3>Quidditch Darts Rulebook</h3></div>
-            <div class="modal-body" style="display:grid; gap:.8rem;">
-                <p><strong>1. Basic Gameplay:</strong> Throw 3 physical darts per turn, then use the keypad to log hits.</p>
-                <p><strong>2. Segment Aiming:</strong> Each scoring button displays the exact dartboard segment number you should aim for.</p>
-                <p><strong>3. Scoring Modes:</strong> Choose between Standard Board or Quad Board (4x multiplier variant).</p>
-            </div>
-            <div class="modal-foot"><button class="btn btn-primary" id="closeRulesBtn" type="button">Got it</button></div>
-        </div>
+    <div class="top-actions">
+      <button class="btn btn-ghost" id="rulesBtn" type="button">Rules</button>
+      <button class="btn btn-ghost" id="newMatchBtn" type="button">New Match</button>
+      <button class="btn btn-primary" id="startBtn" type="button">Start Match</button>
+      <button class="btn btn-danger" id="resetBtn" type="button">Reset Scores</button>
     </div>
+  </div>
+</header>
 
-    <script>
-        const houseMeta = {
-            gryffindor: {label: 'Gryffindor', color: '#8f1f2a', ability: 'Bold Retry'},
-            ravenclaw: {label: 'Ravenclaw', color: '#1d2f62', ability: 'Strategy Ring'},
-            hufflepuff: {label: 'Hufflepuff', color: '#8e6c1f', ability: 'Steady Shield'},
-            slytherin: {label: 'Slytherin', color: '#113c2d', ability: 'Cunning Curse'},
-            moon: {label: 'Moon', color: '#8b7cff', ability: 'Lunar Burst'},
-            ember: {label: 'Ember', color: '#cf5c2f', ability: 'Blazing Strike'}
-        };
+<main class="wrap">
+  <div class="app-grid" id="appGrid">
+    <!-- Setup Sidebar -->
+    <aside class="panel" id="setupPanel">
+      <div class="panel-head"><h2>Match setup</h2></div>
+      <div class="panel-body">
+        <div class="setup-stack">
+          <div class="field">
+            <label for="teamAName">Team A name</label>
+            <input id="teamAName" class="input" type="text" value="Scarlet Seekers" maxlength="22" />
+          </div>
+          <div class="field">
+            <label for="teamBName">Team B name</label>
+            <input id="teamBName" class="input" type="text" value="Moonfire Flyers" maxlength="22" />
+          </div>
+          <div class="field">
+            <label for="boardType">Board layout</label>
+            <select id="boardType" class="select">
+              <option value="standard" selected>Standard Board</option>
+              <option value="quad">Quad Board (4x Multiplier Variant)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Team A house</label>
+            <div class="house-scroll" id="houseAGroup">
+              <label class="house-option active">
+                <input type="radio" name="houseA" value="gryffindor" checked />
+                <span class="house-sigil g"></span>
+                <span class="house-copy"><strong>Gryffindor</strong><span>Brave strike upgrade.</span></span>
+              </label>
+              <label class="house-option">
+                <input type="radio" name="houseA" value="ravenclaw" />
+                <span class="house-sigil r"></span>
+                <span class="house-copy"><strong>Ravenclaw</strong><span>Precision planning boost.</span></span>
+              </label>
+              <label class="house-option">
+                <input type="radio" name="houseA" value="hufflepuff" />
+                <span class="house-sigil h"></span>
+                <span class="house-copy"><strong>Hufflepuff</strong><span>Steady defense shield.</span></span>
+              </label>
+              <label class="house-option">
+                <input type="radio" name="houseA" value="slytherin" />
+                <span class="house-sigil s"></span>
+                <span class="house-copy"><strong>Slytherin</strong><span>Cunning curse strike.</span></span>
+              </label>
+              <label class="house-option">
+                <input type="radio" name="houseA" value="moon" />
+                <span class="house-sigil m"></span>
+                <span class="house-copy"><strong>Moon</strong><span>Lunar aura burst.</span></span>
+              </label>
+              <label class="house-option">
+                <input type="radio" name="houseA" value="ember" />
+                <span class="house-sigil e"></span>
+                <span class="house-copy"><strong>Ember</strong><span>Blazing double strike.</span></span>
+              </label>
+            </div>
+          </div>
+          <div class="field">
+            <label>Team B house</label>
+            <div class="house-scroll" id="houseBGroup">
+              <label class="house-option">
+                <input type="radio" name="houseB" value="gryffindor" />
+                <span class="house-sigil g"></span>
+                <span class="house-copy"><strong>Gryffindor</strong><span>Brave strike upgrade.</span></span>
+              </label>
+              <label class="house-option">
+                <input type="radio" name="houseB" value="ravenclaw" />
+                <span class="house-sigil r"></span>
+                <span class="house-copy"><strong>Ravenclaw</strong><span>Precision planning boost.</span></span>
+              </label>
+              <label class="house-option">
+                <input type="radio" name="houseB" value="hufflepuff" />
+                <span class="house-sigil h"></span>
+                <span class="house-copy"><strong>Hufflepuff</strong><span>Steady defense shield.</span></span>
+              </label>
+              <label class="house-option active">
+                <input type="radio" name="houseB" value="slytherin" checked />
+                <span class="house-sigil s"></span>
+                <span class="house-copy"><strong>Slytherin</strong><span>Cunning curse strike.</span></span>
+              </label>
+              <label class="house-option">
+                <input type="radio" name="houseB" value="moon" />
+                <span class="house-sigil m"></span>
+                <span class="house-copy"><strong>Moon</strong><span>Lunar aura burst.</span></span>
+              </label>
+              <label class="house-option">
+                <input type="radio" name="houseB" value="ember" />
+                <span class="house-sigil e"></span>
+                <span class="house-copy"><strong>Ember</strong><span>Blazing double strike.</span></span>
+              </label>
+            </div>
+          </div>
+          <div class="field">
+            <label for="targetScore">Target score</label>
+            <select id="targetScore" class="select">
+              <option value="250">250 points</option>
+              <option value="300" selected>300 points</option>
+              <option value="400">400 points</option>
+              <option value="500">500 points</option>
+            </select>
+          </div>
+          <div class="mini-note">
+            Throw physical darts at the board, then use the scoring keypad to log each hit. Reaching 75% unlocks the Golden Snitch!
+          </div>
+        </div>
+      </div>
+    </aside>
 
-        const app = {
-            targetScore: 300,
-            snitchThreshold: 225,
-            boardType: 'standard',
-            started: false,
-            currentTeam: 0,
-            throwsThisTurn: 0,
-            logs: [],
-            snitchActive: false,
-            snitchPos: { x: 360, y: 210 },
-            teams: [
-                {name: 'Scarlet Seekers', house: 'gryffindor', score: 0, throws: 0, combos: 0, abilityUsed: false},
-                {name: 'Moonfire Flyers', house: 'slytherin', score: 0, throws: 0, combos: 0, abilityUsed: false}
-            ]
-        };
+    <!-- Main Play Area: Dartboard & Status -->
+    <section class="center-stack">
+      <div class="panel hero-panel" id="heroPanel">
+        <div class="eyebrow">Six-house magical darts</div>
+        <h1>Board sport for the House Cup.</h1>
+        <p>Score through the hoops, dodge Bludgers, and chase the Snitch before your rival turns the tide.</p>
+      </div>
 
-        const els = {
-            startBtn: document.getElementById('startBtn'),
-            resetBtn: document.getElementById('resetBtn'),
-            newMatchBtn: document.getElementById('newMatchBtn'),
-            rulesBtn: document.getElementById('rulesBtn'),
-            teamAName: document.getElementById('teamAName'),
-            teamBName: document.getElementById('teamBName'),
-            boardType: document.getElementById('boardType'),
-            targetScore: document.getElementById('targetScore'),
-            targetReadout: document.getElementById('targetReadout'),
-            snitchReadout: document.getElementById('snitchReadout'),
-            currentTurnReadout: document.getElementById('currentTurnReadout'),
-            hazardCanvas: document.getElementById('hazardCanvas'),
-            scoreboard: document.getElementById('scoreboard'),
-            turnTeamName: document.getElementById('turnTeamName'),
-            turnMeta: document.getElementById('turnMeta'),
-            throwCounter: document.getElementById('throwCounter'),
-            throwsTrack: document.getElementById('throwsTrack'),
-            comboPill: document.getElementById('comboPill'),
-            modePill: document.getElementById('modePill'),
-            log: document.getElementById('log'),
-            endTurnBtn: document.getElementById('endTurnBtn'),
-            snitchTarget: document.getElementById('snitchTarget'),
-            snitchKeyBtn: document.getElementById('snitchKeyBtn'),
-            snitchBanner: document.getElementById('snitchBanner'),
-            modal: document.getElementById('modal'),
-            modalText: document.getElementById('modalText'),
-            closeModalBtn: document.getElementById('closeModalBtn'),
-            playAgainBtn: document.getElementById('playAgainBtn'),
-            rulesModal: document.getElementById('rulesModal'),
-            closeRulesBtn: document.getElementById('closeRulesBtn'),
-            dartboard: document.getElementById('dartboard'),
-            appGrid: document.getElementById('appGrid'),
-            setupPanel: document.getElementById('setupPanel'),
-            heroPanel: document.getElementById('heroPanel'),
-            consoleSidebar: document.getElementById('consoleSidebar'),
-            logPanel: document.getElementById('logPanel'),
-            btnHigh: document.getElementById('btnHigh'),
-            btnMid: document.getElementById('btnMid'),
-            btnLow: document.getElementById('btnLow'),
-            btnBull: document.getElementById('btnBull'),
-            btnOuter: document.getElementById('btnOuter'),
-            btnBludger: document.getElementById('btnBludger')
-        };
+      <div class="status-ribbon">
+        <div class="panel ribbon-block"><span>Target score</span><strong id="targetReadout">300</strong></div>
+        <div class="panel ribbon-block"><span>Snitch unlock</span><strong id="snitchReadout">225</strong></div>
+        <div class="panel-block panel" style="padding:1.1rem; border-top:1px solid rgba(242,216,139,.18); background:linear-gradient(180deg, rgba(255,255,255,.04), transparent);"><span>Current turn</span><strong id="currentTurnReadout">Not started</strong></div>
+      </div>
 
-        function setupRadioGroups() {
-            ['houseAGroup', 'houseBGroup'].forEach(groupId => {
-                const group = document.getElementById(groupId);
-                group.querySelectorAll('.house-option').forEach(label => {
-                    const radio = label.querySelector('input[type="radio"]');
-                    radio.addEventListener('change', () => {
-                        group.querySelectorAll('.house-option').forEach(l => l.classList.remove('active'));
-                        if (radio.checked) label.classList.add('active');
-                        syncConfigToState();
-                    });
-                });
-            });
-        }
+      <!-- High-Vis Large Dartboard Display with Numbered Target Zones -->
+      <div class="panel board-card">
+        <div class="dartboard-wrap">
+          <div class="dartboard" id="dartboard" aria-label="Dartboard tracking hits">
+            <canvas class="hazard-overlay" id="hazardCanvas" width="720" height="720" style="pointer-events: none;"></canvas>
+            <div class="zone-layer" id="zoneLayer">
+              <div class="zone-number" style="left:50%; top:10%;">20</div>
+              <div class="zone-number" style="left:72%; top:18%;">1</div>
+              <div class="zone-number" style="left:88%; top:38%;">18</div>
+              <div class="zone-number" style="left:88%; top:62%;">4</div>
+              <div class="zone-number" style="left:72%; top:82%;">13</div>
+              <div class="zone-number" style="left:50%; top:90%;">6</div>
+              <div class="zone-number" style="left:28%; top:82%;">10</div>
+              <div class="zone-number" style="left:12%; top:62%;">15</div>
+              <div class="zone-number" style="left:12%; top:38%;">2</div>
+              <div class="zone-number" style="left:28%; top:18%;">17</div>
+              <div class="zone-label" style="left:50%; top:24%;">High Hoop</div>
+              <div class="zone-label" style="left:68%; top:45%;">Center Hoop</div>
+              <div class="zone-label" style="left:32%; top:45%;">Lower Hoop</div>
+              <div class="zone-label" style="left:50%; top:50%;">Bull</div>
+              <div class="zone-label" style="left:50%; top:78%;">Outer Ring</div>
+              <div class="zone-label" style="left:22%; top:72%; color:var(--danger);">Bludger</div>
+            </div>
+            <div class="snitch-target" id="snitchTarget" hidden title="Click here if Snitch is caught on physical board!"></div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-        function getSelectedHouse(groupId) {
-            const group = document.getElementById(groupId);
-            const checked = group.querySelector('input[type="radio"]:checked');
-            return checked ? checked.value : 'gryffindor';
-        }
+    <!-- Right Control Console (Hidden during setup) -->
+    <aside class="sidebar-stack hidden" id="consoleSidebar">
+      <!-- Teams Side by Side -->
+      <div class="scoreboard" id="scoreboard"></div>
+      <div class="panel">
+        <div class="panel-head"><h3>Turn console</h3></div>
+        <div class="panel-body turn-console">
+          <div class="turn-pill">
+            <div>
+              <strong id="turnTeamName">Awaiting start</strong>
+              <span id="turnMeta" style="font-size:0.85rem; color:var(--muted); display:block;">Select houses and begin</span>
+            </div>
+            <span id="throwCounter">0 / 3</span>
+          </div>
+          <div class="throws-track" id="throwsTrack">
+            <div class="throw-dot">1</div>
+            <div class="throw-dot">2</div>
+            <div class="throw-dot">3</div>
+          </div>
+          <div class="field" style="margin-top:.4rem;">
+            <label>Log physical throw:</label>
+            <div class="scoring-keypad">
+              <button class="keypad-btn" type="button" data-zone="hoop-high" id="btnHigh">High Hoop <small>Seg 20 (70 pts)</small></button>
+              <button class="keypad-btn" type="button" data-zone="hoop-mid" id="btnMid">Center Hoop <small>Seg 18 (50 pts)</small></button>
+              <button class="keypad-btn" type="button" data-zone="hoop-low" id="btnLow">Lower Hoop <small>Seg 2 (30 pts)</small></button>
+              <button class="keypad-btn" type="button" data-zone="bull" id="btnBull">Bullseye <small>Center (25 pts)</small></button>
+              <button class="keypad-btn" type="button" data-zone="outer" id="btnOuter">Outer Ring <small>Seg 6 (10 pts)</small></button>
+              <button class="keypad-btn" type="button" data-zone="bludger" style="color:var(--danger)" id="btnBludger">Bludger <small>Seg 15 (-20 pts)</small></button>
+              <button class="keypad-btn" type="button" data-zone="miss">Miss <small>Off target (0 pts)</small></button>
+              <button class="keypad-btn snitch-btn" type="button" id="snitchKeyBtn" data-zone="snitch" style="display:none;">Catch Golden Snitch <small id="snitchTargetText">Snitch Target (150 pts)</small></button>
+            </div>
+          </div>
+          <div class="helper-row">
+            <span class="pill" id="comboPill">Combo: 0</span>
+            <span class="pill" id="modePill">Mode: Standard</span>
+          </div>
+          <div class="snitch-banner" id="snitchBanner">The Golden Snitch is in play!</div>
+          <button class="btn btn-ghost" id="endTurnBtn" type="button" style="width:100%; margin-top:.4rem;">End turn early</button>
+        </div>
+      </div>
+    </aside>
+  </div>
 
-        function syncConfigToState() {
-            app.teams[0].name = (els.teamAName.value.trim() || 'Team A').slice(0, 22);
-            app.teams[1].name = (els.teamBName.value.trim() || 'Team B').slice(0, 22);
-            app.teams[0].house = getSelectedHouse('houseAGroup');
-            app.teams[1].house = getSelectedHouse('houseBGroup');
-            app.boardType = els.boardType.value;
-            app.targetScore = Number(els.targetScore.value);
-            app.snitchThreshold = Math.floor(app.targetScore * 0.75);
-            
-            els.targetReadout.textContent = app.targetScore;
-            els.snitchReadout.textContent = app.snitchThreshold;
-            els.modePill.textContent = `Mode: ${app.boardType === 'quad' ? 'Quad Board' : 'Standard'}`;
+  <!-- Match Log at the Bottom (Hidden during setup) -->
+  <div class="panel log-panel hidden" id="logPanel">
+    <div class="panel-head"><h3>Match log</h3></div>
+    <div class="panel-body">
+      <div class="log" id="log"></div>
+    </div>
+  </div>
+</main>
 
-            const mult = app.boardType === 'quad' ? 4 : 1;
-            if (app.boardType === 'quad') {
-                els.dartboard.classList.add('quad-board');
-            } else {
-                els.dartboard.classList.remove('quad-board');
-            }
+<!-- Result Modal -->
+<div class="modal-backdrop" id="modal">
+  <div class="modal" role="dialog">
+    <div class="modal-head"><h3 id="modalTitle">Match result</h3></div>
+    <div class="modal-body"><p id="modalText"></p></div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" id="closeModalBtn" type="button">Close</button>
+      <button class="btn btn-primary" id="playAgainBtn" type="button">Play again</button>
+    </div>
+  </div>
+</div>
 
-            els.btnHigh.innerHTML = `High Hoop <small>Seg 20 (${70 * mult} pts)</small>`;
-            els.btnMid.innerHTML = `Center Hoop <small>Seg 18 (${50 * mult} pts)</small>`;
-            els.btnLow.innerHTML = `Lower Hoop <small>Seg 2 (${30 * mult} pts)</small>`;
-            els.btnBull.innerHTML = `Bullseye <small>Center (${25 * mult} pts)</small>`;
-            els.btnOuter.innerHTML = `Outer Ring <small>Seg 6 (${10 * mult} pts)</small>`;
-            els.btnBludger.innerHTML = `Bludger <small>Seg 15 (${-20 * mult} pts)</small>`;
+<!-- Rules Modal -->
+<div class="modal-backdrop" id="rulesModal">
+  <div class="modal" role="dialog">
+    <div class="modal-head"><h3>Quidditch Darts Rulebook</h3></div>
+    <div class="modal-body" style="display:grid; gap:.8rem;">
+      <p><strong>1. Basic Gameplay:</strong> Throw 3 physical darts per turn, then use the keypad to log hits.</p>
+      <p><strong>2. Segment Aiming:</strong> Each scoring button displays the exact dartboard segment number you should aim for.</p>
+      <p><strong>3. Golden Snitch:</strong> Once unlocked at 75% score, the Snitch hides on a randomized segment each round. Catch it on that exact segment to claim 150 points!</p>
+    </div>
+    <div class="modal-foot"><button class="btn btn-primary" id="closeRulesBtn" type="button">Got it</button></div>
+  </div>
+</div>
 
-            updateUI();
-        }
+<script>
+const houseMeta = {
+  gryffindor: {label: 'Gryffindor', color: '#8f1f2a', ability: 'Bold Retry'},
+  ravenclaw: {label: 'Ravenclaw', color: '#1d2f62', ability: 'Strategy Ring'},
+  hufflepuff: {label: 'Hufflepuff', color: '#8e6c1f', ability: 'Steady Shield'},
+  slytherin: {label: 'Slytherin', color: '#113c2d', ability: 'Cunning Curse'},
+  moon: {label: 'Moon', color: '#8b7cff', ability: 'Lunar Burst'},
+  ember: {label: 'Ember', color: '#cf5c2f', ability: 'Blazing Strike'}
+};
 
-        function addLog(msg) {
-            app.logs.unshift(msg);
-            app.logs = app.logs.slice(0, 20);
-            els.log.innerHTML = app.logs.map(item => `<div class="log-item">${item}</div>`).join('');
-        }
+const app = {
+  targetScore: 300,
+  snitchThreshold: 225,
+  boardType: 'standard',
+  started: false,
+  currentTeam: 0,
+  throwsThisTurn: 0,
+  logs: [],
+  snitchActive: false,
+  currentSnitchSegment: null,
+  dartboardSegments: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
+  snitchPos: { x: 360, y: 210 },
+  teams: [
+    {name: 'Scarlet Seekers', house: 'gryffindor', score: 0, throws: 0, combos: 0, abilityUsed: false},
+    {name: 'Moonfire Flyers', house: 'slytherin', score: 0, throws: 0, combos: 0, abilityUsed: false}
+  ]
+};
 
-        function resetMatch(fresh = false) {
-            syncConfigToState();
-            app.started = false;
-            app.currentTeam = 0;
-            app.throwsThisTurn = 0;
-            app.snitchActive = false;
-            app.logs = [];
-            app.teams.forEach(t => { t.score = 0; t.throws = 0; t.combos = 0; t.abilityUsed = false; });
-            document.querySelectorAll('.hit').forEach(n => n.remove());
-            els.snitchTarget.hidden = true;
-            els.snitchKeyBtn.style.display = 'none';
-            els.snitchBanner.classList.remove('show');
-            
-            els.setupPanel.style.display = 'block';
-            els.heroPanel.classList.remove('hidden');
-            els.appGrid.classList.remove('match-active');
-            els.consoleSidebar.classList.add('hidden');
-            els.logPanel.classList.add('hidden');
+const els = {
+  startBtn: document.getElementById('startBtn'),
+  resetBtn: document.getElementById('resetBtn'),
+  newMatchBtn: document.getElementById('newMatchBtn'),
+  rulesBtn: document.getElementById('rulesBtn'),
+  teamAName: document.getElementById('teamAName'),
+  teamBName: document.getElementById('teamBName'),
+  boardType: document.getElementById('boardType'),
+  targetScore: document.getElementById('targetScore'),
+  targetReadout: document.getElementById('targetReadout'),
+  snitchReadout: document.getElementById('snitchReadout'),
+  currentTurnReadout: document.getElementById('currentTurnReadout'),
+  hazardCanvas: document.getElementById('hazardCanvas'),
+  scoreboard: document.getElementById('scoreboard'),
+  turnTeamName: document.getElementById('turnTeamName'),
+  turnMeta: document.getElementById('turnMeta'),
+  throwCounter: document.getElementById('throwCounter'),
+  throwsTrack: document.getElementById('throwsTrack'),
+  comboPill: document.getElementById('comboPill'),
+  modePill: document.getElementById('modePill'),
+  log: document.getElementById('log'),
+  endTurnBtn: document.getElementById('endTurnBtn'),
+  snitchTarget: document.getElementById('snitchTarget'),
+  snitchKeyBtn: document.getElementById('snitchKeyBtn'),
+  snitchTargetText: document.getElementById('snitchTargetText'),
+  snitchBanner: document.getElementById('snitchBanner'),
+  modal: document.getElementById('modal'),
+  modalText: document.getElementById('modalText'),
+  closeModalBtn: document.getElementById('closeModalBtn'),
+  playAgainBtn: document.getElementById('playAgainBtn'),
+  rulesModal: document.getElementById('rulesModal'),
+  closeRulesBtn: document.getElementById('closeRulesBtn'),
+  dartboard: document.getElementById('dartboard'),
+  appGrid: document.getElementById('appGrid'),
+  setupPanel: document.getElementById('setupPanel'),
+  heroPanel: document.getElementById('heroPanel'),
+  consoleSidebar: document.getElementById('consoleSidebar'),
+  logPanel: document.getElementById('logPanel'),
+  btnHigh: document.getElementById('btnHigh'),
+  btnMid: document.getElementById('btnMid'),
+  btnLow: document.getElementById('btnLow'),
+  btnBull: document.getElementById('btnBull'),
+  btnOuter: document.getElementById('btnOuter'),
+  btnBludger: document.getElementById('btnBludger')
+};
 
-            if (fresh) addLog('New match prepared. Configure your teams and press start.');
-            updateUI();
-        }
-
-        function renderScoreboard() {
-            els.scoreboard.innerHTML = app.teams.map((team, index) => {
-                const house = houseMeta[team.house] || houseMeta['gryffindor'];
-                const active = app.started && index === app.currentTeam;
-                return `
-                    <div class="team-card ${active ? 'active' : ''}">
-                        <div class="team-top">
-                            <div class="house-chip"><span class="dot" style="background:${house.color}"></span>${house.label}</div>
-                            <div class="team-name" title="${team.name}">${team.name}</div>
-                            <div class="team-score">${team.score}</div>
-                        </div>
-                        <div class="team-meta">
-                            <div class="tiny"><span>Throws</span><strong>${team.throws}</strong></div>
-                            <div class="tiny"><span>Power</span><strong>${team.abilityUsed ? 'Used' : 'Ready'}</strong></div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function updateUI() {
-            renderScoreboard();
-            [...els.throwsTrack.children].forEach((dot, i) => {
-                dot.classList.toggle('used', i < app.throwsThisTurn);
-            });
-            const team = app.teams[app.currentTeam];
-            els.currentTurnReadout.textContent = app.started ? team.name : 'Not started';
-            els.turnTeamName.textContent = app.started ? team.name : 'Awaiting start';
-            els.throwCounter.textContent = `${app.throwsThisTurn} / 3`;
-        }
-
-        function startMatch() {
-            syncConfigToState();
-            app.started = true;
-            app.currentTeam = 0;
-            app.throwsThisTurn = 0;
-            
-            els.setupPanel.style.display = 'none';
-            els.heroPanel.classList.add('hidden');
-            els.appGrid.classList.add('match-active');
-            els.consoleSidebar.classList.remove('hidden');
-            els.logPanel.classList.remove('hidden');
-
-            addLog(`Match begins between <strong>${app.teams[0].name}</strong> and <strong>${app.teams[1].name}</strong> (${app.boardType === 'quad' ? 'Quad Board' : 'Standard Board'}).`);
-            updateUI();
-        }
-
-        function drawHazards() {
-            const ctx = els.hazardCanvas.getContext('2d');
-            ctx.clearRect(0, 0, 720, 720);
-            [[20, 38], [142, 162], [258, 278]].forEach(([start, end]) => {
-                ctx.beginPath();
-                ctx.moveTo(360, 360);
-                ctx.arc(360, 360, 360, (start - 90) * Math.PI / 180, (end - 90) * Math.PI / 180);
-                ctx.closePath();
-                ctx.fillStyle = 'rgba(183,70,53,.18)';
-                ctx.fill();
-            });
-        }
-
-        function getZoneDetails(zoneKey) {
-            const mult = app.boardType === 'quad' ? 4 : 1;
-            switch(zoneKey) {
-                case 'hoop-high': return { name: 'High Hoop (Seg 20)', points: 70 * mult, kind: 'hoop-high', coords: {x:360, y:100} };
-                case 'hoop-mid': return { name: 'Center Hoop (Seg 18)', points: 50 * mult, kind: 'hoop-mid', coords: {x:560, y:142} };
-                case 'hoop-low': return { name: 'Lower Hoop (Seg 2)', points: 30 * mult, kind: 'hoop-low', coords: {x:160, y:135} };
-                case 'bull': return { name: 'Bullseye', points: 25 * mult, kind: 'bull', coords: {x:360, y:360} };
-                case 'outer': return { name: 'Outer Ring (Seg 6)', points: 10 * mult, kind: 'outer', coords: {x:360, y:620} };
-                case 'bludger': return { name: 'Bludger (Seg 15)', points: -20 * mult, kind: 'bludger', coords: {x:220, y:230} };
-                case 'snitch': return { name: 'Golden Snitch', points: 150 * mult, kind: 'snitch', coords: app.snitchPos };
-                default: return { name: 'Miss', points: 0, kind: 'miss', coords: {x:360, y:360} };
-            }
-        }
-
-        function recordThrow(zoneKey) {
-            if (!app.started || app.throwsThisTurn >= 3) return;
-            const zone = getZoneDetails(zoneKey);
-            const team = app.teams[app.currentTeam];
-            
-            team.score += zone.points;
-            team.throws += 1;
-            app.throwsThisTurn += 1;
-
-            const hit = document.createElement('div');
-            hit.className = `hit ${app.currentTeam === 0 ? 'team-a' : 'team-b'}`;
-            if (zone.kind === 'snitch') hit.className = 'hit snitch';
-            if (zone.kind === 'bludger') hit.className = 'hit bludger';
-            hit.style.left = `${zone.coords.x}px`;
-            hit.style.top = `${zone.coords.y}px`;
-            els.dartboard.appendChild(hit);
-
-            addLog(`<strong>${team.name}</strong> hits <strong>${zone.name}</strong> for <strong>${zone.points}</strong> pts.`);
-
-            if (team.score >= app.targetScore || zone.kind === 'snitch') {
-                app.started = false;
-                els.modalText.textContent = `${team.name} wins the match with ${team.score} points!`;
-                els.modal.classList.add('open');
-            } else if (!app.snitchActive && team.score >= app.snitchThreshold) {
-                app.snitchActive = true;
-                els.snitchTarget.hidden = false;
-                els.snitchKeyBtn.style.display = 'block';
-                els.snitchBanner.classList.add('show');
-                addLog(`The <strong>Golden Snitch</strong> has been released!`);
-            }
-
-            if (app.throwsThisTurn >= 3) {
-                setTimeout(endTurn, 250);
-            }
-            updateUI();
-        }
-
-        function endTurn() {
-            if (!app.started) return;
-            app.throwsThisTurn = 0;
-            app.currentTeam = (app.currentTeam + 1) % 2;
-            addLog(`Turn passes to <strong>${app.teams[app.currentTeam].name}</strong>.`);
-            updateUI();
-        }
-
-        document.querySelectorAll('.scoring-keypad .keypad-btn').forEach(btn => {
-            btn.addEventListener('click', () => recordThrow(btn.dataset.zone));
-        });
-
-        els.startBtn.addEventListener('click', startMatch);
-        els.resetBtn.addEventListener('click', () => resetMatch(false));
-        els.newMatchBtn.addEventListener('click', () => resetMatch(true));
-        els.rulesBtn.addEventListener('click', () => els.rulesModal.classList.add('open'));
-        els.closeRulesBtn.addEventListener('click', () => els.rulesModal.classList.remove('open'));
-        els.endTurnBtn.addEventListener('click', endTurn);
-        els.closeModalBtn.addEventListener('click', () => els.modal.classList.remove('open'));
-        els.playAgainBtn.addEventListener('click', () => { els.modal.classList.remove('open'); resetMatch(true); });
-        els.boardType.addEventListener('change', syncConfigToState);
-
-        setupRadioGroups();
-        drawHazards();
+function setupRadioGroups() {
+  ['houseAGroup', 'houseBGroup'].forEach(groupId => {
+    const group = document.getElementById(groupId);
+    group.querySelectorAll('.house-option').forEach(label => {
+      const radio = label.querySelector('input[type="radio"]');
+      radio.addEventListener('change', () => {
+        group.querySelectorAll('.house-option').forEach(l => l.classList.remove('active'));
+        if (radio.checked) label.classList.add('active');
         syncConfigToState();
-        resetMatch(true);
-    </script>
+      });
+    });
+  });
+}
+
+function getSelectedHouse(groupId) {
+  const group = document.getElementById(groupId);
+  const checked = group.querySelector('input[type="radio"]:checked');
+  return checked ? checked.value : 'gryffindor';
+}
+
+function syncConfigToState() {
+  app.teams[0].name = (els.teamAName.value.trim() || 'Team A').slice(0, 22);
+  app.teams[1].name = (els.teamBName.value.trim() || 'Team B').slice(0, 22);
+  app.teams[0].house = getSelectedHouse('houseAGroup');
+  app.teams[1].house = getSelectedHouse('houseBGroup');
+  app.boardType = els.boardType.value;
+  app.targetScore = Number(els.targetScore.value);
+  app.snitchThreshold = Math.floor(app.targetScore * 0.75);
+  els.targetReadout.textContent = app.targetScore;
+  els.snitchReadout.textContent = app.snitchThreshold;
+  els.modePill.textContent = `Mode: ${app.boardType === 'quad' ? 'Quad Board' : 'Standard'}`;
+  const mult = app.boardType === 'quad' ? 4 : 1;
+  if (app.boardType === 'quad') {
+    els.dartboard.classList.add('quad-board');
+  } else {
+    els.dartboard.classList.remove('quad-board');
+  }
+  els.btnHigh.innerHTML = `High Hoop <small>Seg 20 (${70 * mult} pts)</small>`;
+  els.btnMid.innerHTML = `Center Hoop <small>Seg 18 (${50 * mult} pts)</small>`;
+  els.btnLow.innerHTML = `Lower Hoop <small>Seg 2 (${30 * mult} pts)</small>`;
+  els.btnBull.innerHTML = `Bullseye <small>Center (${25 * mult} pts)</small>`;
+  els.btnOuter.innerHTML = `Outer Ring <small>Seg 6 (${10 * mult} pts)</small>`;
+  els.btnBludger.innerHTML = `Bludger <small>Seg 15 (${-20 * mult} pts)</small>`;
+  updateUI();
+}
+
+function assignSnitchTarget() {
+  const randomIndex = Math.floor(Math.random() * app.dartboardSegments.length);
+  app.currentSnitchSegment = app.dartboardSegments[randomIndex];
+  if (els.snitchTargetText) {
+    els.snitchTargetText.textContent = `Target: Seg ${app.currentSnitchSegment} (150 pts)`;
+  }
+}
+
+function addLog(msg) {
+  app.logs.unshift(msg);
+  app.logs = app.logs.slice(0, 20);
+  els.log.innerHTML = app.logs.map(item => `<div class="log-item">${item}</div>`).join('');
+}
+
+function resetMatch(fresh = false) {
+  syncConfigToState();
+  app.started = false;
+  app.currentTeam = 0;
+  app.throwsThisTurn = 0;
+  app.snitchActive = false;
+  app.currentSnitchSegment = null;
+  app.logs = [];
+  app.teams.forEach(t => {
+    t.score = 0;
+    t.throws = 0;
+    t.combos = 0;
+    t.abilityUsed = false;
+  });
+  document.querySelectorAll('.hit').forEach(n => n.remove());
+  els.snitchTarget.hidden = true;
+  els.snitchKeyBtn.style.display = 'none';
+  els.snitchBanner.classList.remove('show');
+  els.setupPanel.style.display = 'block';
+  els.heroPanel.classList.remove('hidden');
+  els.appGrid.classList.remove('match-active');
+  els.consoleSidebar.classList.add('hidden');
+  els.logPanel.classList.add('hidden');
+  if (fresh) addLog('New match prepared. Configure your teams and press start.');
+  updateUI();
+}
+
+function renderScoreboard() {
+  els.scoreboard.innerHTML = app.teams.map((team, index) => {
+    const house = houseMeta[team.house] || houseMeta['gryffindor'];
+    const active = app.started && index === app.currentTeam;
+    return `
+      <div class="team-card ${active ? 'active' : ''}">
+        <div class="team-top">
+          <div class="house-chip"><span class="dot" style="background:${house.color}"></span>${house.label}</div>
+          <div class="team-name" title="${team.name}">${team.name}</div>
+          <div class="team-score">${team.score}</div>
+        </div>
+        <div class="team-meta">
+          <div class="tiny"><span>Throws</span><strong>${team.throws}</strong></div>
+          <div class="tiny"><span>Power</span><strong>${team.abilityUsed ? 'Used' : 'Ready'}</strong></div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function updateUI() {
+  renderScoreboard();
+  [...els.throwsTrack.children].forEach((dot, i) => {
+    dot.classList.toggle('used', i < app.throwsThisTurn);
+  });
+  const team = app.teams[app.currentTeam];
+  els.currentTurnReadout.textContent = app.started ? team.name : 'Not started';
+  els.turnTeamName.textContent = app.started ? team.name : 'Awaiting start';
+  els.throwCounter.textContent = `${app.throwsThisTurn} / 3`;
+}
+
+function startMatch() {
+  syncConfigToState();
+  app.started = true;
+  app.currentTeam = 0;
+  app.throwsThisTurn = 0;
+  els.setupPanel.style.display = 'none';
+  els.heroPanel.classList.add('hidden');
+  els.appGrid.classList.add('match-active');
+  els.consoleSidebar.classList.remove('hidden');
+  els.logPanel.classList.remove('hidden');
+  addLog(`Match begins between <strong>${app.teams[0].name}</strong> and <strong>${app.teams[1].name}</strong> (${app.boardType === 'quad' ? 'Quad Board' : 'Standard Board'}).`);
+  updateUI();
+}
+
+function drawHazards() {
+  const ctx = els.hazardCanvas.getContext('2d');
+  ctx.clearRect(0, 0, 720, 720);
+  [[20, 38], [142, 162], [258, 278]].forEach(([start, end]) => {
+    ctx.beginPath();
+    ctx.moveTo(360, 360);
+    ctx.arc(360, 360, 360, (start - 90) * Math.PI / 180, (end - 90) * Math.PI / 180);
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(183,70,53,.18)';
+    ctx.fill();
+  });
+}
+
+function getZoneDetails(zoneKey) {
+  const mult = app.boardType === 'quad' ? 4 : 1;
+  switch(zoneKey) {
+    case 'hoop-high': return { name: 'High Hoop (Seg 20)', points: 70 * mult, kind: 'hoop-high', coords: {x:360, y:100} };
+    case 'hoop-mid': return { name: 'Center Hoop (Seg 18)', points: 50 * mult, kind: 'hoop-mid', coords: {x:560, y:142} };
+    case 'hoop-low': return { name: 'Lower Hoop (Seg 2)', points: 30 * mult, kind: 'hoop-low', coords: {x:160, y:135} };
+    case 'bull': return { name: 'Bullseye', points: 25 * mult, kind: 'bull', coords: {x:360, y:360} };
+    case 'outer': return { name: 'Outer Ring (Seg 6)', points: 10 * mult, kind: 'outer', coords: {x:360, y:620} };
+    case 'bludger': return { name: 'Bludger (Seg 15)', points: -20 * mult, kind: 'bludger', coords: {x:220, y:230} };
+    case 'snitch': return { name: `Golden Snitch (Seg ${app.currentSnitchSegment})`, points: 150 * mult, kind: 'snitch', coords: app.snitchPos };
+    default: return { name: 'Miss', points: 0, kind: 'miss', coords: {x:360, y:360} };
+  }
+}
+
+function recordThrow(zoneKey) {
+  if (!app.started || app.throwsThisTurn >= 3) return;
+  const zone = getZoneDetails(zoneKey);
+  const team = app.teams[app.currentTeam];
+  
+  team.score += zone.points;
+  team.throws += 1;
+  app.throwsThisTurn += 1;
+
+  const hit = document.createElement('div');
+  hit.className = `hit ${app.currentTeam === 0 ? 'team-a' : 'team-b'}`;
+  if (zone.kind === 'snitch') hit.className = 'hit snitch';
+  if (zone.kind === 'bludger') hit.className = 'hit bludger';
+  hit.style.left = `${zone.coords.x}px`;
+  hit.style.top = `${zone.coords.y}px`;
+  els.dartboard.appendChild(hit);
+
+  addLog(`<strong>${team.name}</strong> hits <strong>${zone.name}</strong> for <strong>${zone.points}</strong> pts.`);
+
+  if (team.score >= app.targetScore || zone.kind === 'snitch') {
+    app.started = false;
+    els.modalText.textContent = `${team.name} wins the match with ${team.score} points!`;
+    els.modal.classList.add('open');
+  } else if (!app.snitchActive && team.score >= app.snitchThreshold) {
+    app.snitchActive = true;
+    assignSnitchTarget();
+    els.snitchTarget.hidden = false;
+    els.snitchKeyBtn.style.display = 'block';
+    els.snitchBanner.classList.add('show');
+    addLog(`The <strong>Golden Snitch</strong> has been released and is hiding on Segment ${app.currentSnitchSegment}!`);
+  }
+
+  if (app.throwsThisTurn >= 3) {
+    setTimeout(endTurn, 250);
+  }
+  updateUI();
+}
+
+function endTurn() {
+  if (!app.started) return;
+  
+  // If Snitch is active, shift its target segment to a new random location each turn/round!
+  if (app.snitchActive) {
+    assignSnitchTarget();
+    addLog(`The Golden Snitch flutters and moves to Segment ${app.currentSnitchSegment}!`);
+  }
+
+  app.throwsThisTurn = 0;
+  app.currentTeam = (app.currentTeam + 1) % 2;
+  addLog(`Turn passes to <strong>${app.teams[app.currentTeam].name}</strong>.`);
+  updateUI();
+}
+
+document.querySelectorAll('.scoring-keypad .keypad-btn').forEach(btn => {
+  btn.addEventListener('click', () => recordThrow(btn.dataset.zone));
+});
+
+els.startBtn.addEventListener('click', startMatch);
+els.resetBtn.addEventListener('click', () => resetMatch(false));
+els.newMatchBtn.addEventListener('click', () => resetMatch(true));
+els.rulesBtn.addEventListener('click', () => els.rulesModal.classList.add('open'));
+els.closeRulesBtn.addEventListener('click', () => els.rulesModal.classList.remove('open'));
+els.endTurnBtn.addEventListener('click', endTurn);
+els.closeModalBtn.addEventListener('click', () => els.modal.classList.remove('open'));
+els.playAgainBtn.addEventListener('click', () => {
+  els.modal.classList.remove('open');
+  resetMatch(true);
+});
+els.boardType.addEventListener('change', syncConfigToState);
+
+setupRadioGroups();
+drawHazards();
+syncConfigToState();
+resetMatch(true);
+</script>
 </body>
 </html>
